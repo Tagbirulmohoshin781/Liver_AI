@@ -1,0 +1,675 @@
+{
+  "info": {
+    "_postman_id": "8a32d1ef-4179-4d62-9721-e5fae16d4001",
+    "name": "LiverAI Medical Assistant - API Collection",
+    "description": "Complete production API test suite for LiverAI Medical Assistant & Diagnostic System deployed on Railway.\n\nBase URL: {{base_url}}\nDefault Admin: admin@gmail.com / 123456",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "https://liverai-production.up.railway.app",
+      "type": "string"
+    },
+    {
+      "key": "user_id",
+      "value": "12",
+      "type": "string"
+    },
+    {
+      "key": "message_id",
+      "value": "1",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "1. Authentication & Session",
+      "item": [
+        {
+          "name": "Login User / Admin",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"admin@gmail.com\",\n  \"password\": \"123456\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/login",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "login"
+              ]
+            },
+            "description": "Authenticate user or admin and establish cookie session."
+          }
+        },
+        {
+          "name": "Get Current Session User (/api/me)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/me",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "me"
+              ]
+            },
+            "description": "Retrieve currently authenticated user profile and admin status."
+          }
+        },
+        {
+          "name": "Register New Patient",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"John Doe\",\n  \"email\": \"johndoe@test.com\",\n  \"password\": \"password123\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/register",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "register"
+              ]
+            },
+            "description": "Create a new user account in Supabase / Database."
+          }
+        },
+        {
+          "name": "Logout",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/logout",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "logout"
+              ]
+            },
+            "description": "Terminate session and clear session cookies."
+          }
+        }
+      ]
+    },
+    {
+      "name": "2. Chat & AI Medical Diagnostics",
+      "item": [
+        {
+          "name": "Send Chat Message (Gemini 2.5 Flash RAG)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"message\": \"What are the early stages of non-alcoholic fatty liver disease (NAFLD) and how is it diagnosed?\",\n  \"history\": [\n    {\n      \"role\": \"user\",\n      \"content\": \"Hello LiverAI\"\n    },\n    {\n      \"role\": \"assistant\",\n      \"content\": \"Hello! I am your AI clinical liver health assistant. How can I assist you today?\"\n    }\n  ],\n  \"image_path\": null,\n  \"doc_content\": null\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/chat",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "chat"
+              ]
+            },
+            "description": "Execute RAG pipeline combining Pinecone vector knowledge base and Gemini 2.5 Flash."
+          }
+        },
+        {
+          "name": "Upload Document or Biopsy Image",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "file",
+                  "type": "file",
+                  "src": ""
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{base_url}}/upload",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "upload"
+              ]
+            },
+            "description": "Upload a PDF report or Histology biopsy image (JPG/PNG) for automatic classification."
+          }
+        },
+        {
+          "name": "Get User Chat History",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/history",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "history"
+              ]
+            },
+            "description": "Retrieve conversation history for current user."
+          }
+        },
+        {
+          "name": "Delete Single Chat Message",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/history/{{message_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "history",
+                "{{message_id}}"
+              ]
+            },
+            "description": "Delete a single message from chat log."
+          }
+        },
+        {
+          "name": "Clear All User Chat History",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/history/clear",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "history",
+                "clear"
+              ]
+            },
+            "description": "Wipe entire chat history for active user."
+          }
+        }
+      ]
+    },
+    {
+      "name": "3. Clinical Risk & Vision ML Models",
+      "item": [
+        {
+          "name": "LPD 10-Feature Clinical Risk Prediction",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"age\": 45,\n  \"gender\": 1,\n  \"total_bilirubin\": 1.4,\n  \"direct_bilirubin\": 0.6,\n  \"alkaline_phosphotase\": 210,\n  \"alamine_aminotransferase\": 42,\n  \"aspartate_aminotransferase\": 38,\n  \"total_protiens\": 6.8,\n  \"albumin\": 3.5,\n  \"albumin_and_globulin_ratio\": 1.0\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/clinical/predict",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "clinical",
+                "predict"
+              ]
+            },
+            "description": "Run scikit-learn GradientBoosting LPD Risk Classifier on blood biomarker levels."
+          }
+        },
+        {
+          "name": "Get Clinical Model Info & Feature Metadata",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/clinical/model-info",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "clinical",
+                "model-info"
+              ]
+            },
+            "description": "Retrieve LPD model performance metrics, input features, and confidence thresholds."
+          }
+        },
+        {
+          "name": "PyTorch Vision Classifier Health",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/clinical/vision-status",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "clinical",
+                "vision-status"
+              ]
+            },
+            "description": "Check if PyTorch EfficientNet-B0 Biopsy Histology Classifier is loaded."
+          }
+        }
+      ]
+    },
+    {
+      "name": "4. Patient Profile & Preferences",
+      "item": [
+        {
+          "name": "Get Full Profile & Stats",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/profile",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "profile"
+              ]
+            },
+            "description": "Get medical profile, stats, and saved UI themes for active user."
+          }
+        },
+        {
+          "name": "Update Display Name",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"Dr. Tagbirul\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/profile/update-username",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "profile",
+                "update-username"
+              ]
+            },
+            "description": "Change display username."
+          }
+        },
+        {
+          "name": "Update Clinical Medical Background",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"age\": 35,\n  \"gender\": \"Male\",\n  \"medical_notes\": \"Elevated ALT and AST enzymes detected during routine annual checkup. Suspected mild NAFLD.\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/profile/update-medical",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "profile",
+                "update-medical"
+              ]
+            },
+            "description": "Persist clinical notes, age, and gender into Supabase profile."
+          }
+        },
+        {
+          "name": "Update UI Theme & Settings",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"settings\": {\n    \"themeMode\": \"dark\",\n    \"fontSize\": \"md\",\n    \"accent\": {\n      \"color\": \"#10a37f\",\n      \"hover\": \"#0e8c6d\",\n      \"glow\": \"rgba(16,163,127,0.35)\",\n      \"name\": \"Emerald Teal\"\n    },\n    \"style\": \"clinical\"\n  }\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/profile/update-settings",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "profile",
+                "update-settings"
+              ]
+            },
+            "description": "Save appearance theme presets and typography preferences."
+          }
+        }
+      ]
+    },
+    {
+      "name": "5. Admin Management Suite",
+      "item": [
+        {
+          "name": "Admin Dashboard Stats",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/admin/stats",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "admin",
+                "stats"
+              ]
+            },
+            "description": "Get total users, daily message activity, and database engine info."
+          }
+        },
+        {
+          "name": "Admin System Diagnostics",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/admin/system/status",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "admin",
+                "system",
+                "status"
+              ]
+            },
+            "description": "Get telemetry health for Supabase DB, EfficientNet-B0 vision classifier, and Gemini 2.5 Flash RAG."
+          }
+        },
+        {
+          "name": "Admin List All Users",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/admin/users",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "admin",
+                "users"
+              ]
+            },
+            "description": "List all registered patient and doctor accounts with their message counts."
+          }
+        },
+        {
+          "name": "Admin Get Single User Profile",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/admin/user/{{user_id}}/profile",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "admin",
+                "user",
+                "{{user_id}}",
+                "profile"
+              ]
+            },
+            "description": "Fetch user clinical record and admin permissions."
+          }
+        },
+        {
+          "name": "Admin Update User Details",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"Updated Patient Name\",\n  \"email\": \"patient@test.com\",\n  \"age\": 42,\n  \"gender\": \"Male\",\n  \"medical_notes\": \"Verified clinical record updated by admin.\",\n  \"is_admin\": false\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/admin/user/{{user_id}}/update",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "admin",
+                "user",
+                "{{user_id}}",
+                "update"
+              ]
+            },
+            "description": "Edit any user profile field and role."
+          }
+        },
+        {
+          "name": "Admin Reset User Password",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"new_password\": \"newSecretPassword123\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/admin/user/{{user_id}}/reset-password",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "admin",
+                "user",
+                "{{user_id}}",
+                "reset-password"
+              ]
+            },
+            "description": "Force reset user password by admin."
+          }
+        },
+        {
+          "name": "Admin Toggle User Admin Role",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/admin/user/{{user_id}}/toggle-role",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "admin",
+                "user",
+                "{{user_id}}",
+                "toggle-role"
+              ]
+            },
+            "description": "Toggle user between regular user and administrator."
+          }
+        },
+        {
+          "name": "Admin Audit Trail (Inspect All Messages)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/admin/all-history",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "admin",
+                "all-history"
+              ]
+            },
+            "description": "View full conversation logs across all patients with markdown."
+          }
+        },
+        {
+          "name": "Admin Inspect Specific User History",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/admin/user/{{user_id}}/history",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "admin",
+                "user",
+                "{{user_id}}",
+                "history"
+              ]
+            },
+            "description": "Get detailed audit trail of conversations for one specific user."
+          }
+        }
+      ]
+    },
+    {
+      "name": "6. Web Shell & PWA",
+      "item": [
+        {
+          "name": "Web UI Shell (HTML)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                ""
+              ]
+            },
+            "description": "Load main LiverAI web application UI."
+          }
+        },
+        {
+          "name": "PWA Manifest",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/manifest.json",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "manifest.json"
+              ]
+            },
+            "description": "Fetch Progressive Web App metadata."
+          }
+        },
+        {
+          "name": "PWA Service Worker",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/sw.js",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "sw.js"
+              ]
+            },
+            "description": "Service worker for offline caching and PWA installs."
+          }
+        }
+      ]
+    }
+  ]
+}

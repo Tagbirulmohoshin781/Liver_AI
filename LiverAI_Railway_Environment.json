@@ -1,0 +1,25 @@
+{
+  "id": "e812a149-6f94-436f-8a19-9a2c91834201",
+  "name": "LiverAI - Railway Production",
+  "values": [
+    {
+      "key": "base_url",
+      "value": "https://liverai-production.up.railway.app",
+      "type": "default",
+      "enabled": true
+    },
+    {
+      "key": "user_id",
+      "value": "12",
+      "type": "default",
+      "enabled": true
+    },
+    {
+      "key": "message_id",
+      "value": "1",
+      "type": "default",
+      "enabled": true
+    }
+  ],
+  "_postman_variable_scope": "environment"
+}
