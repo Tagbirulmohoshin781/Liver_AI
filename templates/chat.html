@@ -1,0 +1,1223 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <!-- Viewport: viewport-fit=cover enables env(safe-area-inset-*) for
+         iPhone notch and home bar. user-scalable=yes keeps accessibility. -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>LiverAI – Medical Assistant</title>
+  <meta name="description"
+    content="AI-powered liver disease medical assistant. Ask questions about liver health, diagnosis, and treatment." />
+
+  <!-- PWA Settings -->
+  <link rel="manifest" href="/manifest.json" />
+  <meta name="theme-color" content="#10a37f" />
+  <link rel="icon" type="image/svg+xml" href="/static/logo.svg" />
+  <link rel="apple-touch-icon" href="/static/logo.svg" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="LiverAI" />
+
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css" />
+  <link rel="stylesheet" href="/static/mobile.css?v=14.0" />
+  <link rel="stylesheet" href="/static/css/main.css?v=14.0" />
+  <link rel="stylesheet" href="/static/css/auth.css?v=14.0" />
+  <link rel="stylesheet" href="/static/css/sidebar.css?v=14.0" />
+  <link rel="stylesheet" href="/static/css/chat.css?v=14.0" />
+  <link rel="stylesheet" href="/static/css/panels.css?v=14.0" />
+
+  <!-- Core JS dependencies -->
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+
+  {% if firebase_config and firebase_config.apiKey %}
+  <!-- ═══ Firebase JS SDK (compat mode) ═══════════════════════════════════ -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+  <script>
+    // Firebase client config – values injected by Flask/Jinja2
+    const _FIREBASE_CONFIG = {
+      apiKey: "{{ firebase_config.apiKey }}",
+      authDomain: "{{ firebase_config.authDomain }}",
+      projectId: "{{ firebase_config.projectId }}",
+      appId: "{{ firebase_config.appId }}"
+    };
+    const _FIREBASE_ENABLED = true;
+    firebase.initializeApp(_FIREBASE_CONFIG);
+  </script>
+  {% else %}
+  <script>
+    // Firebase not configured – social OAuth buttons will show a setup notice
+    const _FIREBASE_ENABLED = false;
+  </script>
+  {% endif %}
+</head>
+
+<body>
+
+  <!-- App container -->
+  <div id="app-container">
+
+    <!-- Toast container -->
+    <div id="toast-container"></div>
+
+    <!-- ══════════════ LOGIN / SIGNUP VIEW ══════════════ -->
+    <div id="login-view">
+
+      <!-- Left brand panel (hidden on small screens) -->
+      <div class="auth-brand-panel">
+        <div class="auth-brand-inner">
+          <div class="auth-brand-logo">
+            <div class="login-logo-icon"><i class="fa-solid fa-heart-pulse"></i></div>
+            <span class="login-logo-text">LiverAI</span>
+          </div>
+          <h1 class="auth-brand-title">Your AI-Powered<br>Liver Health Assistant</h1>
+          <p class="auth-brand-sub">Ask anything about liver disease, read biopsy results, and get evidence-based
+            answers — instantly.</p>
+          <div class="auth-feature-list">
+            <div class="auth-feature"><i class="fa-solid fa-brain"></i><span>Gemini 2.5 Flash RAG Engine</span></div>
+            <div class="auth-feature"><i class="fa-solid fa-microscope"></i><span>Biopsy AI Histology Grading</span>
+            </div>
+            <div class="auth-feature"><i class="fa-solid fa-shield-halved"></i><span>Private & Secure Chat
+                History</span></div>
+            <div class="auth-feature"><i class="fa-solid fa-bolt"></i><span>Real-Time Medical Knowledge Base</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right form panel -->
+      <div class="auth-form-panel">
+        <div class="login-box">
+
+          <!-- Mobile-only logo -->
+          <div class="login-logo auth-mobile-logo">
+            <div class="login-logo-icon"><i class="fa-solid fa-heart-pulse"></i></div>
+            <span class="login-logo-text">LiverAI</span>
+          </div>
+
+          <!-- Tab switcher -->
+          <div class="auth-tab-bar">
+            <button type="button" class="auth-tab-btn active" id="tab-auth-login" onclick="toggleAuthTab('login')">
+              <i class="fa-solid fa-arrow-right-to-bracket"></i> Sign In
+            </button>
+            <button type="button" class="auth-tab-btn" id="tab-auth-signup" onclick="toggleAuthTab('signup')">
+              <i class="fa-solid fa-user-plus"></i> Create Account
+            </button>
+          </div>
+
+          <!-- Dynamic greeting -->
+          <div class="auth-greeting">
+            <h2 id="auth-greeting-title">Welcome back</h2>
+            <p id="auth-greeting-sub">Sign in to continue to LiverAI</p>
+          </div>
+
+          <!-- Error message -->
+          <div id="login-error" class="auth-error-box" style="display:none">
+            <i class="fa-solid fa-circle-exclamation"></i>
+            <span id="login-error-text"></span>
+          </div>
+
+          <!-- Social Login Buttons -->
+          <div class="social-login-section">
+            <div class="social-grid">
+              <button type="button" class="btn-social google" id="btn-google-signin"
+                onclick="handleFirebaseGoogleLogin()" title="Sign in with Google">
+                <i class="fa-brands fa-google" style="color:#ea4335"></i>
+                <span>Google</span>
+              </button>
+              <button type="button" class="btn-social github" id="btn-github-signin"
+                onclick="handleFirebaseGithubLogin()" title="Sign in with GitHub">
+                <i class="fa-brands fa-github"></i>
+                <span>GitHub</span>
+              </button>
+              <button type="button" class="btn-social twitter" onclick="handleSocialComingSoon('Twitter')"
+                title="Twitter/X coming soon">
+                <i class="fa-brands fa-x-twitter"></i>
+                <span>Twitter</span>
+              </button>
+              <button type="button" class="btn-social facebook" id="btn-facebook-signin"
+                onclick="handleFirebaseFacebookLogin()" title="Sign in with Facebook">
+                <i class="fa-brands fa-facebook-f" style="color:#1877f2"></i>
+                <span>Facebook</span>
+              </button>
+            </div>
+
+            <div class="social-divider">
+              <span>or continue with email</span>
+            </div>
+          </div>
+
+          <!-- ── Sign In Form ── -->
+          <form id="form-login" onsubmit="event.preventDefault(); handleLogin();" autocomplete="on">
+            <div class="login-field">
+              <label for="login-email"><i class="fa-solid fa-envelope"></i> Email address</label>
+              <input type="email" id="login-email" placeholder="name@example.com" required autocomplete="email" />
+            </div>
+            <div class="login-field" style="margin-top:.85rem">
+              <label for="login-password"><i class="fa-solid fa-lock"></i> Password</label>
+              <div class="pw-input-wrap">
+                <input type="password" id="login-password" placeholder="Enter your password" required
+                  autocomplete="current-password" />
+                <button type="button" class="btn-pw-toggle" onclick="togglePw('login-password', this)" tabindex="-1">
+                  <i class="fa-regular fa-eye"></i>
+                </button>
+              </div>
+            </div>
+            <button type="submit" class="btn-login" id="btn-login-submit" style="margin-top:1.25rem">
+              <i class="fa-solid fa-arrow-right-to-bracket"></i> Sign In
+            </button>
+            <p class="auth-switch-hint">
+              Don't have an account? <a href="#" onclick="toggleAuthTab('signup'); return false;">Create one free</a>
+              · <a href="#" onclick="showChat(); showToast('Using LiverAI in Guest Mode', 'info'); return false;" style="color:var(--accent); font-weight:600">Continue as Guest</a>
+            </p>
+          </form>
+
+          <!-- ── Sign Up Form ── -->
+          <form id="form-signup" style="display:none" onsubmit="event.preventDefault(); handleRegister();"
+            autocomplete="on">
+            <div class="login-field">
+              <label for="signup-name"><i class="fa-solid fa-user"></i> Full Name</label>
+              <input type="text" id="signup-name" placeholder="John Doe" required autocomplete="name" />
+            </div>
+            <div class="login-field" style="margin-top:.85rem">
+              <label for="signup-email"><i class="fa-solid fa-envelope"></i> Email address</label>
+              <input type="email" id="signup-email" placeholder="name@example.com" required autocomplete="email" />
+            </div>
+            <div class="login-field" style="margin-top:.85rem">
+              <label for="signup-password"><i class="fa-solid fa-lock"></i> Password</label>
+              <div class="pw-input-wrap">
+                <input type="password" id="signup-password" placeholder="At least 6 characters" required
+                  autocomplete="new-password" />
+                <button type="button" class="btn-pw-toggle" onclick="togglePw('signup-password', this)" tabindex="-1">
+                  <i class="fa-regular fa-eye"></i>
+                </button>
+              </div>
+            </div>
+            <div class="login-field" style="margin-top:.85rem">
+              <label for="signup-confirm-password"><i class="fa-solid fa-lock-open"></i> Confirm Password</label>
+              <div class="pw-input-wrap">
+                <input type="password" id="signup-confirm-password" placeholder="Re-enter your password" required
+                  autocomplete="new-password" oninput="
+                      const pw = document.getElementById('signup-password').value;
+                      const hint = document.getElementById('confirm-pw-hint');
+                      if (!this.value) { hint.textContent=''; return; }
+                      if (this.value === pw) { hint.style.color='#34d399'; hint.textContent='✓ Passwords match'; }
+                      else { hint.style.color='var(--danger)'; hint.textContent='⚠ Passwords do not match'; }
+                    " />
+                <button type="button" class="btn-pw-toggle" onclick="togglePw('signup-confirm-password', this)"
+                  tabindex="-1">
+                  <i class="fa-regular fa-eye"></i>
+                </button>
+              </div>
+              <p id="confirm-pw-hint" style="font-size:.75rem;margin-top:.35rem;height:1rem;"></p>
+            </div>
+            <button type="submit" class="btn-login" id="btn-signup-submit" style="margin-top:1.25rem">
+              <i class="fa-solid fa-user-plus"></i> Create Account
+            </button>
+            <p class="auth-switch-hint">Already have an account? <a href="#"
+                onclick="toggleAuthTab('login'); return false;">Sign in</a></p>
+          </form>
+
+        </div>
+      </div>
+
+    </div>
+
+
+    <!-- Upload Modal (for general document upload in Chat tab) -->
+    <div class="modal-overlay" id="upload-modal" style="display:none">
+      <div class="modal-box">
+        <div class="modal-header">
+          <span class="modal-title"><i class="fa-solid fa-file-arrow-up"
+              style="color:var(--accent);margin-right:.4rem"></i> Upload Document</span>
+          <button class="modal-close" onclick="closeUploadModal()"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <div class="modal-body">
+          <div class="drop-zone" id="drop-zone" onclick="document.getElementById('file-input').click()">
+            <i class="fa-solid fa-cloud-arrow-up"></i>
+            <p>Drag &amp; drop file, or <strong>browse</strong></p>
+            <span>Supported: PDF, TXT, CSV, JPG, PNG — Max 50MB</span>
+          </div>
+          <input type="file" id="file-input" accept=".pdf,.txt,.csv,.jpg,.jpeg,.png" style="display:none" />
+          <div class="upload-status" id="upload-status"></div>
+          <button type="button" class="btn-upload-submit" id="btn-upload-submit" onclick="submitUpload()"
+            style="display:none; width:100%; margin-top:1rem;">
+            <i class="fa-solid fa-cloud-arrow-up"></i> Upload &amp; Process
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════ CHAT VIEW (CHATGPT STYLE) ══════════════ -->
+    <div id="chat-view" style="display:none; flex-direction:row">
+
+      <!-- Sidebar overlay for mobile drawer -->
+      <div class="sidebar-overlay" id="sidebar-overlay" onclick="closeSidebar()"></div>
+
+      <!-- Sidebar -->
+      <aside class="sidebar" id="sidebar">
+        <button class="btn-new-chat" onclick="clearChat(); switchTab('chat'); closeSidebar();">
+          <i class="fa-solid fa-plus"></i> New chat
+        </button>
+
+        <!-- Sidebar Navigation Apps -->
+        <div class="sidebar-nav-section">
+          <button class="sidebar-nav-btn active" id="nav-btn-chat" onclick="switchTab('chat'); closeSidebar();">
+            <i class="fa-regular fa-comments"></i> Chat
+          </button>
+          <button class="sidebar-nav-btn" id="nav-btn-biopsy" onclick="switchTab('biopsy'); closeSidebar();">
+            <i class="fa-solid fa-microscope"></i> Biopsy AI
+          </button>
+          <button class="sidebar-nav-btn" id="nav-btn-history" onclick="switchTab('history'); closeSidebar();">
+            <i class="fa-solid fa-clock-rotate-left"></i> History
+          </button>
+          <button class="sidebar-nav-btn" id="nav-btn-settings" onclick="switchTab('settings'); closeSidebar();">
+            <i class="fa-solid fa-sliders"></i> Settings
+          </button>
+          <button class="sidebar-nav-btn" id="nav-btn-profile" onclick="switchTab('profile'); closeSidebar();">
+            <i class="fa-solid fa-circle-user"></i> My Profile
+          </button>
+          <button class="sidebar-nav-btn" id="nav-btn-admin" onclick="switchTab('admin'); closeSidebar();"
+            style="display:none; color:#a78bfa">
+            <i class="fa-solid fa-user-shield"></i> Admin Panel
+          </button>
+        </div>
+
+        <p class="sidebar-label">Recent</p>
+        <ul class="sidebar-list" id="history-list">
+          <li class="history-empty" id="history-empty">
+            <i class="fa-regular fa-clock"></i> No recent chats
+          </li>
+        </ul>
+
+        <div class="sidebar-spacer"></div>
+        <div class="sidebar-bottom">
+          <div class="sidebar-user">
+            <div class="user-avatar" id="sidebar-avatar">A</div>
+            <span class="user-name" id="sidebar-username">Admin</span>
+            <button class="btn-settings-icon" onclick="openSettings()" title="Settings">
+              <i class="fa-solid fa-gear"></i>
+            </button>
+            <button class="btn-logout-icon" onclick="handleLogout()" title="Sign out">
+              <i class="fa-solid fa-arrow-right-from-bracket"></i>
+            </button>
+          </div>
+        </div>
+      </aside>
+
+
+
+      <!-- ==================== TAB 1: CHAT ==================== -->
+      <div id="tab-chat" class="tab-content chat-main">
+        <!-- Topbar -->
+        <div class="chat-topbar">
+          <div class="topbar-left">
+            <button class="btn-hamburger" id="btn-hamburger" onclick="toggleSidebar()" title="Toggle sidebar">
+              <i class="fa-solid fa-bars"></i>
+            </button>
+            <div class="chat-model-label">
+              <div class="model-dot"></div>
+              <span id="topbar-label">LiverAI · Gemini 2.5</span>
+            </div>
+            <div id="vision-badge" class="sim" title="Vision model status">
+              <span class="badge-dot"></span>
+              <span id="vision-badge-text">Vision: Sim</span>
+            </div>
+          </div>
+          <div class="topbar-actions">
+            <button class="topbar-btn" onclick="clearChat()" title="Start New Chat">
+              <i class="fa-solid fa-square-plus"></i> New
+            </button>
+            <button class="topbar-btn" onclick="switchTab('history')" title="View Chat History">
+              <i class="fa-solid fa-clock-rotate-left"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- Messages -->
+        <div class="messages-area" id="messages-area">
+          <!-- Welcome screen shown initially -->
+          <div class="welcome-screen" id="welcome-screen">
+            <div class="welcome-hero">
+              <div class="welcome-hero-content">
+                <div class="welcome-icon"><i class="fa-solid fa-heart-pulse"></i></div>
+                <h1 class="welcome-title">Hi! I'm LiverAI 👋</h1>
+                <p class="welcome-sub">Ask me anything about liver health — in simple, easy-to-understand language. I'm
+                  here to explain things clearly, like a knowledgeable friend.</p>
+                <div class="welcome-pills">
+                  <span class="welcome-pill">🧬 RAG-Powered</span>
+                  <span class="welcome-pill">🔬 Biopsy AI</span>
+                  <span class="welcome-pill">📚 Medical KB</span>
+                  <span class="welcome-pill">⚡ Gemini 2.5</span>
+                </div>
+              </div>
+            </div>
+            <div class="suggestions">
+              <div class="suggestion-chip" onclick="sendSuggestion(this)">
+                <i class="fa-solid fa-circle-exclamation"></i>
+                What are the early warning signs of liver disease?
+              </div>
+              <div class="suggestion-chip" onclick="sendSuggestion(this)">
+                <i class="fa-solid fa-droplet"></i>
+                What is fatty liver and how do I treat it?
+              </div>
+              <div class="suggestion-chip" onclick="sendSuggestion(this)">
+                <i class="fa-solid fa-shield-virus"></i>
+                Is hepatitis C curable? Explain simply.
+              </div>
+              <div class="suggestion-chip" onclick="sendSuggestion(this)">
+                <i class="fa-solid fa-flask-vial"></i>
+                My ALT is high — what does that mean?
+              </div>
+              <div class="suggestion-chip" onclick="sendSuggestion(this)">
+                <i class="fa-solid fa-utensils"></i>
+                What diet is best for NAFLD and fatty liver?
+              </div>
+              <div class="suggestion-chip" onclick="sendSuggestion(this)">
+                <i class="fa-solid fa-microscope"></i>
+                Upload a biopsy image for histology analysis
+              </div>
+            </div>
+          </div>
+
+          <!-- Messages injected here -->
+          <div class="msg-group" id="msg-group" style="display:none"></div>
+        </div>
+
+        <!-- Input area -->
+        <div class="input-area">
+          <div class="input-box">
+            <button class="btn-attach" id="btn-attach" onclick="openUploadModal()" title="Upload document">
+              <i class="fa-solid fa-paperclip"></i>
+            </button>
+            <textarea id="chat-input" rows="1" placeholder="Message LiverAI…"></textarea>
+            <button class="btn-send" id="btn-send" title="Send">
+              <i class="fa-solid fa-arrow-up"></i>
+            </button>
+          </div>
+          <p class="input-disclaimer">LiverAI can make mistakes. Always verify critical health information with a
+            qualified medical professional.</p>
+        </div>
+      </div>
+
+      <!-- ==================== TAB 2: BIOPSY AI ==================== -->
+      <div id="tab-biopsy" class="tab-content">
+        <div class="chat-topbar">
+          <div class="topbar-left">
+            <button class="btn-hamburger" onclick="toggleSidebar()" title="Toggle sidebar">
+              <i class="fa-solid fa-bars"></i>
+            </button>
+            <div class="chat-model-label">
+              <i class="fa-solid fa-microscope" style="color:var(--accent)"></i>
+              <span>Liver Histology Classifier</span>
+            </div>
+          </div>
+          <div class="topbar-actions">
+            <span class="settings-chip" style="background:rgba(167,139,250,0.15); color:#a78bfa">
+              <i class="fa-solid fa-brain" style="margin-right:4px"></i> PyTorch EfficientNet-B0
+            </span>
+          </div>
+        </div>
+
+        <div class="biopsy-tab-container">
+          <!-- Hero Card -->
+          <div class="biopsy-hero-card">
+            <div class="biopsy-hero-left">
+              <div class="biopsy-hero-icon">
+                <i class="fa-solid fa-microscope"></i>
+              </div>
+              <div>
+                <div class="biopsy-hero-badge">
+                  <span class="pulse-dot"></span> Deep-Learning Histopathology
+                </div>
+                <h2 class="biopsy-title">Histology AI Analyzer</h2>
+                <p class="biopsy-subtitle">Upload high-resolution microscopic biopsy patch images for automated histological screening across four key liver tissue biomarkers.</p>
+              </div>
+            </div>
+            <div class="biopsy-feature-pills">
+              <span class="biopsy-feat-tag"><i class="fa-solid fa-check-circle"></i> Hepatic Steatosis</span>
+              <span class="biopsy-feat-tag"><i class="fa-solid fa-check-circle"></i> Tissue Fibrosis</span>
+              <span class="biopsy-feat-tag"><i class="fa-solid fa-check-circle"></i> Lobular Inflammation</span>
+              <span class="biopsy-feat-tag"><i class="fa-solid fa-check-circle"></i> Hepatocyte Ballooning</span>
+            </div>
+          </div>
+
+          <!-- Minimal Aesthetic Upload Box -->
+          <div class="biopsy-upload-card">
+            <div class="biopsy-drop-zone" id="biopsy-drop-zone" onclick="document.getElementById('biopsy-file-input').click()">
+              <div class="biopsy-drop-icon">
+                <i class="fa-solid fa-cloud-arrow-up"></i>
+              </div>
+              <h3 class="biopsy-drop-heading">Drop biopsy microscopy image here</h3>
+              <p class="biopsy-drop-sub">Drag and drop slide patches or <span class="biopsy-browse-link">browse local files</span></p>
+              <div class="biopsy-supported-tags">
+                <span class="biopsy-tag">PNG</span>
+                <span class="biopsy-tag">JPG</span>
+                <span class="biopsy-tag">JPEG</span>
+                <span class="biopsy-tag">TIFF</span>
+                <span class="biopsy-tag">Max 50MB</span>
+              </div>
+            </div>
+            <input type="file" id="biopsy-file-input" accept=".jpg,.jpeg,.png,.tif,.tiff" style="display:none" />
+            
+            <!-- Active Image Thumbnail / Preview Card -->
+            <div id="biopsy-preview-box" class="biopsy-preview-box" style="display:none">
+              <div class="biopsy-preview-content">
+                <img id="biopsy-preview-img" src="" alt="Biopsy Slide Preview" class="biopsy-thumb-img" />
+                <div class="biopsy-preview-info">
+                  <strong id="biopsy-preview-name" class="biopsy-file-title">slide_patch.png</strong>
+                  <span id="biopsy-preview-meta" class="biopsy-file-meta">2.4 MB · Ready for evaluation</span>
+                </div>
+              </div>
+              <button type="button" class="btn-biopsy-clear" onclick="clearBiopsyUpload(event)" title="Remove and select another image">
+                <i class="fa-solid fa-xmark"></i>
+              </button>
+            </div>
+          </div>
+
+          <!-- Status Box -->
+          <div class="biopsy-status-box" id="biopsy-status" style="display:none"></div>
+
+          <!-- Diagnostic Results Area -->
+          <div class="biopsy-report-container" id="biopsy-report-view" style="display:none"></div>
+        </div>
+      </div>
+
+      <!-- ==================== TAB 3: HISTORY ==================== -->
+      <div id="tab-history" class="tab-content">
+        <div class="chat-topbar">
+          <div class="topbar-left">
+            <button class="btn-hamburger" onclick="toggleSidebar()" title="Toggle sidebar">
+              <i class="fa-solid fa-bars"></i>
+            </button>
+            <div class="chat-model-label">
+              <i class="fa-solid fa-clock-rotate-left" style="color:var(--accent)"></i>
+              <span>Chat History</span>
+            </div>
+          </div>
+          <div class="topbar-actions">
+            <button class="topbar-btn" onclick="clearChat()">
+              <i class="fa-solid fa-square-plus"></i> New Chat
+            </button>
+          </div>
+        </div>
+        <div class="history-tab-container">
+          <ul class="sidebar-list" id="history-tab-list" style="padding:0">
+            <!-- Populated dynamically by JS -->
+          </ul>
+        </div>
+      </div>
+
+      <!-- ==================== TAB 4: SETTINGS ==================== -->
+      <div id="tab-settings" class="tab-content" style="display:none; flex-direction:column; height:100%; overflow:hidden">
+        <!-- Topbar -->
+        <div class="chat-topbar" style="flex-shrink:0">
+          <div class="topbar-left">
+            <button class="btn-hamburger" onclick="toggleSidebar()" title="Toggle sidebar">
+              <i class="fa-solid fa-bars"></i>
+            </button>
+            <div class="chat-model-label">
+              <i class="fa-solid fa-sliders" style="color:var(--accent)"></i>
+              <span>Application &amp; AI Settings</span>
+            </div>
+          </div>
+          <div class="topbar-actions">
+            <button class="topbar-btn" onclick="saveSettings(); showToast('Settings saved successfully!','success');" title="Save All Settings">
+              <i class="fa-solid fa-floppy-disk"></i> Save Settings
+            </button>
+          </div>
+        </div>
+
+        <!-- Scrollable Container -->
+        <div style="flex:1; overflow-y:auto; overflow-x:hidden; padding:1.5rem 1rem 3rem">
+          <div class="settings-tab-container" style="max-width:800px; margin:0 auto; display:flex; flex-direction:column; gap:1.75rem">
+
+            <!-- Hero Header Card -->
+            <div class="settings-hero-card">
+              <div class="settings-hero-icon"><i class="fa-solid fa-sliders"></i></div>
+              <div class="settings-hero-text">
+                <h2>Preferences &amp; Engine Tuning</h2>
+                <p>Customize LiverAI appearance, response style, model parameters, and privacy options.</p>
+              </div>
+              <span class="settings-hero-badge"><i class="fa-solid fa-sparkles"></i> LiverAI v2.5</span>
+            </div>
+
+            <!-- 🎨 Section 1: Appearance & Styling -->
+            <div class="settings-section">
+              <div class="settings-section-header">
+                <i class="fa-solid fa-palette" style="color:var(--accent)"></i>
+                <span>Appearance &amp; Design System</span>
+              </div>
+
+              <div class="settings-card">
+                <!-- Theme Mode Presets -->
+                <div class="settings-item-row" style="flex-direction:column; align-items:flex-start; gap:1rem">
+                  <div style="display:flex; justify-content:space-between; width:100%; align-items:center; flex-wrap:wrap; gap:.5rem">
+                    <div>
+                      <label class="settings-item-title"><i class="fa-solid fa-palette" style="color:#f59e0b; margin-right:.4rem"></i> Theme Aesthetic Presets</label>
+                      <p class="settings-item-desc">Choose a visual aesthetic mode for workspace contrast, background tones, and ambiance</p>
+                    </div>
+                    <span id="active-theme-indicator" class="settings-chip" style="font-size:.75rem">
+                      <i class="fa-solid fa-circle-check" style="margin-right:4px"></i> Dark Mode Active
+                    </span>
+                  </div>
+                  <div class="theme-pills-grid">
+                    <button type="button" class="theme-preset-btn active" id="theme-btn-dark" data-theme="dark" onclick="applyTheme('dark')">
+                      <span class="theme-preview-dot" style="background:#212121; border-color:#555"></span>
+                      <span class="theme-name">Dark (Default)</span>
+                      <i class="fa-solid fa-check theme-check-icon"></i>
+                    </button>
+                    <button type="button" class="theme-preset-btn" id="theme-btn-oled" data-theme="oled" onclick="applyTheme('oled')">
+                      <span class="theme-preview-dot" style="background:#000000; border-color:#333"></span>
+                      <span class="theme-name">OLED Black</span>
+                      <i class="fa-solid fa-check theme-check-icon"></i>
+                    </button>
+                    <button type="button" class="theme-preset-btn" id="theme-btn-midnight" data-theme="midnight" onclick="applyTheme('midnight')">
+                      <span class="theme-preview-dot" style="background:#0b1329; border-color:#1e293b"></span>
+                      <span class="theme-name">Midnight</span>
+                      <i class="fa-solid fa-check theme-check-icon"></i>
+                    </button>
+                    <button type="button" class="theme-preset-btn" id="theme-btn-nordic" data-theme="nordic" onclick="applyTheme('nordic')">
+                      <span class="theme-preview-dot" style="background:#1e2430; border-color:#3b465c"></span>
+                      <span class="theme-name">Nordic Slate</span>
+                      <i class="fa-solid fa-check theme-check-icon"></i>
+                    </button>
+                    <button type="button" class="theme-preset-btn" id="theme-btn-cyberpunk" data-theme="cyberpunk" onclick="applyTheme('cyberpunk')">
+                      <span class="theme-preview-dot" style="background:#120924; border-color:#42207a"></span>
+                      <span class="theme-name">Cyberpunk</span>
+                      <i class="fa-solid fa-check theme-check-icon"></i>
+                    </button>
+                    <button type="button" class="theme-preset-btn" id="theme-btn-sepia" data-theme="sepia" onclick="applyTheme('sepia')">
+                      <span class="theme-preview-dot" style="background:#fbf0d9; border-color:#d8c49d"></span>
+                      <span class="theme-name">Warm Sepia</span>
+                      <i class="fa-solid fa-check theme-check-icon"></i>
+                    </button>
+                    <button type="button" class="theme-preset-btn" id="theme-btn-light" data-theme="light" onclick="applyTheme('light')">
+                      <span class="theme-preview-dot" style="background:#ffffff; border-color:#cbd5e1"></span>
+                      <span class="theme-name">Light Clean</span>
+                      <i class="fa-solid fa-check theme-check-icon"></i>
+                    </button>
+                  </div>
+                </div>
+
+                <!-- Font Size Slider -->
+                <div class="settings-item-row" style="flex-direction:column; align-items:flex-start; gap:.6rem; padding-top:1rem; border-top:1px solid var(--border)">
+                  <div style="display:flex; justify-content:space-between; width:100%; align-items:center">
+                    <label class="settings-item-title"><i class="fa-solid fa-text-height" style="color:#6366f1; margin-right:.4rem"></i> Chat Font Size</label>
+                    <span class="settings-chip" id="font-size-val-mobile">15px</span>
+                  </div>
+                  <p class="settings-item-desc">Adjust the base text sizing for chat bubbles and medical answers</p>
+                  <div class="settings-range-wrap" style="width:100%">
+                    <span style="font-size:.75rem; color:var(--text-muted); font-weight:700">13px</span>
+                    <input type="range" id="font-size-range-mobile" min="13" max="20" value="15" oninput="applyFontSize(this.value)" class="settings-slider" style="flex:1">
+                    <span style="font-size:.85rem; color:var(--text-muted); font-weight:700">20px</span>
+                  </div>
+                </div>
+
+                <!-- Accent Color Swatches -->
+                <div class="settings-item-row" style="flex-direction:column; align-items:flex-start; gap:.75rem; padding-top:1rem; border-top:1px solid var(--border)">
+                  <label class="settings-item-title"><i class="fa-solid fa-brush" style="color:#ec4899; margin-right:.4rem"></i> Accent Color Theme</label>
+                  <p class="settings-item-desc">Choose a primary accent tint for buttons, active pills, and glows</p>
+                  <div id="color-palette" style="display:flex; flex-wrap:wrap; gap:.6rem; width:100%">
+                    <button class="color-swatch active" id="swatch-teal" style="background:#10a37f" title="Teal (Default)" onclick="applyAccentColor('#10a37f','#0d8c6d','rgba(16,163,127,0.15)','teal')"><i class="fa-solid fa-check"></i></button>
+                    <button class="color-swatch" id="swatch-indigo" style="background:#6366f1" title="Indigo" onclick="applyAccentColor('#6366f1','#4f52d0','rgba(99,102,241,0.15)','indigo')"><i class="fa-solid fa-check"></i></button>
+                    <button class="color-swatch" id="swatch-violet" style="background:#8b5cf6" title="Violet" onclick="applyAccentColor('#8b5cf6','#7c3aed','rgba(139,92,246,0.15)','violet')"><i class="fa-solid fa-check"></i></button>
+                    <button class="color-swatch" id="swatch-rose" style="background:#f43f5e" title="Rose" onclick="applyAccentColor('#f43f5e','#e11d48','rgba(244,63,94,0.15)','rose')"><i class="fa-solid fa-check"></i></button>
+                    <button class="color-swatch" id="swatch-amber" style="background:#f59e0b" title="Amber" onclick="applyAccentColor('#f59e0b','#d97706','rgba(245,158,11,0.15)','amber')"><i class="fa-solid fa-check"></i></button>
+                    <button class="color-swatch" id="swatch-sky" style="background:#0ea5e9" title="Sky Blue" onclick="applyAccentColor('#0ea5e9','#0284c7','rgba(14,165,233,0.15)','sky')"><i class="fa-solid fa-check"></i></button>
+                    <button class="color-swatch" id="swatch-emerald" style="background:#34d399" title="Emerald" onclick="applyAccentColor('#34d399','#10b981','rgba(52,211,153,0.15)','emerald')"><i class="fa-solid fa-check"></i></button>
+                    <button class="color-swatch" id="swatch-pink" style="background:#ec4899" title="Pink" onclick="applyAccentColor('#ec4899','#db2777','rgba(236,72,153,0.15)','pink')"><i class="fa-solid fa-check"></i></button>
+                    <button class="color-swatch" id="swatch-orange" style="background:#f97316" title="Orange" onclick="applyAccentColor('#f97316','#ea6a06','rgba(249,115,22,0.15)','orange')"><i class="fa-solid fa-check"></i></button>
+                    <button class="color-swatch" id="swatch-gold" style="background:#eab308" title="Gold" onclick="applyAccentColor('#eab308','#ca9e00','rgba(234,179,8,0.15)','gold')"><i class="fa-solid fa-check"></i></button>
+                    <button class="color-swatch" id="swatch-cyan" style="background:#06b6d4" title="Electric Cyan" onclick="applyAccentColor('#06b6d4','#0891b2','rgba(6,182,212,0.15)','cyan')"><i class="fa-solid fa-check"></i></button>
+                    <button class="color-swatch" id="swatch-mint" style="background:#14b8a6" title="Mint Medical" onclick="applyAccentColor('#14b8a6','#0d9488','rgba(20,184,166,0.15)','mint')"><i class="fa-solid fa-check"></i></button>
+                    <button class="color-swatch" id="swatch-crimson" style="background:#ef4444" title="Crimson" onclick="applyAccentColor('#ef4444','#dc2626','rgba(239,68,68,0.15)','crimson')"><i class="fa-solid fa-check"></i></button>
+                    <button class="color-swatch" id="swatch-neonpurple" style="background:#d946ef" title="Neon Purple" onclick="applyAccentColor('#d946ef','#c026d3','rgba(217,70,239,0.15)','neonpurple')"><i class="fa-solid fa-check"></i></button>
+                    <button class="color-swatch" id="swatch-coral" style="background:#ff6b6b" title="Coral Sunset" onclick="applyAccentColor('#ff6b6b','#ee5253','rgba(255,107,107,0.15)','coral')"><i class="fa-solid fa-check"></i></button>
+                    <button class="color-swatch" id="swatch-lime" style="background:#84cc16" title="Lime Energy" onclick="applyAccentColor('#84cc16','#65a30d','rgba(132,204,22,0.15)','lime')"><i class="fa-solid fa-check"></i></button>
+                  </div>
+                  <div style="display:flex; align-items:center; gap:.75rem; margin-top:.25rem">
+                    <span style="font-size:.8rem; color:var(--text-secondary); font-weight:600">Custom Color:</span>
+                    <input type="color" id="custom-color-picker" value="#10a37f" style="width:34px; height:34px; border-radius:8px; border:2px solid var(--border); cursor:pointer; background:none; padding:2px" oninput="applyAccentColor(this.value, adjustColor(this.value,-20), hexToRgba(this.value,0.15), 'custom')">
+                    <span style="font-size:.78rem; color:var(--text-muted)">Select any hex hue</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 🧠 Section 2: AI Model & Tuning -->
+            <div class="settings-section">
+              <div class="settings-section-header">
+                <i class="fa-solid fa-brain" style="color:#a78bfa"></i>
+                <span>AI Model Tuning &amp; Intelligence Level</span>
+              </div>
+
+              <div class="settings-card">
+                <!-- Temperature Slider -->
+                <div class="settings-item-row" style="flex-direction:column; align-items:flex-start; gap:.6rem">
+                  <div style="display:flex; justify-content:space-between; width:100%; align-items:center">
+                    <label class="settings-item-title"><i class="fa-solid fa-gauge-high" style="color:#38bdf8; margin-right:.4rem"></i> Model Temperature</label>
+                    <span class="settings-chip" id="setting-temp-val" style="background:rgba(56,189,248,0.15); color:#38bdf8">0.25 (Low / Conservative)</span>
+                  </div>
+                  <p class="settings-item-desc">Lower temperature keeps medical guidance factual and grounded; higher temperature allows more creative explanations.</p>
+                  <div class="settings-range-wrap" style="width:100%">
+                    <span style="font-size:.75rem; color:var(--text-muted); font-weight:700">0.1 (Strict)</span>
+                    <input type="range" id="setting-temp-range" min="0.1" max="0.7" step="0.05" value="0.25" oninput="$('#setting-temp-val').text(this.value + ' (Low / Factual)')" class="settings-slider" style="flex:1">
+                    <span style="font-size:.75rem; color:var(--text-muted); font-weight:700">0.7 (Creative)</span>
+                  </div>
+                </div>
+
+                <!-- Response Tone / Detail Level -->
+                <div class="settings-item-row" style="flex-direction:column; align-items:flex-start; gap:.75rem; padding-top:1rem; border-top:1px solid var(--border)">
+                  <label class="settings-item-title"><i class="fa-solid fa-comments" style="color:#34d399; margin-right:.4rem"></i> Response Complexity</label>
+                  <p class="settings-item-desc">Choose your preferred answer depth and language complexity</p>
+                  <div class="style-pills-grid" style="display:grid; grid-template-columns:repeat(3,1fr); gap:.6rem; width:100%">
+                    <button class="style-pill active" id="pill-easy-mobile" onclick="setResponseStyle('easy')">
+                      <i class="fa-solid fa-feather"></i>
+                      <span>Easy</span>
+                      <small>Simple terms &amp; clear summaries</small>
+                    </button>
+                    <button class="style-pill" id="pill-balanced-mobile" onclick="setResponseStyle('balanced')">
+                      <i class="fa-solid fa-scale-balanced"></i>
+                      <span>Balanced</span>
+                      <small>Standard clinical &amp; user mix</small>
+                    </button>
+                    <button class="style-pill" id="pill-detailed-mobile" onclick="setResponseStyle('detailed')">
+                      <i class="fa-solid fa-microscope"></i>
+                      <span>Detailed</span>
+                      <small>In-depth medical rationale</small>
+                    </button>
+                  </div>
+                </div>
+
+                <!-- Active Features Badges -->
+                <div class="settings-item-row" style="flex-direction:column; align-items:flex-start; gap:.75rem; padding-top:1rem; border-top:1px solid var(--border)">
+                  <label class="settings-item-title"><i class="fa-solid fa-cubes" style="color:#fbbf24; margin-right:.4rem"></i> Active AI Capabilities</label>
+                  <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(220px, 1fr)); gap:.75rem; width:100%">
+                    <div class="capability-badge">
+                      <div class="cap-left"><i class="fa-solid fa-book-medical" style="color:var(--accent)"></i> <span>RAG Knowledge Base</span></div>
+                      <span class="cap-status active">AASLD / CDC</span>
+                    </div>
+                    <div class="capability-badge">
+                      <div class="cap-left"><i class="fa-solid fa-eye" style="color:#a78bfa"></i> <span>Biopsy PyTorch AI</span></div>
+                      <span class="cap-status active">EfficientNet-B0</span>
+                    </div>
+                    <div class="capability-badge">
+                      <div class="cap-left"><i class="fa-solid fa-file-arrow-up" style="color:#38bdf8"></i> <span>Document Attachments</span></div>
+                      <span class="cap-status active">PDF / TXT / CSV</span>
+                    </div>
+                    <div class="capability-badge">
+                      <div class="cap-left"><i class="fa-solid fa-bolt" style="color:#34d399"></i> <span>LLM Backbone</span></div>
+                      <span class="cap-status active">Gemini 2.5 Flash</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 🔒 Section 3: Data Management & Actions -->
+            <div class="settings-section">
+              <div class="settings-section-header">
+                <i class="fa-solid fa-shield-halved" style="color:var(--danger)"></i>
+                <span>Data Control &amp; Storage</span>
+              </div>
+
+              <div class="settings-card">
+                <div class="settings-item-row">
+                  <div>
+                    <label class="settings-item-title"><i class="fa-solid fa-trash-can" style="color:var(--danger); margin-right:.4rem"></i> Clear Conversation Logs</label>
+                    <p class="settings-item-desc">Permanently wipe all past chat messages from local browser &amp; database memory</p>
+                  </div>
+                  <button class="btn-danger-outline" onclick="clearAllHistory()">
+                    <i class="fa-solid fa-trash"></i> Clear All History
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- ℹ️ Section 4: Clinical Disclaimer & System Info -->
+            <div class="settings-section">
+              <div class="settings-card" style="background:rgba(245,158,11,0.06); border:1px solid rgba(245,158,11,0.25)">
+                <div style="display:flex; gap:1rem; align-items:flex-start">
+                  <div style="width:40px; height:40px; border-radius:10px; background:rgba(245,158,11,0.15); color:#fbbf24; display:flex; align-items:center; justify-content:center; flex-shrink:0; font-size:1.1rem">
+                    <i class="fa-solid fa-circle-info"></i>
+                  </div>
+                  <div>
+                    <strong style="color:#fbbf24; font-size:.9rem; display:block; margin-bottom:4px">Clinical Screening Notice</strong>
+                    <p style="color:var(--text-secondary); font-size:.8rem; line-height:1.5; margin:0">
+                      LiverAI provides automated educational insights and histological screening assistance. AI responses do not replace formal diagnosis, lab testing, or clinical consultation by a certified hepatologist.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      <!-- ==================== TAB 5: PROFILE ==================== -->
+      <div id="tab-profile" class="tab-content">
+        <div class="chat-topbar">
+          <div class="topbar-left">
+            <button class="btn-hamburger" onclick="toggleSidebar()" title="Toggle sidebar">
+              <i class="fa-solid fa-bars"></i>
+            </button>
+            <div class="chat-model-label">
+              <i class="fa-solid fa-circle-user" style="color:var(--accent)"></i>
+              <span>My Profile</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="profile-panel-container">
+
+          <!-- ── Profile Hero Card ─────────────────────────────────── -->
+          <div class="profile-card">
+            <div class="profile-avatar-ring">
+              <div class="profile-avatar-large" id="profile-avatar-large">A</div>
+            </div>
+            <div class="profile-info">
+              <h2 id="profile-display-name">Admin</h2>
+              <p id="profile-display-email" class="profile-email">admin@gmail.com</p>
+              <span class="profile-badge"><i class="fa-solid fa-shield-halved"></i> Verified Member</span>
+            </div>
+          </div>
+
+          <!-- ── Stats Row ──────────────────────────────────────────── -->
+          <div class="profile-stats-row">
+            <div class="stat-card">
+              <div class="stat-icon"><i class="fa-regular fa-message"></i></div>
+              <div class="stat-value" id="stat-messages">0</div>
+              <div class="stat-label">Messages Sent</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-icon"><i class="fa-solid fa-layer-group"></i></div>
+              <div class="stat-value" id="stat-sessions">0</div>
+              <div class="stat-label">Chat Sessions</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-icon"><i class="fa-solid fa-calendar-days"></i></div>
+              <div class="stat-value" id="stat-days">0</div>
+              <div class="stat-label">Days Active</div>
+            </div>
+          </div>
+
+          <!-- ── Medical & Patient Profile ─────────────────────────────── -->
+          <div class="profile-section">
+            <h3 class="profile-section-title"><i class="fa-solid fa-notes-medical" style="color:var(--accent)"></i> Medical &amp; Patient Profile</h3>
+            <div class="profile-form-card">
+              <div style="display:grid; grid-template-columns: 1fr 1fr; gap: .75rem; margin-bottom: .75rem;">
+                <div>
+                  <p class="profile-form-label">Age</p>
+                  <input type="number" id="profile-age" class="profile-input" placeholder="e.g. 45" min="1" max="120" />
+                </div>
+                <div>
+                  <p class="profile-form-label">Gender</p>
+                  <select id="profile-gender" class="profile-input" style="background:var(--bg-input); color:var(--text-primary)">
+                    <option value="">Select Gender</option>
+                    <option value="Male">Male</option>
+                    <option value="Female">Female</option>
+                    <option value="Other">Other</option>
+                    <option value="Prefer not to say">Prefer not to say</option>
+                  </select>
+                </div>
+              </div>
+
+              <p class="profile-form-label">Medical Conditions &amp; Clinical Notes</p>
+              <textarea id="profile-medical-notes" class="profile-input" rows="3" 
+                placeholder="e.g., Diagnosed with NAFLD/MASLD, elevated ALT/AST, Type 2 Diabetes..." 
+                style="resize:vertical; margin-bottom: .8rem; font-family:inherit"></textarea>
+
+              <button class="btn-profile-save" id="btn-save-medical" onclick="saveMedicalProfile()">
+                <i class="fa-solid fa-heart-pulse"></i> Save Medical Profile
+              </button>
+              <p class="profile-form-hint" id="medical-feedback"></p>
+            </div>
+          </div>
+
+          <!-- ── Account Settings ──────────────────────────────────── -->
+          <div class="profile-section">
+            <h3 class="profile-section-title"><i class="fa-solid fa-pen-to-square"></i> Account Settings</h3>
+
+            <!-- Change Name -->
+            <div class="profile-form-card">
+              <p class="profile-form-label">Display Name</p>
+              <div class="profile-input-row">
+                <input type="text" id="profile-new-name" class="profile-input" placeholder="Enter new name" />
+                <button class="btn-profile-save" id="btn-save-name" onclick="saveDisplayName()">
+                  <i class="fa-solid fa-floppy-disk"></i> Save
+                </button>
+              </div>
+              <p class="profile-form-hint" id="name-feedback"></p>
+            </div>
+
+            <!-- Change Password -->
+            <div class="profile-form-card">
+              <p class="profile-form-label">Change Password</p>
+              <input type="password" id="profile-old-password" class="profile-input" placeholder="Current password"
+                style="margin-bottom:.6rem" />
+              <input type="password" id="profile-new-password" class="profile-input"
+                placeholder="New password (min 6 chars)" style="margin-bottom:.6rem" />
+              <input type="password" id="profile-confirm-password" class="profile-input"
+                placeholder="Confirm new password" style="margin-bottom:.8rem" />
+              <button class="btn-profile-save" id="btn-save-password" onclick="savePassword()">
+                <i class="fa-solid fa-lock"></i> Update Password
+              </button>
+              <p class="profile-form-hint" id="password-feedback"></p>
+            </div>
+          </div>
+
+          <!-- ── Danger Zone ─────────────────────────────────────────── -->
+          <div class="profile-section danger-zone">
+            <h3 class="profile-section-title danger"><i class="fa-solid fa-triangle-exclamation"></i> Danger Zone</h3>
+            <div class="danger-card">
+              <div class="danger-row">
+                <div>
+                  <p class="danger-label">Clear all chat history</p>
+                  <p class="danger-sub">Permanently removes all your conversation records.</p>
+                </div>
+                <button class="btn-danger-outline" onclick="clearAllHistory()">
+                  <i class="fa-solid fa-trash"></i> Clear History
+                </button>
+              </div>
+              <div class="danger-row danger-row-top">
+                <div>
+                  <p class="danger-label">Delete my account</p>
+                  <p class="danger-sub">This action is irreversible. All data will be permanently deleted.</p>
+                </div>
+                <button class="btn-danger-solid" onclick="openDeleteModal()">
+                  <i class="fa-solid fa-user-xmark"></i> Delete Account
+                </button>
+              </div>
+            </div>
+          </div>
+
+        </div> <!-- /profile-panel-container -->
+      </div> <!-- /tab-profile -->
+
+      <!-- ==================== TAB 6: ADMIN PANEL ==================== -->
+      <div id="tab-admin" class="tab-content" style="display:none; flex-direction:column; height:100%; overflow:hidden">
+        <!-- Fixed Topbar -->
+        <div class="chat-topbar" style="flex-shrink:0">
+          <div class="topbar-left">
+            <button class="btn-hamburger" onclick="toggleSidebar()" title="Toggle sidebar">
+              <i class="fa-solid fa-bars"></i>
+            </button>
+            <div class="chat-model-label">
+              <i class="fa-solid fa-user-shield" style="color:#a78bfa"></i>
+              <span>System Administration &amp; Management</span>
+            </div>
+          </div>
+          <div class="topbar-actions">
+            <button class="topbar-btn" onclick="loadAdminUsers()" title="Refresh Dashboard">
+              <i class="fa-solid fa-rotate-right"></i> Refresh
+            </button>
+          </div>
+        </div>
+
+        <!-- Scrollable content area -->
+        <div style="flex:1; overflow-y:auto; overflow-x:hidden; padding:1.25rem">
+          <div style="max-width:980px; margin:0 auto">
+
+            <!-- Admin Sub-Navigation -->
+            <div class="admin-tab-nav">
+              <button class="admin-tab-btn active" id="admin-subtab-btn-users" onclick="switchAdminSubTab('users')">
+                <i class="fa-solid fa-users-gear"></i> User Management
+              </button>
+              <button class="admin-tab-btn" id="admin-subtab-btn-audit" onclick="switchAdminSubTab('audit')">
+                <i class="fa-solid fa-comments"></i> System Chat Audit
+              </button>
+              <button class="admin-tab-btn" id="admin-subtab-btn-diagnostics" onclick="switchAdminSubTab('diagnostics')">
+                <i class="fa-solid fa-gauge-high"></i> ML Telemetry &amp; System Health
+              </button>
+            </div>
+
+            <!-- Stats Overview Cards -->
+            <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(150px,1fr)); gap:.75rem; margin-bottom:1.25rem">
+              <div class="stat-card" style="padding:.9rem">
+                <div class="stat-icon" style="color:#a78bfa; font-size:1.1rem"><i class="fa-solid fa-users"></i></div>
+                <div class="stat-value" id="admin-stat-total-users" style="font-size:1.6rem">—</div>
+                <div class="stat-label">Total Users</div>
+              </div>
+              <div class="stat-card" style="padding:.9rem">
+                <div class="stat-icon" style="color:#38bdf8; font-size:1.1rem"><i class="fa-solid fa-comments"></i></div>
+                <div class="stat-value" id="admin-stat-total-msgs" style="font-size:1.6rem">—</div>
+                <div class="stat-label">System Messages</div>
+              </div>
+              <div class="stat-card" style="padding:.9rem">
+                <div class="stat-icon" style="color:#34d399; font-size:1.1rem"><i class="fa-solid fa-user-check"></i></div>
+                <div class="stat-value" id="admin-stat-active-users" style="font-size:1.6rem">—</div>
+                <div class="stat-label">Active Users</div>
+              </div>
+              <div class="stat-card" style="padding:.9rem">
+                <div class="stat-icon" style="color:#fbbf24; font-size:1.1rem"><i class="fa-solid fa-user-plus"></i></div>
+                <div class="stat-value" id="admin-stat-new-today" style="font-size:1.6rem">—</div>
+                <div class="stat-label">New Today</div>
+              </div>
+              <div class="stat-card" style="padding:.9rem">
+                <div class="stat-icon" style="color:#f87171; font-size:1.1rem"><i class="fa-solid fa-bolt-lightning"></i></div>
+                <div class="stat-value" id="admin-stat-msgs-today" style="font-size:1.6rem">—</div>
+                <div class="stat-label">Messages Today</div>
+              </div>
+            </div>
+
+            <!-- VIEW 1: USER MANAGEMENT -->
+            <div id="admin-subtab-view-users" class="admin-subtab-view">
+              <div style="background:var(--bg-secondary); border:1px solid var(--border); border-radius:var(--radius); overflow:hidden">
+                <div style="padding:.8rem 1rem; border-bottom:1px solid var(--border); display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:.75rem">
+                  <div>
+                    <strong style="font-size:.9rem; color:var(--text-primary)"><i class="fa-solid fa-users" style="color:#a78bfa; margin-right:.4rem"></i> User Database &amp; Access Controls</strong>
+                    <span style="font-size:.75rem; color:var(--text-muted); margin-left:.5rem" id="admin-user-count-label">Loading...</span>
+                  </div>
+                  <div style="position:relative; width:240px">
+                    <input type="text" id="admin-user-search" placeholder="Search user or email..." oninput="filterAdminUserList()" style="width:100%; background:var(--bg-primary); border:1px solid var(--border); color:var(--text-primary); padding:.45rem .8rem .45rem 2.2rem; border-radius:10px; font-size:.8rem; outline:none;" />
+                    <i class="fa-solid fa-magnifying-glass" style="position:absolute; left:.8rem; top:50%; transform:translateY(-50%); color:var(--text-muted); font-size:.78rem"></i>
+                  </div>
+                </div>
+                <div style="overflow-x:auto">
+                  <table style="width:100%; border-collapse:collapse; text-align:left; font-size:.85rem">
+                    <thead>
+                      <tr style="background:rgba(255,255,255,.02); color:var(--text-secondary); font-size:.72rem; text-transform:uppercase; letter-spacing:.04em; border-bottom:1px solid var(--border)">
+                        <th style="padding:.65rem 1rem">User Details</th>
+                        <th style="padding:.65rem 1rem">Email Address</th>
+                        <th style="padding:.65rem 1rem">Role</th>
+                        <th style="padding:.65rem 1rem">Joined Date</th>
+                        <th style="padding:.65rem 1rem; text-align:center">Chats</th>
+                        <th style="padding:.65rem 1rem; text-align:right">Management Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody id="admin-users-tbody">
+                      <tr>
+                        <td colspan="6" style="padding:2rem; text-align:center; color:var(--text-muted)">
+                          <i class="fa-solid fa-spinner fa-spin" style="margin-right:.5rem"></i> Loading database...
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+
+            <!-- VIEW 2: AUDIT & LIVE STREAM -->
+            <div id="admin-subtab-view-audit" class="admin-subtab-view" style="display:none">
+              <div style="background:var(--bg-secondary); border:1px solid var(--border); border-radius:var(--radius); overflow:hidden">
+                <div style="padding:.8rem 1rem; border-bottom:1px solid var(--border); display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:.5rem">
+                  <strong style="font-size:.88rem; color:var(--text-primary)">
+                    <i class="fa-solid fa-comments" style="color:#38bdf8; margin-right:.4rem"></i> Live System Chat Stream (All Users)
+                  </strong>
+                  <div style="display:flex; gap:.5rem; align-items:center">
+                    <span style="font-size:.72rem; color:var(--text-muted)" id="admin-msg-count-label">Loading messages...</span>
+                    <button type="button" class="sidebar-nav-btn" onclick="openPurgeHistoryModal()" style="font-size:.75rem; padding:4px 10px; width:auto; background:rgba(248,113,113,.12); color:#f87171; border:1px solid rgba(248,113,113,.25)">
+                      <i class="fa-solid fa-trash-can"></i> Purge Logs
+                    </button>
+                    <button type="button" class="sidebar-nav-btn" onclick="loadAllSystemMessages()" style="font-size:.75rem; padding:4px 10px; width:auto; background:rgba(56,189,248,.12); color:#38bdf8; border:1px solid rgba(56,189,248,.25)">
+                      <i class="fa-solid fa-rotate-right"></i> Refresh
+                    </button>
+                  </div>
+                </div>
+                <div style="max-height:460px; overflow-y:auto; padding:1rem; display:flex; flex-direction:column; gap:.6rem" id="admin-messages-stream-body">
+                  <div style="text-align:center; padding:2rem; color:var(--text-muted)">
+                    <i class="fa-solid fa-spinner fa-spin" style="margin-right:.5rem"></i> Fetching all user chat messages...
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- VIEW 3: ML TELEMETRY & SYSTEM HEALTH -->
+            <div id="admin-subtab-view-diagnostics" class="admin-subtab-view" style="display:none">
+              <div id="admin-diag-status-body">
+                <div style="text-align:center; padding:2rem; color:var(--text-muted)">
+                  <i class="fa-solid fa-spinner fa-spin" style="margin-right:.5rem"></i> Loading diagnostics...
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div> <!-- /tab-admin -->
+
+    </div> <!-- /chat-view -->
+
+    <!-- ══════════ ADMIN EDIT USER MODAL ══════════ -->
+    <div class="modal-overlay" id="admin-edit-user-modal" style="display:none">
+      <div class="modal-box" style="max-width:500px">
+        <div class="modal-header">
+          <span class="modal-title" style="color:#a78bfa">
+            <i class="fa-solid fa-user-pen" style="margin-right:.4rem"></i> Edit User Profile &amp; Role
+          </span>
+          <button class="modal-close" onclick="closeEditUserModal()"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <div class="modal-body" style="display:flex; flex-direction:column; gap:.85rem">
+          <div>
+            <label class="profile-form-label">Username</label>
+            <input type="text" id="admin-edit-username" class="profile-input" style="width:100%" />
+          </div>
+          <div>
+            <label class="profile-form-label">Email Address</label>
+            <input type="email" id="admin-edit-email" class="profile-input" style="width:100%" />
+          </div>
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:.75rem">
+            <div>
+              <label class="profile-form-label">Age</label>
+              <input type="number" id="admin-edit-age" class="profile-input" style="width:100%" />
+            </div>
+            <div>
+              <label class="profile-form-label">Gender</label>
+              <select id="admin-edit-gender" class="profile-input" style="width:100%; background:var(--bg-input); color:var(--text-primary)">
+                <option value="">Not Specified</option>
+                <option value="Male">Male</option>
+                <option value="Female">Female</option>
+                <option value="Other">Other</option>
+              </select>
+            </div>
+          </div>
+          <div>
+            <label class="profile-form-label">Clinical Notes &amp; History</label>
+            <textarea id="admin-edit-notes" class="profile-input" rows="2" style="width:100%; resize:vertical"></textarea>
+          </div>
+          <div style="display:flex; align-items:center; gap:.6rem; padding:.5rem 0">
+            <input type="checkbox" id="admin-edit-isadmin" style="width:18px; height:18px; cursor:pointer" />
+            <label for="admin-edit-isadmin" style="font-size:.85rem; font-weight:600; color:var(--text-primary); cursor:pointer">
+              Grant Full Administrator Privileges
+            </label>
+          </div>
+          <p id="admin-edit-feedback" style="font-size:.78rem; margin:0"></p>
+          <div style="display:flex; justify-content:flex-end; gap:.6rem; margin-top:.5rem">
+            <button type="button" class="topbar-btn" onclick="closeEditUserModal()">Cancel</button>
+            <button type="button" class="btn-profile-save" onclick="submitAdminEditUser()">
+              <i class="fa-solid fa-floppy-disk"></i> Save Changes
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════ ADMIN RESET PASSWORD MODAL ══════════ -->
+    <div class="modal-overlay" id="admin-reset-pw-modal" style="display:none">
+      <div class="modal-box" style="max-width:440px">
+        <div class="modal-header">
+          <span class="modal-title" style="color:#fbbf24">
+            <i class="fa-solid fa-key" style="margin-right:.4rem"></i> Reset Password for <span id="admin-reset-pw-target">...</span>
+          </span>
+          <button class="modal-close" onclick="closeResetPasswordModal()"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <div class="modal-body" style="display:flex; flex-direction:column; gap:.85rem">
+          <p style="font-size:.82rem; color:var(--text-secondary); margin:0">
+            Enter a new password for this user. They will be able to log in with this new credential immediately.
+          </p>
+          <div>
+            <label class="profile-form-label">New Password (min 6 characters)</label>
+            <input type="password" id="admin-reset-new-pw" class="profile-input" placeholder="Enter new password" style="width:100%" />
+          </div>
+          <p id="admin-reset-feedback" style="font-size:.78rem; margin:0"></p>
+          <div style="display:flex; justify-content:flex-end; gap:.6rem; margin-top:.5rem">
+            <button type="button" class="topbar-btn" onclick="closeResetPasswordModal()">Cancel</button>
+            <button type="button" class="btn-profile-save" style="background:#fbbf24; color:#000" onclick="submitAdminResetPassword()">
+              <i class="fa-solid fa-check"></i> Set New Password
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════ ADMIN PURGE HISTORY MODAL ══════════ -->
+    <div class="modal-overlay" id="admin-purge-modal" style="display:none">
+      <div class="modal-box" style="max-width:440px">
+        <div class="modal-header">
+          <span class="modal-title" style="color:var(--danger)">
+            <i class="fa-solid fa-trash-can" style="margin-right:.4rem"></i> Purge System Chat Logs
+          </span>
+          <button class="modal-close" onclick="closePurgeHistoryModal()"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <div class="modal-body" style="display:flex; flex-direction:column; gap:.85rem">
+          <p style="font-size:.82rem; color:var(--text-secondary); margin:0">
+            Select the age of chat messages to permanently purge from the system database.
+          </p>
+          <div>
+            <label class="profile-form-label">Purge Timeframe</label>
+            <select id="admin-purge-timeframe" class="profile-input" style="width:100%; background:var(--bg-input); color:var(--text-primary)">
+              <option value="90">Older than 90 days</option>
+              <option value="30">Older than 30 days</option>
+              <option value="7">Older than 7 days</option>
+              <option value="0">All Chat Messages (Complete Wipe)</option>
+            </select>
+          </div>
+          <div style="display:flex; justify-content:flex-end; gap:.6rem; margin-top:.5rem">
+            <button type="button" class="topbar-btn" onclick="closePurgeHistoryModal()">Cancel</button>
+            <button type="button" class="btn-danger-solid" onclick="submitPurgeHistory()">
+              <i class="fa-solid fa-trash"></i> Execute Purge
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════ ADMIN USER HISTORY INSPECTOR MODAL ══════════ -->
+    <div class="modal-overlay" id="admin-history-modal" style="display:none">
+      <div class="modal-box" style="max-width:680px; max-height:85vh; display:flex; flex-direction:column">
+        <div class="modal-header">
+          <span class="modal-title" style="color:#a78bfa">
+            <i class="fa-solid fa-clock-rotate-left" style="margin-right:.4rem"></i> User Chat Audit Trail: <span
+              id="admin-modal-username">...</span>
+          </span>
+          <button class="modal-close" onclick="closeAdminHistoryModal()"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <div style="padding:.6rem 1rem; border-bottom:1px solid var(--border); background:var(--bg-primary)">
+          <div style="position:relative; width:100%">
+            <input type="text" id="admin-modal-search" placeholder="Filter audit trail by keyword, user or email..." oninput="filterModalAuditHistory()" style="width:100%; background:var(--bg-secondary); border:1px solid var(--border); color:var(--text-primary); padding:.45rem .8rem .45rem 2.2rem; border-radius:8px; font-size:.8rem; outline:none;" />
+            <i class="fa-solid fa-magnifying-glass" style="position:absolute; left:.8rem; top:50%; transform:translateY(-50%); color:var(--text-muted); font-size:.78rem"></i>
+          </div>
+        </div>
+        <div class="modal-body"
+          style="flex:1; overflow-y:auto; padding:1rem; display:flex; flex-direction:column; gap:.75rem"
+          id="admin-history-modal-body">
+          <div style="text-align:center; padding:2rem; color:var(--text-muted)">Loading user history...</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════ DELETE ACCOUNT CONFIRMATION MODAL ══════════ -->
+    <div class="modal-overlay" id="delete-account-modal" style="display:none">
+      <div class="modal-box" style="max-width:400px">
+        <div class="modal-header">
+          <span class="modal-title" style="color:var(--danger)">
+            <i class="fa-solid fa-triangle-exclamation" style="margin-right:.4rem"></i> Delete Account
+          </span>
+          <button class="modal-close" onclick="closeDeleteModal()"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <div class="modal-body" style="display:flex;flex-direction:column;gap:1rem">
+          <p style="color:var(--text-secondary);font-size:.9rem;line-height:1.5">
+            This will <strong style="color:var(--danger)">permanently delete</strong> your account and all chat history.
+            This cannot be undone.
+          </p>
+          <div class="login-field">
+            <label for="delete-confirm-email">Type your email to confirm</label>
+            <input type="email" id="delete-confirm-email" class="profile-input" placeholder="your@email.com" />
+          </div>
+          <button class="btn-danger-solid" style="width:100%" id="btn-confirm-delete" onclick="confirmDeleteAccount()">
+            <i class="fa-solid fa-user-xmark"></i> Yes, permanently delete
+          </button>
+        </div>
+      </div>
+    </div>
+
+  </div> <!-- /app-container -->
+
+
+  <script src="/static/js/main.js?v=14.0"></script>
+  <script src="/static/js/theme.js?v=14.0"></script>
+  <script src="/static/js/auth.js?v=14.0"></script>
+  <script src="/static/js/chat.js?v=14.0"></script>
+  <script src="/static/js/profile.js?v=14.0"></script>
+  <script src="/static/js/admin.js?v=14.0"></script>
+
+</body>
+
+</html>

@@ -1,0 +1,199 @@
+{
+    "intents": [
+        {
+            "tag": "jaundice_symptom",
+            "patterns": [
+                "yellow eyes",
+                "yellow skin",
+                "skin turning yellow",
+                "jaundice symptoms"
+            ],
+            "responses": [
+                "Yellowing of the eyes or skin (jaundice) indicates a buildup of bilirubin, which often signals liver dysfunction."
+            ],
+            "follow_up_questions": [
+                "Have you noticed your urine becoming darker (like tea or cola)?",
+                "Are you experiencing any itching (pruritus) along with the yellowing?",
+                "Is the yellowing sudden, or has it developed over several weeks?"
+            ]
+        },
+        {
+            "tag": "abdominal_symptom",
+            "patterns": [
+                "pain in upper right stomach",
+                "swollen belly",
+                "ascites",
+                "liver pain"
+            ],
+            "responses": [
+                "Pain or swelling in the upper right abdomen can indicate liver inflammation or fluid buildup known as ascites."
+            ],
+            "follow_up_questions": [
+                "Is the pain a dull ache or sharp/stabbing?",
+                "Have you noticed a rapid increase in your waist size recently?",
+                "Does the pain radiate to your right shoulder or back?"
+            ]
+        },
+        {
+            "tag": "emergency_warning",
+            "patterns": [
+                "vomiting blood",
+                "black stools",
+                "severe confusion",
+                "bloody vomit"
+            ],
+            "responses": [
+                "CRITICAL ALERT: These symptoms suggest internal bleeding (variceal bleed) or hepatic encephalopathy."
+            ],
+            "follow_up_questions": [
+                "Please seek emergency medical care immediately. Are you currently alone or with someone who can help?"
+            ]
+        },
+        {
+            "tag": "late_stage_liver_symptoms_overview",
+            "patterns": [
+                "signs of advanced liver disease",
+                "late stage liver symptoms",
+                "end stage liver disease signs",
+                "symptoms of serious liver disease",
+                "severe liver disease symptoms",
+                "what are the signs of later stage liver disease",
+                "advanced cirrhosis symptoms",
+                "brown urine",
+                "dark pee liver disease",
+                "cola colored urine",
+                "tea colored urine",
+                "why is my urine dark",
+                "dark colored pee liver",
+                "orange urine liver",
+                "amber urine liver disease"
+            ],
+            "responses": [
+                "Dark or tea/cola-colored urine is a classic sign of liver disease. It occurs when excess bilirubin (a yellow pigment from red blood cell breakdown) that the liver fails to process properly spills into the urine. It is commonly seen in viral hepatitis (especially hepatitis A and E), bile duct obstruction, cirrhosis, and acute liver injury. Dark urine combined with pale stools and jaundice strongly suggests cholestasis (bile flow obstruction). Please see a doctor promptly for liver function tests and imaging."
+            ]
+        },
+        {
+            "tag": "pale_stool_liver",
+            "patterns": [
+                "pale stool liver",
+                "clay colored stool",
+                "white stool liver disease",
+                "light colored poop",
+                "grey stool liver",
+                "light stool color",
+                "stool color liver disease",
+                "acholic stool",
+                "pale stool and dark urine"
+            ],
+            "responses": [
+                "Pale, clay-colored, or grey stools (acholic stools) occur when bile is prevented from reaching the intestines. Bile normally gives stools their brown color, so when bile flow is blocked (cholestasis), stools lose their color. This is a red-flag symptom indicating bile duct obstruction (from gallstones, tumor, or stricture), primary biliary cholangitis (PBC), primary sclerosing cholangitis (PSC), or severe cirrhosis. Pale stools together with dark urine and jaundice form the classic triad of cholestasis. Requires urgent medical evaluation with liver tests, ultrasound, and MRCP/ERCP."
+            ]
+        },
+        {
+            "tag": "fat_digestion_liver",
+            "patterns": [
+                "digestive difficulties liver",
+                "can't digest fat liver",
+                "fat intolerance liver disease",
+                "liver and digestion",
+                "bloating after fatty food liver",
+                "diarrhea after fat liver",
+                "nausea fatty food liver",
+                "steatorrhea liver",
+                "oily stool liver disease"
+            ],
+            "responses": [
+                "Difficulty digesting fats is common in liver and bile duct disease. The liver produces bile, which emulsifies dietary fats for absorption. When bile production or flow is impaired (as in cirrhosis, cholestasis, or bile duct disease), fat digestion suffers, leading to:\n\n- Bloating and fullness after fatty meals\n- Diarrhea or loose, oily, foul-smelling stools (steatorrhea)\n- Nausea after eating\n- Weight loss and fat-soluble vitamin deficiencies (vitamins A, D, E, K)\n\nManagement includes a low-fat diet, fat-soluble vitamin supplementation, and treating the underlying liver condition. A dietitian specializing in liver disease can help create an appropriate nutrition plan."
+            ]
+        },
+        {
+            "tag": "muscle_wasting_liver",
+            "patterns": [
+                "muscle loss liver disease",
+                "weight loss liver disease",
+                "muscle wasting liver",
+                "sarcopenia liver",
+                "losing weight liver disease",
+                "thin liver disease",
+                "malnutrition liver",
+                "liver and muscle loss",
+                "weakness liver disease"
+            ],
+            "responses": [
+                "Weight and muscle loss (sarcopenia/cachexia) is very common in advanced liver disease and cirrhosis, affecting up to 70% of patients. It occurs because:\n\n- The liver's impaired protein synthesis reduces muscle repair\n- Malabsorption leads to nutritional deficiencies\n- Hormonal imbalances (low testosterone, insulin resistance)\n- Increased energy expenditure from chronic inflammation\n- Reduced appetite from ascites, encephalopathy, and medications\n\nSarcopenia worsens prognosis and increases complications. Management: High-protein diet (1.2-1.5g/kg/day), small frequent meals, branched-chain amino acid (BCAA) supplementation, and light resistance exercise as tolerated. Never fast for extended periods with advanced liver disease."
+            ]
+        },
+        {
+            "tag": "fetor_hepaticus",
+            "patterns": [
+                "musty breath liver",
+                "fetor hepaticus",
+                "liver breath smell",
+                "sweet breath liver",
+                "breath smell liver disease",
+                "pruritus liver",
+                "skin itching liver",
+                "cholestatic itch",
+                "liver itch no rash",
+                "itching whole body liver",
+                "itchy skin no rash liver",
+                "liver disease skin itching",
+                "bile salt itching"
+            ],
+            "responses": [
+                "Pruritus (intense itching without a visible rash) is a common and distressing symptom in cholestatic liver diseases. Causes include primary biliary cholangitis (PBC), primary sclerosing cholangitis (PSC), intrahepatic cholestasis of pregnancy, and bile duct obstruction. The itch is caused by lysophosphatidic acid (LPA) and bile salts accumulating under the skin. Treatment options include:\n\n- **First-line**: Cholestyramine (bile acid sequestrant)\n- **Second-line**: Rifampicin or naltrexone\n- **Advanced**: Sertraline, UDCA, or plasmapheresis\n- **Soothing measures**: Cool showers, loose cotton clothing, antihistamines for mild cases\n\nAlways consult a hepatologist for proper evaluation."
+            ]
+        }
+    ],
+    "liver_resource_database": {
+        "patient_friendly": [
+            {
+                "title": "Living with Cirrhosis: A Patient Guide",
+                "author_org": "American Liver Foundation",
+                "publication_year": 2025,
+                "status": "Patient Gold Standard",
+                "category": "Education",
+                "url": "https://liverfoundation.org/resource-center/educational-materials/",
+                "description": "Comprehensive guide on lifestyle adjustments, diet, and managing symptoms."
+            },
+            {
+                "title": "Fatty Liver Disease: Reversing the Trend",
+                "author_org": "Global Liver Institute",
+                "publication_year": 2026,
+                "status": "New Release",
+                "category": "Lifestyle/Prevention",
+                "url": "https://globalliver.org/fatty-liver-resources/",
+                "description": "Updated 2026 protocols for managing NAFLD/MASLD through nutrition."
+            }
+        ],
+        "medical_academic": [
+            {
+                "title": "Chronic Liver Disease and Fibrosis Staging",
+                "author_org": "StatPearls - NCBI",
+                "publication_year": 2024,
+                "status": "Clinical Reference",
+                "category": "Pathology",
+                "url": "https://www.ncbi.nlm.nih.gov/books/NBK554597/",
+                "description": "Deep dive into METAVIR scoring (F0-F4) and biochemical marker interpretation."
+            },
+            {
+                "title": "Advances in AI-Enhanced Liver Ultrasound",
+                "author_org": "European Society of Radiology (ESR)",
+                "publication_year": 2025,
+                "status": "Technical Leader",
+                "category": "Radiology",
+                "url": "https://www.myesr.org/radiology-liver-imaging-2025",
+                "description": "Visual guide on using AI-assisted ultrasound for early cirrhosis detection."
+            },
+            {
+                "title": "Hepatology 2026: Modern Pharmacotherapy",
+                "author_org": "AASLD",
+                "publication_year": 2026,
+                "status": "Gold Standard",
+                "category": "Pharmacology",
+                "url": "https://www.aasld.org/practice-guidelines",
+                "description": "The latest clinical practice guidelines for viral hepatitis and autoimmune liver disease."
+            }
+        ]
+    }
+}

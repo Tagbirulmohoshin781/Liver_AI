@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#10a37f" />
+      <stop offset="100%" stop-color="#7c3aed" />
+    </linearGradient>
+    <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="8" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
+  </defs>
+  <!-- Sleek dark rounded background -->
+  <rect width="512" height="512" rx="128" fill="#171717" />
+  
+  <!-- Outer subtle glowing ring -->
+  <circle cx="256" cy="256" r="220" fill="none" stroke="url(#grad)" stroke-width="8" opacity="0.15" />
+  <circle cx="256" cy="256" r="200" fill="none" stroke="url(#grad)" stroke-width="2" opacity="0.3" />
+
+  <!-- Heart pulse symbol with gradient & glow -->
+  <path d="M100 256h60l30-90 40 180 40-240 40 180 30-70 20 40h52" 
+        fill="none" 
+        stroke="url(#grad)" 
+        stroke-width="28" 
+        stroke-linecap="round" 
+        stroke-linejoin="round"
+        filter="url(#glow)" />
+</svg>

@@ -1,0 +1,29 @@
+{
+  "features": [
+    "age",
+    "total_bilirubin",
+    "direct_bilirubin",
+    "alkaline_phosphotase",
+    "sgpt",
+    "sgot",
+    "total_proteins",
+    "albumin",
+    "ag_ratio",
+    "gender"
+  ],
+  "target": "result",
+  "label_map": {
+    "0": "Liver Disease",
+    "1": "No Disease"
+  },
+  "gender_map": {
+    "0": "Female",
+    "1": "Male"
+  },
+  "n_features": 10,
+  "train_rows": 13557,
+  "val_rows": 2905,
+  "test_rows": 2906,
+  "scaler_path": "F:\\Liver Disease Detectioon system 2\\models\\lpd_scaler.pkl",
+  "imputer_path": "F:\\Liver Disease Detectioon system 2\\models\\lpd_imputer.pkl"
+}

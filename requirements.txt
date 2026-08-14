@@ -1,0 +1,44 @@
+# ── Core Web Framework ────────────────────────────────────────────────────────
+flask==3.1.1
+python-dotenv==1.1.0
+
+# ── LangChain + Pinecone RAG Pipeline ────────────────────────────────────────
+langchain==0.3.26
+langchain-community==0.3.26
+langchain-pinecone
+langchain-huggingface
+langchain-google-genai
+langchain-core
+
+# ── Pinecone & Google AI ──────────────────────────────────────────────────────
+pinecone
+google-generativeai
+
+# ── Embeddings & Transformers ─────────────────────────────────────────────────
+sentence-transformers==4.1.0
+huggingface_hub
+transformers
+
+# ── Machine Learning & Data Science ──────────────────────────────────────────
+numpy
+pandas
+scikit-learn
+joblib
+
+# ── Deep Learning (Vision Model) ──────────────────────────────────────────────
+torch
+torchvision
+Pillow
+
+# ── Document Loaders ──────────────────────────────────────────────────────────
+pypdf==5.6.1
+openpyxl
+xlrd
+beautifulsoup4
+lxml
+
+# ── Firebase Auth ─────────────────────────────────────────────────────────────
+firebase-admin
+
+# ── Database (optional MySQL support) ────────────────────────────────────────
+pymysql

@@ -1,0 +1,238 @@
+/* =============================================================================
+   static/css/sidebar.css — Sidebar Navigation, Recent Chats & User Badge
+   ============================================================================= */
+
+.sidebar-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, .5);
+  z-index: 100;
+  backdrop-filter: blur(2px);
+}
+
+.sidebar-overlay.open {
+  display: block;
+}
+
+.sidebar {
+  width: var(--sidebar-w);
+  background: var(--bg-sidebar);
+  display: flex;
+  flex-direction: column;
+  padding: .75rem .5rem;
+  border-right: 1px solid var(--border);
+  flex-shrink: 0;
+  overflow: hidden;
+  transition: transform .25s ease;
+}
+
+@media (max-width: 680px) {
+  .sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    z-index: 110;
+    transform: translateX(-100%);
+  }
+
+  .sidebar.mobile-open {
+    transform: translateX(0);
+  }
+}
+
+.btn-new-chat {
+  display: flex;
+  align-items: center;
+  gap: .6rem;
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--text-primary);
+  padding: .6rem .9rem;
+  border-radius: 10px;
+  font-size: .875rem;
+  font-family: inherit;
+  cursor: pointer;
+  transition: background .15s;
+  width: 100%;
+  margin-bottom: 1rem;
+}
+
+.btn-new-chat:hover {
+  background: var(--bg-hover);
+}
+
+.sidebar-label {
+  font-size: .7rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  padding: .3rem .5rem;
+}
+
+.sidebar-list {
+  list-style: none !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  overflow-y: auto;
+  flex: 1;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border) transparent;
+}
+
+.sidebar-list::-webkit-scrollbar {
+  width: 4px;
+}
+
+.sidebar-list::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 4px;
+}
+
+.sidebar-list li {
+  display: flex;
+  align-items: center;
+  gap: .55rem;
+  padding: .55rem .7rem;
+  border-radius: 8px;
+  font-size: .84rem;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: background .15s, color .15s;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.sidebar-list li:hover {
+  background: var(--bg-hover);
+  color: var(--text-primary);
+}
+
+.sidebar-list li i {
+  flex-shrink: 0;
+  font-size: .8rem;
+}
+
+.sidebar-spacer {
+  flex-shrink: 0;
+  height: .75rem;
+}
+
+.sidebar-list li.history-item {
+  display: flex;
+  align-items: center;
+  gap: .55rem;
+  cursor: pointer;
+  padding: .5rem .75rem;
+  border-radius: 8px;
+  font-size: .82rem;
+  color: var(--text-secondary);
+  transition: background .15s;
+  position: relative;
+}
+
+.sidebar-list li.history-item:hover {
+  background: var(--bg-hover);
+  color: var(--text-primary);
+}
+
+.sidebar-list li.history-item.active-session {
+  background: var(--bg-hover);
+  color: var(--text-primary);
+}
+
+.history-title {
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.history-delete {
+  display: none;
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  font-size: .75rem;
+  padding: 2px 4px;
+  border-radius: 4px;
+  flex-shrink: 0;
+}
+
+.history-delete:hover {
+  color: #f87171;
+  background: rgba(239, 68, 68, .15);
+}
+
+.sidebar-list li.history-item:hover .history-delete {
+  display: flex;
+}
+
+.history-empty {
+  color: var(--text-muted);
+  font-size: .8rem;
+  padding: .5rem .75rem;
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+}
+
+.sidebar-bottom {
+  flex-shrink: 0;
+}
+
+.sidebar-user {
+  display: flex;
+  align-items: center;
+  gap: .7rem;
+  padding: .6rem .7rem;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background .15s;
+}
+
+.sidebar-user:hover {
+  background: var(--bg-hover);
+}
+
+.user-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--accent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: .8rem;
+  font-weight: 700;
+  color: #fff;
+  flex-shrink: 0;
+}
+
+.user-name {
+  font-size: .875rem;
+  font-weight: 500;
+  flex: 1;
+}
+
+.btn-logout-icon,
+.btn-settings-icon {
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  font-size: .85rem;
+  transition: color .15s;
+}
+
+.btn-logout-icon:hover,
+.btn-settings-icon:hover {
+  color: var(--text-primary);
+}

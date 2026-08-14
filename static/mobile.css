@@ -1,0 +1,547 @@
+/* ==========================================================================
+   LIVERAI CHATGPT-STYLE WEB APPLICATION DESIGN SYSTEM
+   ========================================================================== */
+
+html, body {
+  /* iOS Safari: use dynamic viewport height so content fills screen even
+     when the address bar is visible or hidden */
+  height: 100% !important;
+  min-height: -webkit-fill-available !important; /* iOS 15 fallback */
+  width: 100% !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  overflow: hidden !important;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  /* Prevent font size inflation on orientation change (iOS) */
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+#app-container {
+  width: 100vw !important;
+  /* Use dvh (dynamic viewport height) for iOS Safari address-bar compatibility.
+     Falls back to 100vh on older browsers. */
+  height: 100dvh !important;
+  height: 100vh !important; /* fallback for browsers without dvh support */
+  display: flex !important;
+  flex-direction: column !important;
+  overflow: hidden !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  background: var(--bg-primary);
+}
+
+/* Remove fake simulator elements */
+.phone-notch, .phone-status-bar, .phone-home-indicator, .fullscreen-toggle-btn {
+  display: none !important;
+}
+
+/* --- CHAT VIEW CONTAINER --- */
+#chat-view {
+  display: flex !important;
+  flex-direction: row !important;
+  width: 100% !important;
+  height: 100% !important;
+  overflow: hidden !important;
+  position: relative !important;
+}
+
+/* --- SIDEBAR DRAWER (CHATGPT STYLE) --- */
+.sidebar {
+  width: var(--sidebar-w, 260px);
+  background: var(--bg-sidebar);
+  border-right: 1px solid var(--border);
+  display: flex !important;
+  flex-direction: column !important;
+  padding: 0.75rem 0.6rem;
+  flex-shrink: 0 !important;
+  height: 100% !important;
+  z-index: 1000;
+  transition: transform 0.25s ease, margin-left 0.25s ease;
+}
+
+/* Mobile Sidebar Drawer Overlay */
+@media (max-width: 768px) {
+  .sidebar {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    height: 100% !important;
+    height: 100dvh !important; /* iOS dynamic viewport */
+    z-index: 1001 !important;
+    transform: translateX(-100%);
+    box-shadow: 4px 0 24px rgba(0, 0, 0, 0.4);
+  }
+  .sidebar.mobile-open {
+    transform: translateX(0) !important;
+  }
+  .sidebar-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.5);
+    -webkit-backdrop-filter: blur(2px); /* Safari / iOS */
+    backdrop-filter: blur(2px);
+    z-index: 1000;
+  }
+  .sidebar-overlay.open {
+    display: block !important;
+  }
+}
+
+.btn-new-chat {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--text-primary);
+  padding: 0.65rem 0.9rem;
+  border-radius: 10px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  font-family: inherit;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+  width: 100%;
+  margin-bottom: 0.85rem;
+  /* iOS: remove 300ms tap delay */
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+.btn-new-chat:hover {
+  background: var(--bg-hover);
+  border-color: var(--accent);
+}
+
+.sidebar-nav-section {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-bottom: 1rem;
+}
+.sidebar-nav-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.55rem 0.75rem;
+  border-radius: 8px;
+  font-size: 0.84rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+  background: transparent;
+  border: none;
+  width: 100%;
+  text-align: left;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  font-family: inherit;
+  /* iOS: remove 300ms tap delay */
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+.sidebar-nav-btn:hover, .sidebar-nav-btn.active {
+  background: var(--bg-hover);
+  color: var(--text-primary);
+}
+.sidebar-nav-btn i {
+  font-size: 0.9rem;
+  color: var(--accent);
+  width: 18px;
+  text-align: center;
+}
+
+.sidebar-label {
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  padding: 0.3rem 0.5rem;
+  margin-top: 0.25rem;
+}
+
+.sidebar-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  overflow-y: auto;
+  flex: 1;
+  padding: 0;
+  margin: 0;
+}
+.sidebar-list li {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  padding: 0.55rem 0.7rem;
+  border-radius: 8px;
+  font-size: 0.84rem;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.sidebar-list li:hover {
+  background: var(--bg-hover);
+  color: var(--text-primary);
+}
+.sidebar-list li.active-session {
+  background: var(--bg-hover);
+  color: var(--text-primary);
+}
+
+.sidebar-spacer {
+  flex-shrink: 0;
+  height: 0.75rem;
+}
+.sidebar-bottom {
+  flex-shrink: 0;
+  border-top: 1px solid var(--border);
+  padding-top: 0.6rem;
+}
+.sidebar-user {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  padding: 0.6rem 0.7rem;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.sidebar-user:hover {
+  background: var(--bg-hover);
+}
+
+/* --- MAIN STAGE (CHATGPT CENTERED CONTENT) --- */
+.chat-main {
+  flex: 1 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  height: 100% !important;
+  width: 100% !important;
+  overflow: hidden !important;
+  position: relative !important;
+  background: var(--bg-primary);
+}
+
+/* Header Topbar */
+.chat-topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.7rem 1.25rem;
+  border-bottom: 1px solid var(--border);
+  background: var(--bg-primary);
+  flex-shrink: 0;
+  gap: 0.75rem;
+  min-height: 54px;
+}
+.topbar-left {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+.btn-hamburger {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--text-secondary);
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 0.95rem;
+  transition: all 0.15s ease;
+}
+.btn-hamburger:hover {
+  color: var(--text-primary);
+  background: var(--bg-hover);
+  border-color: var(--accent);
+}
+@media (min-width: 769px) {
+  .btn-hamburger {
+    display: none; /* Desktop shows fixed sidebar */
+  }
+}
+
+.chat-model-label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+.model-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--accent);
+  flex-shrink: 0;
+}
+
+/* Centered Messages Stream */
+.messages-area {
+  flex: 1;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 2rem 1rem;
+  width: 100%;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border) transparent;
+  /* iOS momentum scrolling */
+  -webkit-overflow-scrolling: touch;
+}
+.msg-group {
+  width: 100%;
+  max-width: 768px;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+/* Floating Centered Input Box */
+.input-area {
+  padding: 1rem 1.25rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.6rem;
+  flex-shrink: 0;
+  background: var(--bg-primary);
+  width: 100%;
+}
+.input-box {
+  width: 100%;
+  max-width: 768px;
+  background: var(--bg-input);
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  display: flex;
+  align-items: flex-end;
+  gap: 0.5rem;
+  padding: 0.75rem 1rem;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+}
+.input-box:focus-within {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 2px rgba(16, 163, 127, 0.2);
+}
+
+/* --- TAB PANELS (BIOPSY AI, HISTORY, SETTINGS) --- */
+.tab-content {
+  display: none;
+  flex: 1;
+  flex-direction: column;
+  overflow: hidden;
+  height: 100%;
+  width: 100%;
+}
+.tab-content.active {
+  display: flex !important;
+}
+
+/* Clean Embedded Settings */
+.settings-tab-container {
+  padding: 1.5rem 1.25rem;
+  overflow-y: auto;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  max-width: 768px;
+  width: 100%;
+  margin: 0 auto;
+}
+.settings-group {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.25rem;
+}
+
+/* Clean Embedded Biopsy AI */
+.biopsy-tab-container {
+  padding: 1.5rem 1.25rem;
+  overflow-y: auto;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  max-width: 768px;
+  width: 100%;
+  margin: 0 auto;
+}
+
+/* Clean Embedded History Tab */
+.history-tab-container {
+  padding: 1.5rem 1.25rem;
+  overflow-y: auto;
+  flex: 1;
+  max-width: 768px;
+  width: 100%;
+  margin: 0 auto;
+}
+
+/* Hide old bottom tab bar if present */
+.bottom-tab-bar {
+  display: none !important;
+}
+
+/* ─── PROFILE & SETTINGS FULL-SCREEN TAB LAYOUT ─────────────────────────── */
+#tab-profile, #tab-settings {
+  display: none;
+  flex-direction: column;
+  flex: 1;
+  overflow: hidden;
+  width: 100%;
+  height: 100%;
+}
+#tab-profile.active, #tab-settings.active {
+  display: flex !important;
+}
+#tab-profile .chat-topbar, #tab-settings .chat-topbar {
+  flex-shrink: 0;
+}
+#tab-profile .profile-panel-container, #tab-settings .settings-tab-container {
+  flex: 1;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch; /* iOS momentum scrolling */
+  max-width: 768px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 1.5rem 1.25rem 3rem;
+}
+
+/* Delete modal within app-container */
+#delete-account-modal {
+  position: fixed;
+  z-index: 9000;
+}
+
+/* ─── ACCENT COLOR SWATCHES ──────────────────────────────────────────── */
+.color-swatch {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  border: 3px solid transparent;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease;
+  flex-shrink: 0;
+  outline: none;
+}
+.color-swatch i {
+  font-size: .65rem;
+  color: #fff;
+  opacity: 0;
+  transition: opacity 0.15s ease;
+  pointer-events: none;
+  text-shadow: 0 1px 3px rgba(0,0,0,.4);
+}
+.color-swatch:hover {
+  transform: scale(1.18);
+  box-shadow: 0 0 0 2px rgba(255,255,255,0.25);
+}
+.color-swatch.active {
+  border-color: #fff;
+  transform: scale(1.18);
+  box-shadow: 0 0 0 3px rgba(255,255,255,0.15);
+}
+.color-swatch.active i {
+  opacity: 1;
+}
+
+/* ─── ADDITIONAL RESPONSIVE & MOBILE POLISH ──────────────────────────── */
+@media (max-width: 480px) {
+  .auth-form-panel {
+    width: 100% !important;
+    padding: 1.5rem 1rem !important;
+  }
+  .login-box {
+    gap: 0.5rem;
+  }
+  .welcome-title {
+    font-size: 1.5rem !important;
+  }
+  .suggestions {
+    flex-direction: column !important;
+    width: 100% !important;
+  }
+  .suggestion-chip {
+    max-width: 100% !important;
+    width: 100% !important;
+  }
+  .messages-area {
+    padding: 1rem 0.5rem !important;
+  }
+  .input-area {
+    padding: 0.5rem 0.75rem 0.75rem !important;
+    /* iOS safe area for home bar */
+    padding-bottom: max(0.75rem, env(safe-area-inset-bottom)) !important;
+  }
+  .biopsy-drop-zone {
+    padding: 1.5rem 0.75rem !important;
+    min-height: 140px !important;
+  }
+  /* iOS: prevent input zoom — all inputs must be >= 16px */
+  input, textarea, select {
+    font-size: 16px !important;
+  }
+}
+
+@media (max-width: 380px) {
+  .social-grid {
+    grid-template-columns: 1fr !important;
+  }
+  #vision-badge {
+    display: none !important;
+  }
+}
+
+/* ─── iOS SAFE AREA SUPPORT ──────────────────────────────────────── */
+/* Respect notch + home indicator on iPhone X and later */
+.input-area {
+  padding-bottom: max(1.5rem, env(safe-area-inset-bottom));
+}
+
+/* ─── GLOBAL BUTTON POLISH (all platforms) ────────────────────────── */
+button, [role="button"], .btn-send, .btn-attach, .btn-login,
+.btn-social, .btn-new-chat, .sidebar-nav-btn, .topbar-btn,
+.suggestion-chip, .style-pill, .color-swatch {
+  touch-action: manipulation;       /* Removes 300ms tap delay on iOS/Android */
+  -webkit-tap-highlight-color: transparent; /* Removes blue flash on iOS tap */
+}
+
+.msg-time {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+/* ─── WINDOWS HIGH-CONTRAST / EDGE COMPATIBILITY ────────────────── */
+/* Force consistent focus ring that works in both Edge and Chrome */
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+/* Remove old :focus outline that interferes with custom styles */
+:focus:not(:focus-visible) {
+  outline: none;
+}

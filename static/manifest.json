@@ -1,0 +1,20 @@
+{
+  "name": "LiverAI Medical Assistant",
+  "short_name": "LiverAI",
+  "description": "AI-powered liver disease medical assistant with histology image analysis.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#212121",
+  "theme_color": "#10a37f",
+  "orientation": "any",
+  "scope": "/",
+  "categories": ["medical", "health", "lifestyle"],
+  "icons": [
+    {
+      "src": "/static/logo.svg",
+      "sizes": "192x192 512x512",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
