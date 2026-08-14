@@ -40,5 +40,9 @@ lxml
 # ── Firebase Auth ─────────────────────────────────────────────────────────────
 firebase-admin
 
-# ── Database (optional MySQL support) ────────────────────────────────────────
+# ── Database & Cloud Services ────────────────────────────────────────────────
+supabase
 pymysql
+
+# ── Production Server ────────────────────────────────────────────────────────
+gunicorn
