@@ -218,11 +218,9 @@ uploads/
 database.db
 .gemini/
 
-# Large Model Weights & Archives
-*.safetensors
-*.zip
-*.pt
-*.bin
-checkpoint-*/
-models/liver-lora/
+# Exclude only huge files (>100MB) and training checkpoints
 notebooks/*.safetensors
+notebooks/*.bin
+checkpoint-*/
+models/**/checkpoint-*/
+*.zip
