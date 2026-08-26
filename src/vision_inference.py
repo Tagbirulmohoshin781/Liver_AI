@@ -109,7 +109,27 @@ def predict_image(image_path: str):
         except Exception as e:
             print(f"[Vision Warning] PyTorch inference failed ({e}). Falling back to simulation mode.")
 
-    # ── Fallback: Simulated Inference Mode ───────────────────────────────────
+    # ── Production gate: refuse simulation ───────────────────────────────────
+    _app_env = os.getenv("APP_ENV", "development").lower()
+    _sim_allowed = os.getenv("ENABLE_VISION_SIMULATION", "false").lower() == "true"
+
+    if _app_env == "production" and _sim_allowed:
+        # Explicitly refuse simulation flag in production
+        return {
+            "success": False,
+            "error": "ENABLE_VISION_SIMULATION is not permitted in APP_ENV=production.",
+            "code": "CONFIG_ERROR"
+        }
+
+    if not _sim_allowed:
+        return {
+            "success": False,
+            "error": "Vision inference model unavailable.",
+            "code": "MODEL_UNAVAILABLE",
+            "message": "Histology classification requires a trained model. Please contact support."
+        }
+
+    # ── Simulation mode (development/testing only, ENABLE_VISION_SIMULATION=true) ─
     try:
         import hashlib
         with open(image_path, "rb") as f:
@@ -142,5 +162,5 @@ def predict_image(image_path: str):
         "success": True,
         "mode": "simulation",
         "predictions": predictions,
-        "warning": "Running inference in simulation mode."
+        "warning": "SIMULATION MODE — results are deterministic test fixtures, not real inference."
     }

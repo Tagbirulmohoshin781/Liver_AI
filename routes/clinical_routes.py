@@ -17,6 +17,14 @@ clinical_bp = Blueprint("clinical", __name__)
 
 @clinical_bp.route("/api/predict", methods=["POST"])
 def api_predict():
+    enabled = os.getenv("ENABLE_EXPERIMENTAL_CLINICAL_SCORE", "true").lower() == "true"
+    if not enabled:
+        return jsonify({
+            "success": False,
+            "code": "FEATURE_DISABLED",
+            "message": "Experimental clinical score calculator is disabled in this environment."
+        }), 403
+
     data = request.get_json(silent=True) or {}
     required = [
         "age", "gender", "total_bilirubin", "direct_bilirubin",
@@ -40,7 +48,12 @@ def api_predict():
 
 @clinical_bp.route("/api/predict/status", methods=["GET"])
 def api_predict_status():
-    return jsonify({"available": models_available()})
+    enabled = os.getenv("ENABLE_EXPERIMENTAL_CLINICAL_SCORE", "true").lower() == "true"
+    return jsonify({
+        "available": models_available() and enabled,
+        "enabled": enabled,
+        "mode": "experimental_heuristic"
+    })
 
 
 @clinical_bp.route("/vision_status", methods=["GET"])
@@ -48,7 +61,15 @@ def vision_status():
     weights_path = os.path.join("models", "liver_vision", "best_model.pth")
     config_path  = os.path.join("models", "liver_vision", "model_config.json")
     ready   = os.path.exists(weights_path)
-    mode    = "production" if ready else "simulation"
+    sim_allowed = os.getenv("ENABLE_VISION_SIMULATION", "false").lower() == "true"
+    
+    if ready:
+        mode = "production"
+    elif sim_allowed:
+        mode = "simulation"
+    else:
+        mode = "disabled"
+
     metrics = None
     if ready and os.path.exists(config_path):
         try:
@@ -58,3 +79,4 @@ def vision_status():
         except Exception:
             pass
     return jsonify({"ready": ready, "mode": mode, "metrics": metrics})
+

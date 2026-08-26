@@ -30,9 +30,9 @@ except ImportError:
 
 DB_PATH = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'database.db')
 
-# Supabase Configuration
-SUPABASE_URL = os.getenv("SUPABASE_URL", "https://qklfudlrxukqgggcjure.supabase.co")
-SUPABASE_KEY = os.getenv("SUPABASE_KEY") or os.getenv("SUPABASE_ANON_KEY") or "sb_publishable_GK5UpZrr0vkFRgbD6KL4dQ_DvWGCNv8"
+# Supabase Configuration — all values MUST come from environment; no fallback secrets
+SUPABASE_URL = os.getenv("SUPABASE_URL", "").strip()
+SUPABASE_KEY = (os.getenv("SUPABASE_KEY") or os.getenv("SUPABASE_ANON_KEY") or "").strip()
 
 # MySQL Config
 MYSQL_HOST = os.getenv("MYSQL_HOST")
@@ -42,9 +42,15 @@ MYSQL_DB = os.getenv("MYSQL_DB", "liverai_db")
 MYSQL_PORT = int(os.getenv("MYSQL_PORT", 3306))
 
 # Database Engine Selection
-DB_TYPE = os.getenv("DB_TYPE", "supabase").lower()
-USE_SUPABASE = (DB_TYPE == "supabase" or bool(SUPABASE_URL and SUPABASE_KEY)) and HAS_SUPABASE
+APP_ENV = os.getenv("APP_ENV", "development").lower()
+DB_TYPE = os.getenv("DB_TYPE", "supabase" if (SUPABASE_URL and SUPABASE_KEY) else "sqlite").lower()
+USE_SUPABASE = (DB_TYPE == "supabase") and bool(SUPABASE_URL and SUPABASE_KEY) and HAS_SUPABASE
 USE_MYSQL = DB_TYPE == "mysql" and HAS_PYMYSQL
+
+if APP_ENV == "production" and not USE_SUPABASE:
+    import sys
+    print("[FATAL] APP_ENV=production requires SUPABASE_URL + SUPABASE_KEY to be set. Refusing to start.", file=sys.stderr)
+    sys.exit(1)
 
 
 _supabase_client = None
@@ -129,34 +135,14 @@ def get_db_connection():
 # ── Database Initialization ───────────────────────────────────────────────────
 
 def init_db():
-    """Initialize database tables, seed default Admin and Guest users."""
+    """Initialize database tables. No default credentials are seeded."""
     sb = get_supabase_client() if USE_SUPABASE else None
     
     if sb:
         try:
-            # Seed Admin in Supabase
-            admin_check = sb.table('users').select('*').eq('email', 'admin@gmail.com').execute()
-            if not admin_check.data:
-                sb.table('users').insert({
-                    'username': 'Admin',
-                    'email': 'admin@gmail.com',
-                    'password_hash': generate_password_hash('123456'),
-                    'is_admin': 1
-                }).execute()
-            else:
-                sb.table('users').update({'is_admin': 1}).eq('email', 'admin@gmail.com').execute()
-
-            # Seed Guest User in Supabase
-            guest_check = sb.table('users').select('*').eq('email', 'guest@liverai.local').execute()
-            if not guest_check.data:
-                sb.table('users').insert({
-                    'username': 'Guest User',
-                    'email': 'guest@liverai.local',
-                    'password_hash': generate_password_hash('guest123'),
-                    'is_admin': 0
-                }).execute()
-
-            print("[Database] Supabase PostgreSQL connection verified & initialized.")
+            # Verify connectivity — no default credentials seeded
+            sb.table('users').select('id').limit(1).execute()
+            print("[Database] Supabase PostgreSQL connection verified.")
             return
         except Exception as e:
             print(f"[Supabase Init Warning] {e}. Falling back to SQLite setup...")
@@ -203,61 +189,16 @@ def init_db():
     ''')
     conn.commit()
 
-    # Seed admin & guest in local DB
-    cursor.execute("SELECT * FROM users WHERE email = ?", ('admin@gmail.com',))
-    if not cursor.fetchone():
-        cursor.execute(
-            "INSERT INTO users (username, email, password_hash, is_admin) VALUES (?, ?, ?, ?)",
-            ('Admin', 'admin@gmail.com', generate_password_hash('123456'), 1)
-        )
-        conn.commit()
-
-    cursor.execute("SELECT * FROM users WHERE email = ?", ('guest@liverai.local',))
-    if not cursor.fetchone():
-        cursor.execute(
-            "INSERT INTO users (username, email, password_hash, is_admin) VALUES (?, ?, ?, ?)",
-            ('Guest User', 'guest@liverai.local', generate_password_hash('guest123'), 0)
-        )
-        conn.commit()
-
+    # No default credentials seeded — admins are set via Firebase custom claims or direct DB management
     conn.close()
 
 
 def get_guest_user_id():
-    """Get or create default Local Guest User ID for unauthenticated chat logging."""
-    sb = get_supabase_client() if USE_SUPABASE else None
-    if sb:
-        try:
-            res = sb.table('users').select('id').eq('email', 'guest@liverai.local').execute()
-            if res.data:
-                return res.data[0]['id']
-            ins = sb.table('users').insert({
-                'username': 'Guest User',
-                'email': 'guest@liverai.local',
-                'password_hash': generate_password_hash('guest123'),
-                'is_admin': 0
-            }).execute()
-            if ins.data:
-                return ins.data[0]['id']
-        except Exception as e:
-            print(f"[Supabase Guest User] {e}")
-
-    conn = get_db_connection()
-    cursor = conn.cursor()
-    cursor.execute("SELECT id FROM users WHERE email = ?", ('guest@liverai.local',))
-    row = cursor.fetchone()
-    if row:
-        user_id = row['id']
-        conn.close()
-        return user_id
-    cursor.execute(
-        "INSERT INTO users (username, email, password_hash, is_admin) VALUES (?, ?, ?, ?)",
-        ('Guest User', 'guest@liverai.local', generate_password_hash('guest123'), 0)
-    )
-    conn.commit()
-    user_id = cursor.lastrowid
-    conn.close()
-    return user_id
+    """Anonymous sessions do not get a shared guest DB identity.
+    Returns None — callers must handle unauthenticated state without a shared record.
+    This prevents cross-user privacy exposure via a shared guest account.
+    """
+    return None
 
 
 # ── User Authentication & Registration ────────────────────────────────────────
@@ -392,10 +333,43 @@ def upsert_firebase_user(email: str, display_name: str) -> tuple:
     return user_id, username
 
 
-# ── Chat Messaging & History ──────────────────────────────────────────────────
+def save_chat_message(user_id, *args, session_id="default", role=None, message=None, **kwargs):
+    """Save a chat message to history safely with unambiguous parameter handling.
+    Supports:
+      save_chat_message(user_id=1, session_id="abc", role="user", message="hello")
+      save_chat_message(user_id, session_id, role, message)
+      save_chat_message(user_id, role, message, session_id="abc")
+    """
+    if not user_id:
+        # Anonymous users do not persist chat records
+        return None
 
-def save_chat_message(user_id, role, message, session_id="default"):
-    """Save a chat message to history."""
+    # Resolve positional arguments
+    if len(args) == 3:
+        # (user_id, session_id, role, message)
+        session_id, role, message = args
+    elif len(args) == 2:
+        # (user_id, role, message)
+        role, message = args
+    elif len(args) == 1:
+        role = args[0]
+
+    # Keyword overrides
+    if "session_id" in kwargs: session_id = kwargs["session_id"]
+    if "role" in kwargs: role = kwargs["role"]
+    if "message" in kwargs: message = kwargs["message"]
+
+    # Validate role
+    role = str(role or "user").strip().lower()
+    if role not in {"user", "assistant", "system"}:
+        role = "user"
+
+    message = str(message or "").strip()
+    if not message:
+        return None
+
+    session_id = str(session_id or "default").strip()
+
     sb = get_supabase_client() if USE_SUPABASE else None
     if sb:
         try:

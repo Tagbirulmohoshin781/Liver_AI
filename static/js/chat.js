@@ -158,7 +158,14 @@ function renderMarkdown(txt) {
       },
       breaks: true
     });
-    return marked.parse(txt);
+    const parsed = marked.parse(String(txt || ''));
+    if (typeof DOMPurify !== 'undefined') {
+      return DOMPurify.sanitize(parsed, {
+        USE_PROFILES: { html: true },
+        ADD_ATTR: ['target', 'rel']
+      });
+    }
+    return parsed;
   }
   return escapeHtml(txt);
 }

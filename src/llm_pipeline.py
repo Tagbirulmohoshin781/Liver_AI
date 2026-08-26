@@ -634,3 +634,10 @@ def get_docsearch():
     """Returns the current PineconeVectorStore instance (may be None if not ready)."""
     with _lock:
         return _docsearch
+
+
+def is_rag_ready() -> bool:
+    """Returns True if the RAG pipeline has finished loading documents."""
+    with _lock:
+        return bool(_rag_ready)
+

@@ -141,26 +141,29 @@ def predict_liver_disease(features: dict) -> dict:
     prob = float(1 / (1 + np.exp(-(z_score - 1.2))))
     prob = max(0.01, min(0.99, prob))
 
-    # Determine risk level
+    # Determine risk category with truthful heuristic labeling
     if prob >= 0.65:
-        label      = "At Risk"
+        label      = "Elevated Markers (Experimental)"
         risk_level = "High"
     elif prob >= 0.40:
-        label      = "At Risk"
+        label      = "Borderline Markers (Experimental)"
         risk_level = "Moderate"
     else:
-        label      = "Low Risk"
+        label      = "Typical Reference Ranges"
         risk_level = "Low"
 
     # Identify key contributing factors (values outside normal reference ranges)
     factors = _identify_factors(features)
 
     return {
-        "probability": round(prob, 3),
-        "label":       label,
-        "risk_level":  risk_level,
-        "confidence":  int(round(prob * 100)),
-        "factors":     factors,
+        "status": "ok",
+        "method": "experimental_heuristic_aasld",
+        "score": round(prob, 3),
+        "label": label,
+        "risk_level": risk_level,
+        "factors": factors,
+        "disclaimer": "This score is an experimental educational heuristic based on AASLD reference ranges. It is not a clinical diagnosis. Always consult a qualified medical professional.",
+        "is_diagnostic": False
     }
 
 

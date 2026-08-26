@@ -1,0 +1,64 @@
+openapi: 3.0.3
+info:
+  title: LiverAI Medical Assistant API
+  description: Hardened API for AI-assisted liver disease education, RAG dialogue, and risk estimation.
+  version: 2.0.0
+paths:
+  /healthz:
+    get:
+      summary: Liveness probe
+      responses:
+        '200':
+          description: Service alive
+  /readyz:
+    get:
+      summary: Readiness probe
+      responses:
+        '200':
+          description: All dependencies ready
+        '503':
+          description: Dependencies initializing or degraded
+  /chat:
+    post:
+      summary: Send chat message
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [message]
+              properties:
+                message:
+                  type: string
+                history:
+                  type: array
+                upload_id:
+                  type: string
+                doc_content:
+                  type: string
+      responses:
+        '200':
+          description: AI response generated
+  /upload:
+    post:
+      summary: Upload document or image
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+      responses:
+        '200':
+          description: Upload processed and tokenized
+  /api/predict:
+    post:
+      summary: Calculate clinical risk score
+      responses:
+        '200':
+          description: Risk estimation returned

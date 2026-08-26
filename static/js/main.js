@@ -287,7 +287,14 @@ function renderMarkdown(txt) {
         breaks: true,
         gfm: true
       });
-      return marked.parse(String(txt));
+      const parsed = marked.parse(String(txt));
+      if (typeof DOMPurify !== 'undefined') {
+        return DOMPurify.sanitize(parsed, {
+          USE_PROFILES: { html: true },
+          ADD_ATTR: ['target', 'rel']
+        });
+      }
+      return parsed;
     } catch (e) {
       console.warn('[Markdown Parser Error]', e);
     }
