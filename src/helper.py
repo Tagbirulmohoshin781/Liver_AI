@@ -358,10 +358,20 @@ def text_split(minimal_docs):
 
 def download_embeddings():
     """
-    Download and return the HuggingFace embeddings model.
+    Download and return the embeddings model.
+    Prioritizes FastEmbed (< 35MB RAM, ONNX-optimized for cloud deployment)
+    with graceful fallback to HuggingFaceEmbeddings.
     """
-    model_name = "sentence-transformers/all-MiniLM-L6-v2"
-    embeddings = HuggingFaceEmbeddings(
-        model_name=model_name
-    )
-    return embeddings
+    try:
+        from langchain_community.embeddings.fastembed import FastEmbedEmbeddings
+        print("[Embeddings] Using lightweight FastEmbed (< 35MB RAM) ✓")
+        return FastEmbedEmbeddings(model_name="sentence-transformers/all-MiniLM-L6-v2")
+    except Exception as e:
+        print(f"[Embeddings] FastEmbed notice: {e}. Falling back to HuggingFaceEmbeddings...")
+
+    try:
+        from langchain_huggingface import HuggingFaceEmbeddings
+        return HuggingFaceEmbeddings(model_name="sentence-transformers/all-MiniLM-L6-v2")
+    except Exception:
+        from langchain_community.embeddings import HuggingFaceEmbeddings  # type: ignore[import]
+        return HuggingFaceEmbeddings(model_name="sentence-transformers/all-MiniLM-L6-v2")

@@ -17,6 +17,7 @@ pinecone
 google-generativeai
 
 # ── Embeddings & Transformers ─────────────────────────────────────────────────
+fastembed
 sentence-transformers==4.1.0
 huggingface_hub
 transformers
