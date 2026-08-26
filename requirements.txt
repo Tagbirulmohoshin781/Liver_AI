@@ -1,3 +1,5 @@
+--extra-index-url https://download.pytorch.org/whl/cpu
+
 # ── Core Web Framework ────────────────────────────────────────────────────────
 flask==3.1.1
 python-dotenv==1.1.0
