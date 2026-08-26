@@ -69,12 +69,12 @@ function handleLogin() {
   showAuthError('');
 
   if (!email || !password) {
-    showAuthError('Please fill in all email and password fields.');
+    showAuthError('Please fill in all email and password fields.', 'login');
     return;
   }
 
   const btn = $('#btn-login-submit');
-  btn.prop('disabled', true).html('<i class="fa-solid fa-spinner fa-spin"></i> Signing in…');
+  btn.prop('disabled', true).html('<span>Signing in…</span> <i class="fa-solid fa-spinner fa-spin"></i>');
 
   $.ajax({
     url: '/api/login',
@@ -90,10 +90,10 @@ function handleLogin() {
     },
     error: function (xhr) {
       const err = xhr.responseJSON ? xhr.responseJSON.message : 'Invalid email or password.';
-      showAuthError(err);
+      showAuthError(err, 'login');
     },
     complete: function () {
-      btn.prop('disabled', false).html('<i class="fa-solid fa-arrow-right-to-bracket"></i> Sign In');
+      btn.prop('disabled', false).html('<span>Sign In</span> <i class="fa-solid fa-arrow-right-to-bracket auth-btn-icon"></i>');
     }
   });
 }
@@ -107,23 +107,23 @@ function handleRegister() {
   $('#confirm-pw-hint').text('');
 
   if (!username || !email || !password || !confirm) {
-    showAuthError('Please fill in all required registration fields.');
+    showAuthError('Please fill in all required registration fields.', 'signup');
     return;
   }
 
   if (password.length < 6) {
-    showAuthError('Password must be at least 6 characters long.');
+    showAuthError('Password must be at least 6 characters long.', 'signup');
     return;
   }
 
   if (password !== confirm) {
-    $('#confirm-pw-hint').css('color', 'var(--danger)').text('⚠ Passwords do not match.');
+    $('#confirm-pw-hint').css('color', '#ef4444').text('⚠ Passwords do not match.');
     $('#signup-confirm-password').focus();
     return;
   }
 
   const btn = $('#btn-signup-submit');
-  btn.prop('disabled', true).html('<i class="fa-solid fa-spinner fa-spin"></i> Creating Account…');
+  btn.prop('disabled', true).html('<span>Creating Account…</span> <i class="fa-solid fa-spinner fa-spin"></i>');
 
   $.ajax({
     url: '/api/register',
@@ -139,10 +139,10 @@ function handleRegister() {
     },
     error: function (xhr) {
       const err = xhr.responseJSON ? xhr.responseJSON.message : 'Registration failed.';
-      showAuthError(err);
+      showAuthError(err, 'signup');
     },
     complete: function () {
-      btn.prop('disabled', false).html('<i class="fa-solid fa-user-plus"></i> Create Account');
+      btn.prop('disabled', false).html('<span>Create Account</span> <i class="fa-solid fa-user-plus auth-btn-icon"></i>');
     }
   });
 }

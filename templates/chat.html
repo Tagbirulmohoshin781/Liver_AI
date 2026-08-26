@@ -23,12 +23,13 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css" />
-  <link rel="stylesheet" href="/static/mobile.css?v=14.0" />
-  <link rel="stylesheet" href="/static/css/main.css?v=14.0" />
-  <link rel="stylesheet" href="/static/css/auth.css?v=14.0" />
-  <link rel="stylesheet" href="/static/css/sidebar.css?v=14.0" />
-  <link rel="stylesheet" href="/static/css/chat.css?v=14.0" />
-  <link rel="stylesheet" href="/static/css/panels.css?v=14.0" />
+  <link rel="stylesheet" href="/static/mobile.css?v=20.0" />
+  <link rel="stylesheet" href="/static/css/main.css?v=20.0" />
+  <link rel="stylesheet" href="/static/css/auth.css?v=20.0" />
+  <link rel="stylesheet" href="/static/css/sidebar.css?v=20.0" />
+  <link rel="stylesheet" href="/static/css/chat.css?v=20.0" />
+  <link rel="stylesheet" href="/static/css/panels.css?v=20.0" />
+
 
   <!-- Core JS dependencies -->
   <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
@@ -69,165 +70,328 @@
     <!-- ══════════════ LOGIN / SIGNUP VIEW ══════════════ -->
     <div id="login-view">
 
-      <!-- Left brand panel (hidden on small screens) -->
-      <div class="auth-brand-panel">
-        <div class="auth-brand-inner">
-          <div class="auth-brand-logo">
-            <div class="login-logo-icon"><i class="fa-solid fa-heart-pulse"></i></div>
-            <span class="login-logo-text">LiverAI</span>
-          </div>
-          <h1 class="auth-brand-title">Your AI-Powered<br>Liver Health Assistant</h1>
-          <p class="auth-brand-sub">Ask anything about liver disease, read biopsy results, and get evidence-based
-            answers — instantly.</p>
-          <div class="auth-feature-list">
-            <div class="auth-feature"><i class="fa-solid fa-brain"></i><span>Gemini 2.5 Flash RAG Engine</span></div>
-            <div class="auth-feature"><i class="fa-solid fa-microscope"></i><span>Biopsy AI Histology Grading</span>
-            </div>
-            <div class="auth-feature"><i class="fa-solid fa-shield-halved"></i><span>Private & Secure Chat
-                History</span></div>
-            <div class="auth-feature"><i class="fa-solid fa-bolt"></i><span>Real-Time Medical Knowledge Base</span>
-            </div>
-          </div>
-        </div>
-      </div>
+      <!-- Background Ambient Particles Canvas -->
+      <canvas id="auth-particles-canvas"></canvas>
 
-      <!-- Right form panel -->
-      <div class="auth-form-panel">
-        <div class="login-box">
+      <!-- Background Depth Overlay -->
+      <div class="auth-bg-overlay"></div>
 
-          <!-- Mobile-only logo -->
-          <div class="login-logo auth-mobile-logo">
-            <div class="login-logo-icon"><i class="fa-solid fa-heart-pulse"></i></div>
-            <span class="login-logo-text">LiverAI</span>
-          </div>
+      <!-- Central Frosted-Glass Modal -->
+      <div class="auth-glass-container">
+        <div class="auth-glass-card login-card" id="auth-card">
 
-          <!-- Tab switcher -->
-          <div class="auth-tab-bar">
-            <button type="button" class="auth-tab-btn active" id="tab-auth-login" onclick="toggleAuthTab('login')">
-              <i class="fa-solid fa-arrow-right-to-bracket"></i> Sign In
-            </button>
-            <button type="button" class="auth-tab-btn" id="tab-auth-signup" onclick="toggleAuthTab('signup')">
-              <i class="fa-solid fa-user-plus"></i> Create Account
-            </button>
-          </div>
+          <!-- ─── 1. SIGN IN VIEW ─── -->
+          <div class="auth-mode-view" id="auth-signin-view">
+            <!-- Brand Logo & Header -->
+            <div class="auth-brand-header">
+              <div class="auth-logo-symbol" title="LiverAI Neural Core">
+                <svg class="liver-neural-svg" viewBox="0 0 120 100" width="56" height="48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <defs>
+                    <linearGradient id="liverGrad" x1="10%" y1="10%" x2="90%" y2="90%">
+                      <stop offset="0%" stop-color="#0f172a" />
+                      <stop offset="45%" stop-color="#1e3a8a" />
+                      <stop offset="100%" stop-color="#2563eb" />
+                    </linearGradient>
+                    <filter id="nodeGlow" x="-20%" y="-20%" width="140%" height="140%">
+                      <feGaussianBlur stdDeviation="2.5" result="blur" />
+                      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+                    </filter>
+                    <linearGradient id="neuralLineGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                      <stop offset="0%" stop-color="#38bdf8" stop-opacity="0.85" />
+                      <stop offset="100%" stop-color="#60a5fa" stop-opacity="0.45" />
+                    </linearGradient>
+                  </defs>
+                  
+                  <!-- Stylized Dark Blue Anatomical Liver Silhouette -->
+                  <path d="M22 36 C 28 20, 62 16, 96 26 C 108 30, 112 46, 106 64 C 98 84, 76 92, 48 92 C 28 92, 14 82, 14 60 C 14 48, 17 40, 22 36 Z" 
+                        fill="url(#liverGrad)" 
+                        stroke="rgba(56, 189, 248, 0.45)" 
+                        stroke-width="1.8" />
+                  
+                  <!-- Interconnected Neural Network Lines -->
+                  <g stroke="url(#neuralLineGrad)" stroke-width="1.4" stroke-linecap="round">
+                    <line x1="36" y1="42" x2="56" y2="34" />
+                    <line x1="56" y1="34" x2="82" y2="38" />
+                    <line x1="36" y1="42" x2="48" y2="60" />
+                    <line x1="56" y1="34" x2="68" y2="54" />
+                    <line x1="82" y1="38" x2="94" y2="58" />
+                    <line x1="48" y1="60" x2="68" y2="54" />
+                    <line x1="68" y1="54" x2="94" y2="58" />
+                    <line x1="48" y1="60" x2="60" y2="78" />
+                    <line x1="68" y1="54" x2="60" y2="78" />
+                    <line x1="94" y1="58" x2="78" y2="76" />
+                    <line x1="60" y1="78" x2="78" y2="76" />
+                  </g>
 
-          <!-- Dynamic greeting -->
-          <div class="auth-greeting">
-            <h2 id="auth-greeting-title">Welcome back</h2>
-            <p id="auth-greeting-sub">Sign in to continue to LiverAI</p>
-          </div>
-
-          <!-- Error message -->
-          <div id="login-error" class="auth-error-box" style="display:none">
-            <i class="fa-solid fa-circle-exclamation"></i>
-            <span id="login-error-text"></span>
-          </div>
-
-          <!-- Social Login Buttons -->
-          <div class="social-login-section">
-            <div class="social-grid">
-              <button type="button" class="btn-social google" id="btn-google-signin"
-                onclick="handleFirebaseGoogleLogin()" title="Sign in with Google">
-                <i class="fa-brands fa-google" style="color:#ea4335"></i>
-                <span>Google</span>
-              </button>
-              <button type="button" class="btn-social github" id="btn-github-signin"
-                onclick="handleFirebaseGithubLogin()" title="Sign in with GitHub">
-                <i class="fa-brands fa-github"></i>
-                <span>GitHub</span>
-              </button>
-              <button type="button" class="btn-social twitter" onclick="handleSocialComingSoon('Twitter')"
-                title="Twitter/X coming soon">
-                <i class="fa-brands fa-x-twitter"></i>
-                <span>Twitter</span>
-              </button>
-              <button type="button" class="btn-social facebook" id="btn-facebook-signin"
-                onclick="handleFirebaseFacebookLogin()" title="Sign in with Facebook">
-                <i class="fa-brands fa-facebook-f" style="color:#1877f2"></i>
-                <span>Facebook</span>
-              </button>
-            </div>
-
-            <div class="social-divider">
-              <span>or continue with email</span>
-            </div>
-          </div>
-
-          <!-- ── Sign In Form ── -->
-          <form id="form-login" onsubmit="event.preventDefault(); handleLogin();" autocomplete="on">
-            <div class="login-field">
-              <label for="login-email"><i class="fa-solid fa-envelope"></i> Email address</label>
-              <input type="email" id="login-email" placeholder="name@example.com" required autocomplete="email" />
-            </div>
-            <div class="login-field" style="margin-top:.85rem">
-              <label for="login-password"><i class="fa-solid fa-lock"></i> Password</label>
-              <div class="pw-input-wrap">
-                <input type="password" id="login-password" placeholder="Enter your password" required
-                  autocomplete="current-password" />
-                <button type="button" class="btn-pw-toggle" onclick="togglePw('login-password', this)" tabindex="-1">
-                  <i class="fa-regular fa-eye"></i>
-                </button>
+                  <!-- Interconnected Neural Network Nodes with Glowing Highlights -->
+                  <g filter="url(#nodeGlow)">
+                    <circle cx="36" cy="42" r="3.5" fill="#38bdf8" class="neural-node pulse-fast" />
+                    <circle cx="56" cy="34" r="4" fill="#ffffff" class="neural-node pulse-med" />
+                    <circle cx="82" cy="38" r="3.5" fill="#38bdf8" class="neural-node pulse-slow" />
+                    <circle cx="48" cy="60" r="3.5" fill="#60a5fa" class="neural-node pulse-med" />
+                    <circle cx="68" cy="54" r="4.5" fill="#38bdf8" class="neural-node pulse-fast" />
+                    <circle cx="94" cy="58" r="3" fill="#93c5fd" class="neural-node pulse-slow" />
+                    <circle cx="60" cy="78" r="3.5" fill="#38bdf8" class="neural-node pulse-med" />
+                    <circle cx="78" cy="76" r="3" fill="#60a5fa" class="neural-node pulse-fast" />
+                  </g>
+                </svg>
+              </div>
+              <div class="auth-brand-text">
+                <h1 class="auth-brand-title">LiverAI</h1>
+                <p class="auth-tagline">Your Journey to Liver Health</p>
               </div>
             </div>
-            <button type="submit" class="btn-login" id="btn-login-submit" style="margin-top:1.25rem">
-              <i class="fa-solid fa-arrow-right-to-bracket"></i> Sign In
-            </button>
-            <p class="auth-switch-hint">
-              Don't have an account? <a href="#" onclick="toggleAuthTab('signup'); return false;">Create one free</a>
-              · <a href="#" onclick="showChat(); showToast('Using LiverAI in Guest Mode', 'info'); return false;" style="color:var(--accent); font-weight:600">Continue as Guest</a>
-            </p>
-          </form>
 
-          <!-- ── Sign Up Form ── -->
-          <form id="form-signup" style="display:none" onsubmit="event.preventDefault(); handleRegister();"
-            autocomplete="on">
-            <div class="login-field">
-              <label for="signup-name"><i class="fa-solid fa-user"></i> Full Name</label>
-              <input type="text" id="signup-name" placeholder="John Doe" required autocomplete="name" />
+            <!-- Heading -->
+            <h2 class="auth-heading">Sign In to Your LiverAI Account</h2>
+
+            <!-- Error Banner -->
+            <div id="login-error" class="auth-error-box" style="display:none">
+              <i class="fa-solid fa-circle-exclamation"></i>
+              <span id="login-error-text"></span>
             </div>
-            <div class="login-field" style="margin-top:.85rem">
-              <label for="signup-email"><i class="fa-solid fa-envelope"></i> Email address</label>
-              <input type="email" id="signup-email" placeholder="name@example.com" required autocomplete="email" />
-            </div>
-            <div class="login-field" style="margin-top:.85rem">
-              <label for="signup-password"><i class="fa-solid fa-lock"></i> Password</label>
-              <div class="pw-input-wrap">
-                <input type="password" id="signup-password" placeholder="At least 6 characters" required
-                  autocomplete="new-password" />
-                <button type="button" class="btn-pw-toggle" onclick="togglePw('signup-password', this)" tabindex="-1">
-                  <i class="fa-regular fa-eye"></i>
+
+            <!-- Sign In Form -->
+            <form id="form-login" onsubmit="event.preventDefault(); handleLogin();" autocomplete="on">
+              
+              <!-- Email Address Field -->
+              <div class="auth-field-group">
+                <label for="login-email" class="auth-field-label">Email Address</label>
+                <div class="auth-input-wrapper">
+                  <i class="fa-solid fa-envelope auth-input-icon"></i>
+                  <input type="email" id="login-email" class="auth-input" placeholder="e.g., jane.doe@email.com" required autocomplete="email" />
+                </div>
+              </div>
+
+              <!-- Password Field with Forgot Link -->
+              <div class="auth-field-group">
+                <div class="auth-label-row">
+                  <label for="login-password" class="auth-field-label">Password</label>
+                  <a href="#" class="auth-forgot-link" onclick="openForgotModal(); return false;">Forgot Password?</a>
+                </div>
+                <div class="auth-input-wrapper">
+                  <i class="fa-solid fa-lock auth-input-icon"></i>
+                  <input type="password" id="login-password" class="auth-input auth-input-pw" placeholder="Enter your password" required autocomplete="current-password" />
+                  <button type="button" class="btn-pw-toggle" onclick="togglePw('login-password', this)" tabindex="-1" title="Show/Hide Password">
+                    <i class="fa-regular fa-eye"></i>
+                  </button>
+                </div>
+              </div>
+
+              <!-- Solid Dark Blue Primary Action Button -->
+              <button type="submit" class="btn-auth-primary" id="btn-login-submit">
+                <span>Sign In</span>
+                <i class="fa-solid fa-arrow-right-to-bracket auth-btn-icon"></i>
+              </button>
+
+              <!-- Social Login Divider -->
+              <div class="auth-divider">
+                <span class="auth-divider-line"></span>
+                <span class="auth-divider-text">or continue with</span>
+                <span class="auth-divider-line"></span>
+              </div>
+
+              <!-- Social Login Grid Buttons -->
+              <div class="auth-social-grid">
+                <button type="button" class="btn-social-item google" id="btn-google-signin" onclick="handleFirebaseGoogleLogin()" title="Sign in with Google">
+                  <svg class="social-svg-icon" viewBox="0 0 24 24" width="18" height="18">
+                    <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+                    <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                    <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/>
+                    <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/>
+                  </svg>
+                  <span>Google</span>
+                </button>
+                <button type="button" class="btn-social-item facebook" id="btn-facebook-signin" onclick="handleFirebaseFacebookLogin()" title="Sign in with Facebook">
+                  <i class="fa-brands fa-facebook-f social-i-icon"></i>
+                  <span>Facebook</span>
+                </button>
+                <button type="button" class="btn-social-item github" id="btn-github-signin" onclick="handleFirebaseGithubLogin()" title="Sign in with GitHub">
+                  <i class="fa-brands fa-github social-i-icon"></i>
+                  <span>GitHub</span>
                 </button>
               </div>
+
+              <!-- Footer Switch Prompt -->
+              <p class="auth-footer-prompt">
+                Don't have an account? <a href="#" class="auth-action-link" onclick="toggleAuthMode('signup'); return false;">Sign Up</a>
+              </p>
+
+              <!-- Quick Guest Access Option -->
+              <div class="auth-guest-access">
+                <a href="#" onclick="showChat(); showToast('Using LiverAI in Guest Mode', 'info'); return false;">
+                  Explore in Guest Mode <i class="fa-solid fa-arrow-right-long"></i>
+                </a>
+              </div>
+            </form>
+          </div>
+
+          <!-- ─── 2. SIGN UP VIEW (TOGGLEABLE) ─── -->
+          <div class="auth-mode-view" id="auth-signup-view" style="display:none">
+            <!-- Brand Logo & Header -->
+            <div class="auth-brand-header">
+              <div class="auth-logo-symbol">
+                <svg class="liver-neural-svg" viewBox="0 0 120 100" width="56" height="48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M22 36 C 28 20, 62 16, 96 26 C 108 30, 112 46, 106 64 C 98 84, 76 92, 48 92 C 28 92, 14 82, 14 60 C 14 48, 17 40, 22 36 Z" 
+                        fill="url(#liverGrad)" stroke="rgba(56, 189, 248, 0.45)" stroke-width="1.8" />
+                  <g stroke="url(#neuralLineGrad)" stroke-width="1.4" stroke-linecap="round">
+                    <line x1="36" y1="42" x2="56" y2="34" />
+                    <line x1="56" y1="34" x2="82" y2="38" />
+                    <line x1="36" y1="42" x2="48" y2="60" />
+                    <line x1="56" y1="34" x2="68" y2="54" />
+                    <line x1="82" y1="38" x2="94" y2="58" />
+                    <line x1="48" y1="60" x2="68" y2="54" />
+                    <line x1="68" y1="54" x2="94" y2="58" />
+                    <line x1="48" y1="60" x2="60" y2="78" />
+                    <line x1="68" y1="54" x2="60" y2="78" />
+                    <line x1="94" y1="58" x2="78" y2="76" />
+                    <line x1="60" y1="78" x2="78" y2="76" />
+                  </g>
+                  <g filter="url(#nodeGlow)">
+                    <circle cx="36" cy="42" r="3.5" fill="#38bdf8" />
+                    <circle cx="56" cy="34" r="4" fill="#ffffff" />
+                    <circle cx="82" cy="38" r="3.5" fill="#38bdf8" />
+                    <circle cx="48" cy="60" r="3.5" fill="#60a5fa" />
+                    <circle cx="68" cy="54" r="4.5" fill="#38bdf8" />
+                    <circle cx="94" cy="58" r="3" fill="#93c5fd" />
+                    <circle cx="60" cy="78" r="3.5" fill="#38bdf8" />
+                    <circle cx="78" cy="76" r="3" fill="#60a5fa" />
+                  </g>
+                </svg>
+              </div>
+              <div class="auth-brand-text">
+                <h1 class="auth-brand-title">LiverAI</h1>
+                <p class="auth-tagline">Your Journey to Liver Health</p>
+              </div>
             </div>
-            <div class="login-field" style="margin-top:.85rem">
-              <label for="signup-confirm-password"><i class="fa-solid fa-lock-open"></i> Confirm Password</label>
-              <div class="pw-input-wrap">
-                <input type="password" id="signup-confirm-password" placeholder="Re-enter your password" required
-                  autocomplete="new-password" oninput="
+
+            <h2 class="auth-heading">Create Your LiverAI Account</h2>
+
+            <div id="signup-error" class="auth-error-box" style="display:none">
+              <i class="fa-solid fa-circle-exclamation"></i>
+              <span id="signup-error-text"></span>
+            </div>
+
+            <form id="form-signup" onsubmit="event.preventDefault(); handleRegister();" autocomplete="on">
+              <div class="auth-field-group">
+                <label for="signup-name" class="auth-field-label">Full Name</label>
+                <div class="auth-input-wrapper">
+                  <i class="fa-solid fa-user auth-input-icon"></i>
+                  <input type="text" id="signup-name" class="auth-input" placeholder="e.g., Jane Doe" required autocomplete="name" />
+                </div>
+              </div>
+
+              <div class="auth-field-group">
+                <label for="signup-email" class="auth-field-label">Email Address</label>
+                <div class="auth-input-wrapper">
+                  <i class="fa-solid fa-envelope auth-input-icon"></i>
+                  <input type="email" id="signup-email" class="auth-input" placeholder="e.g., jane.doe@email.com" required autocomplete="email" />
+                </div>
+              </div>
+
+              <div class="auth-field-group">
+                <label for="signup-password" class="auth-field-label">Password</label>
+                <div class="auth-input-wrapper">
+                  <i class="fa-solid fa-lock auth-input-icon"></i>
+                  <input type="password" id="signup-password" class="auth-input auth-input-pw" placeholder="Create a password (min. 6 chars)" required autocomplete="new-password" />
+                  <button type="button" class="btn-pw-toggle" onclick="togglePw('signup-password', this)" tabindex="-1">
+                    <i class="fa-regular fa-eye"></i>
+                  </button>
+                </div>
+              </div>
+
+              <div class="auth-field-group">
+                <label for="signup-confirm-password" class="auth-field-label">Confirm Password</label>
+                <div class="auth-input-wrapper">
+                  <i class="fa-solid fa-lock-open auth-input-icon"></i>
+                  <input type="password" id="signup-confirm-password" class="auth-input auth-input-pw" placeholder="Re-enter password" required
+                    autocomplete="new-password" oninput="
                       const pw = document.getElementById('signup-password').value;
                       const hint = document.getElementById('confirm-pw-hint');
                       if (!this.value) { hint.textContent=''; return; }
-                      if (this.value === pw) { hint.style.color='#34d399'; hint.textContent='✓ Passwords match'; }
-                      else { hint.style.color='var(--danger)'; hint.textContent='⚠ Passwords do not match'; }
+                      if (this.value === pw) { hint.style.color='#10b981'; hint.textContent='✓ Passwords match'; }
+                      else { hint.style.color='#ef4444'; hint.textContent='⚠ Passwords do not match'; }
                     " />
-                <button type="button" class="btn-pw-toggle" onclick="togglePw('signup-confirm-password', this)"
-                  tabindex="-1">
-                  <i class="fa-regular fa-eye"></i>
+                  <button type="button" class="btn-pw-toggle" onclick="togglePw('signup-confirm-password', this)" tabindex="-1">
+                    <i class="fa-regular fa-eye"></i>
+                  </button>
+                </div>
+                <p id="confirm-pw-hint" class="auth-hint-text"></p>
+              </div>
+
+              <button type="submit" class="btn-auth-primary" id="btn-signup-submit">
+                <span>Create Account</span>
+                <i class="fa-solid fa-user-plus auth-btn-icon"></i>
+              </button>
+
+              <div class="auth-divider">
+                <span class="auth-divider-line"></span>
+                <span class="auth-divider-text">or continue with</span>
+                <span class="auth-divider-line"></span>
+              </div>
+
+              <div class="auth-social-grid">
+                <button type="button" class="btn-social-item google" onclick="handleFirebaseGoogleLogin()" title="Sign up with Google">
+                  <svg class="social-svg-icon" viewBox="0 0 24 24" width="18" height="18">
+                    <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+                    <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                    <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/>
+                    <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/>
+                  </svg>
+                  <span>Google</span>
+                </button>
+                <button type="button" class="btn-social-item facebook" onclick="handleFirebaseFacebookLogin()" title="Sign up with Facebook">
+                  <i class="fa-brands fa-facebook-f social-i-icon"></i>
+                  <span>Facebook</span>
+                </button>
+                <button type="button" class="btn-social-item github" onclick="handleFirebaseGithubLogin()" title="Sign up with GitHub">
+                  <i class="fa-brands fa-github social-i-icon"></i>
+                  <span>GitHub</span>
                 </button>
               </div>
-              <p id="confirm-pw-hint" style="font-size:.75rem;margin-top:.35rem;height:1rem;"></p>
-            </div>
-            <button type="submit" class="btn-login" id="btn-signup-submit" style="margin-top:1.25rem">
-              <i class="fa-solid fa-user-plus"></i> Create Account
-            </button>
-            <p class="auth-switch-hint">Already have an account? <a href="#"
-                onclick="toggleAuthTab('login'); return false;">Sign in</a></p>
-          </form>
 
+              <p class="auth-footer-prompt">
+                Already have an account? <a href="#" class="auth-action-link" onclick="toggleAuthMode('signin'); return false;">Sign In</a>
+              </p>
+            </form>
+          </div>
+
+        </div><!-- /.auth-glass-card -->
+      </div><!-- /.auth-glass-container -->
+
+      <!-- ─── 3. FORGOT PASSWORD MODAL ─── -->
+      <div class="auth-modal-backdrop" id="forgot-modal" style="display:none" onclick="if(event.target===this) closeForgotModal();">
+        <div class="auth-modal-card">
+          <div class="auth-modal-header">
+            <div class="auth-modal-title">
+              <i class="fa-solid fa-key text-blue"></i>
+              <span>Password Recovery</span>
+            </div>
+            <button type="button" class="auth-modal-close" onclick="closeForgotModal()"><i class="fa-solid fa-xmark"></i></button>
+          </div>
+          <div class="auth-modal-body">
+            <p class="auth-modal-desc">
+              Enter your registered email address and we'll send you recovery instructions to reset your password.
+            </p>
+            <form onsubmit="event.preventDefault(); handleForgotSubmit();">
+              <div class="auth-field-group">
+                <label for="forgot-email" class="auth-field-label">Email Address</label>
+                <div class="auth-input-wrapper">
+                  <i class="fa-solid fa-envelope auth-input-icon"></i>
+                  <input type="email" id="forgot-email" class="auth-input" placeholder="e.g., jane.doe@email.com" required />
+                </div>
+              </div>
+              <button type="submit" class="btn-auth-primary" id="btn-forgot-submit" style="margin-top:1.2rem">
+                <span>Send Reset Link</span>
+                <i class="fa-solid fa-paper-plane auth-btn-icon"></i>
+              </button>
+            </form>
+          </div>
         </div>
       </div>
 
     </div>
+
 
 
     <!-- Upload Modal (for general document upload in Chat tab) -->
@@ -564,50 +728,123 @@
                       <p class="settings-item-desc">Choose a visual aesthetic mode for workspace contrast, background tones, and ambiance</p>
                     </div>
                     <span id="active-theme-indicator" class="settings-chip" style="font-size:.75rem">
-                      <i class="fa-solid fa-circle-check" style="margin-right:4px"></i> Dark Mode Active
+                      <i class="fa-solid fa-circle-check" style="margin-right:4px"></i> Dark (Default) Active
                     </span>
                   </div>
                   <div class="theme-pills-grid">
                     <button type="button" class="theme-preset-btn active" id="theme-btn-dark" data-theme="dark" onclick="applyTheme('dark')">
-                      <span class="theme-preview-dot" style="background:#212121; border-color:#555"></span>
-                      <span class="theme-name">Dark (Default)</span>
-                      <i class="fa-solid fa-check theme-check-icon"></i>
+                      <div class="theme-preview-palette">
+                        <span class="palette-swatch" style="background:#212121"></span>
+                        <span class="palette-swatch" style="background:#2f2f2f"></span>
+                        <span class="palette-swatch" style="background:#10a37f"></span>
+                      </div>
+                      <div class="theme-info">
+                        <span class="theme-name">Dark (Default)</span>
+                        <span class="theme-tag">Balanced Slate</span>
+                      </div>
+                      <i class="fa-solid fa-circle-check theme-check-icon"></i>
                     </button>
                     <button type="button" class="theme-preset-btn" id="theme-btn-oled" data-theme="oled" onclick="applyTheme('oled')">
-                      <span class="theme-preview-dot" style="background:#000000; border-color:#333"></span>
-                      <span class="theme-name">OLED Black</span>
-                      <i class="fa-solid fa-check theme-check-icon"></i>
+                      <div class="theme-preview-palette">
+                        <span class="palette-swatch" style="background:#000000"></span>
+                        <span class="palette-swatch" style="background:#141414"></span>
+                        <span class="palette-swatch" style="background:#ffffff"></span>
+                      </div>
+                      <div class="theme-info">
+                        <span class="theme-name">OLED Black</span>
+                        <span class="theme-tag">Pure Black #000</span>
+                      </div>
+                      <i class="fa-solid fa-circle-check theme-check-icon"></i>
                     </button>
                     <button type="button" class="theme-preset-btn" id="theme-btn-midnight" data-theme="midnight" onclick="applyTheme('midnight')">
-                      <span class="theme-preview-dot" style="background:#0b1329; border-color:#1e293b"></span>
-                      <span class="theme-name">Midnight</span>
-                      <i class="fa-solid fa-check theme-check-icon"></i>
+                      <div class="theme-preview-palette">
+                        <span class="palette-swatch" style="background:#0b1329"></span>
+                        <span class="palette-swatch" style="background:#18264a"></span>
+                        <span class="palette-swatch" style="background:#38bdf8"></span>
+                      </div>
+                      <div class="theme-info">
+                        <span class="theme-name">Midnight Navy</span>
+                        <span class="theme-tag">Deep Oceanic</span>
+                      </div>
+                      <i class="fa-solid fa-circle-check theme-check-icon"></i>
                     </button>
                     <button type="button" class="theme-preset-btn" id="theme-btn-nordic" data-theme="nordic" onclick="applyTheme('nordic')">
-                      <span class="theme-preview-dot" style="background:#1e2430; border-color:#3b465c"></span>
-                      <span class="theme-name">Nordic Slate</span>
-                      <i class="fa-solid fa-check theme-check-icon"></i>
+                      <div class="theme-preview-palette">
+                        <span class="palette-swatch" style="background:#1e2430"></span>
+                        <span class="palette-swatch" style="background:#2b3446"></span>
+                        <span class="palette-swatch" style="background:#8892b0"></span>
+                      </div>
+                      <div class="theme-info">
+                        <span class="theme-name">Nordic Slate</span>
+                        <span class="theme-tag">Arctic Frost</span>
+                      </div>
+                      <i class="fa-solid fa-circle-check theme-check-icon"></i>
                     </button>
                     <button type="button" class="theme-preset-btn" id="theme-btn-cyberpunk" data-theme="cyberpunk" onclick="applyTheme('cyberpunk')">
-                      <span class="theme-preview-dot" style="background:#120924; border-color:#42207a"></span>
-                      <span class="theme-name">Cyberpunk</span>
-                      <i class="fa-solid fa-check theme-check-icon"></i>
+                      <div class="theme-preview-palette">
+                        <span class="palette-swatch" style="background:#120924"></span>
+                        <span class="palette-swatch" style="background:#241246"></span>
+                        <span class="palette-swatch" style="background:#c084fc"></span>
+                      </div>
+                      <div class="theme-info">
+                        <span class="theme-name">Cyberpunk Neon</span>
+                        <span class="theme-tag">Synthwave Glow</span>
+                      </div>
+                      <i class="fa-solid fa-circle-check theme-check-icon"></i>
+                    </button>
+                    <button type="button" class="theme-preset-btn" id="theme-btn-emerald" data-theme="emerald" onclick="applyTheme('emerald')">
+                      <div class="theme-preview-palette">
+                        <span class="palette-swatch" style="background:#071813"></span>
+                        <span class="palette-swatch" style="background:#103329"></span>
+                        <span class="palette-swatch" style="background:#34d399"></span>
+                      </div>
+                      <div class="theme-info">
+                        <span class="theme-name">Emerald Forest</span>
+                        <span class="theme-tag">Deep Dark Jade</span>
+                      </div>
+                      <i class="fa-solid fa-circle-check theme-check-icon"></i>
+                    </button>
+                    <button type="button" class="theme-preset-btn" id="theme-btn-rose" data-theme="rose" onclick="applyTheme('rose')">
+                      <div class="theme-preview-palette">
+                        <span class="palette-swatch" style="background:#1a0f18"></span>
+                        <span class="palette-swatch" style="background:#341f31"></span>
+                        <span class="palette-swatch" style="background:#f43f5e"></span>
+                      </div>
+                      <div class="theme-info">
+                        <span class="theme-name">Rose Pine</span>
+                        <span class="theme-tag">Velvet Wine</span>
+                      </div>
+                      <i class="fa-solid fa-circle-check theme-check-icon"></i>
                     </button>
                     <button type="button" class="theme-preset-btn" id="theme-btn-sepia" data-theme="sepia" onclick="applyTheme('sepia')">
-                      <span class="theme-preview-dot" style="background:#fbf0d9; border-color:#d8c49d"></span>
-                      <span class="theme-name">Warm Sepia</span>
-                      <i class="fa-solid fa-check theme-check-icon"></i>
+                      <div class="theme-preview-palette">
+                        <span class="palette-swatch" style="background:#fbf0d9"></span>
+                        <span class="palette-swatch" style="background:#ede0c4"></span>
+                        <span class="palette-swatch" style="background:#d97706"></span>
+                      </div>
+                      <div class="theme-info">
+                        <span class="theme-name">Warm Sepia</span>
+                        <span class="theme-tag">Paper Comfort</span>
+                      </div>
+                      <i class="fa-solid fa-circle-check theme-check-icon"></i>
                     </button>
                     <button type="button" class="theme-preset-btn" id="theme-btn-light" data-theme="light" onclick="applyTheme('light')">
-                      <span class="theme-preview-dot" style="background:#ffffff; border-color:#cbd5e1"></span>
-                      <span class="theme-name">Light Clean</span>
-                      <i class="fa-solid fa-check theme-check-icon"></i>
+                      <div class="theme-preview-palette">
+                        <span class="palette-swatch" style="background:#ffffff"></span>
+                        <span class="palette-swatch" style="background:#f1f5f9"></span>
+                        <span class="palette-swatch" style="background:#0ea5e9"></span>
+                      </div>
+                      <div class="theme-info">
+                        <span class="theme-name">Light Clean</span>
+                        <span class="theme-tag">Minimal Daylight</span>
+                      </div>
+                      <i class="fa-solid fa-circle-check theme-check-icon"></i>
                     </button>
                   </div>
                 </div>
 
                 <!-- Font Size Slider -->
-                <div class="settings-item-row" style="flex-direction:column; align-items:flex-start; gap:.6rem; padding-top:1rem; border-top:1px solid var(--border)">
+                <div class="settings-item-row" style="flex-direction:column; align-items:flex-start; gap:.6rem; padding-top:1.25rem; border-top:1px solid var(--border)">
                   <div style="display:flex; justify-content:space-between; width:100%; align-items:center">
                     <label class="settings-item-title"><i class="fa-solid fa-text-height" style="color:#6366f1; margin-right:.4rem"></i> Chat Font Size</label>
                     <span class="settings-chip" id="font-size-val-mobile">15px</span>
@@ -620,32 +857,77 @@
                   </div>
                 </div>
 
-                <!-- Accent Color Swatches -->
-                <div class="settings-item-row" style="flex-direction:column; align-items:flex-start; gap:.75rem; padding-top:1rem; border-top:1px solid var(--border)">
-                  <label class="settings-item-title"><i class="fa-solid fa-brush" style="color:#ec4899; margin-right:.4rem"></i> Accent Color Theme</label>
-                  <p class="settings-item-desc">Choose a primary accent tint for buttons, active pills, and glows</p>
-                  <div id="color-palette" style="display:flex; flex-wrap:wrap; gap:.6rem; width:100%">
-                    <button class="color-swatch active" id="swatch-teal" style="background:#10a37f" title="Teal (Default)" onclick="applyAccentColor('#10a37f','#0d8c6d','rgba(16,163,127,0.15)','teal')"><i class="fa-solid fa-check"></i></button>
-                    <button class="color-swatch" id="swatch-indigo" style="background:#6366f1" title="Indigo" onclick="applyAccentColor('#6366f1','#4f52d0','rgba(99,102,241,0.15)','indigo')"><i class="fa-solid fa-check"></i></button>
-                    <button class="color-swatch" id="swatch-violet" style="background:#8b5cf6" title="Violet" onclick="applyAccentColor('#8b5cf6','#7c3aed','rgba(139,92,246,0.15)','violet')"><i class="fa-solid fa-check"></i></button>
-                    <button class="color-swatch" id="swatch-rose" style="background:#f43f5e" title="Rose" onclick="applyAccentColor('#f43f5e','#e11d48','rgba(244,63,94,0.15)','rose')"><i class="fa-solid fa-check"></i></button>
-                    <button class="color-swatch" id="swatch-amber" style="background:#f59e0b" title="Amber" onclick="applyAccentColor('#f59e0b','#d97706','rgba(245,158,11,0.15)','amber')"><i class="fa-solid fa-check"></i></button>
-                    <button class="color-swatch" id="swatch-sky" style="background:#0ea5e9" title="Sky Blue" onclick="applyAccentColor('#0ea5e9','#0284c7','rgba(14,165,233,0.15)','sky')"><i class="fa-solid fa-check"></i></button>
-                    <button class="color-swatch" id="swatch-emerald" style="background:#34d399" title="Emerald" onclick="applyAccentColor('#34d399','#10b981','rgba(52,211,153,0.15)','emerald')"><i class="fa-solid fa-check"></i></button>
-                    <button class="color-swatch" id="swatch-pink" style="background:#ec4899" title="Pink" onclick="applyAccentColor('#ec4899','#db2777','rgba(236,72,153,0.15)','pink')"><i class="fa-solid fa-check"></i></button>
-                    <button class="color-swatch" id="swatch-orange" style="background:#f97316" title="Orange" onclick="applyAccentColor('#f97316','#ea6a06','rgba(249,115,22,0.15)','orange')"><i class="fa-solid fa-check"></i></button>
-                    <button class="color-swatch" id="swatch-gold" style="background:#eab308" title="Gold" onclick="applyAccentColor('#eab308','#ca9e00','rgba(234,179,8,0.15)','gold')"><i class="fa-solid fa-check"></i></button>
-                    <button class="color-swatch" id="swatch-cyan" style="background:#06b6d4" title="Electric Cyan" onclick="applyAccentColor('#06b6d4','#0891b2','rgba(6,182,212,0.15)','cyan')"><i class="fa-solid fa-check"></i></button>
-                    <button class="color-swatch" id="swatch-mint" style="background:#14b8a6" title="Mint Medical" onclick="applyAccentColor('#14b8a6','#0d9488','rgba(20,184,166,0.15)','mint')"><i class="fa-solid fa-check"></i></button>
-                    <button class="color-swatch" id="swatch-crimson" style="background:#ef4444" title="Crimson" onclick="applyAccentColor('#ef4444','#dc2626','rgba(239,68,68,0.15)','crimson')"><i class="fa-solid fa-check"></i></button>
-                    <button class="color-swatch" id="swatch-neonpurple" style="background:#d946ef" title="Neon Purple" onclick="applyAccentColor('#d946ef','#c026d3','rgba(217,70,239,0.15)','neonpurple')"><i class="fa-solid fa-check"></i></button>
-                    <button class="color-swatch" id="swatch-coral" style="background:#ff6b6b" title="Coral Sunset" onclick="applyAccentColor('#ff6b6b','#ee5253','rgba(255,107,107,0.15)','coral')"><i class="fa-solid fa-check"></i></button>
-                    <button class="color-swatch" id="swatch-lime" style="background:#84cc16" title="Lime Energy" onclick="applyAccentColor('#84cc16','#65a30d','rgba(132,204,22,0.15)','lime')"><i class="fa-solid fa-check"></i></button>
+                <!-- Accent Color Swatches & Custom Color Studio -->
+                <div class="settings-item-row" style="flex-direction:column; align-items:flex-start; gap:1rem; padding-top:1.25rem; border-top:1px solid var(--border)">
+                  <div style="display:flex; justify-content:space-between; width:100%; align-items:center; flex-wrap:wrap; gap:.5rem">
+                    <div>
+                      <label class="settings-item-title"><i class="fa-solid fa-brush" style="color:#ec4899; margin-right:.4rem"></i> Accent Color &amp; Custom Tint</label>
+                      <p class="settings-item-desc">Choose a curated accent preset or customize with any HEX color hue</p>
+                    </div>
+                    <span id="custom-color-badge" class="settings-chip" style="font-size:.75rem">
+                      <i class="fa-solid fa-palette" style="margin-right:4px"></i> Preset Active
+                    </span>
                   </div>
-                  <div style="display:flex; align-items:center; gap:.75rem; margin-top:.25rem">
-                    <span style="font-size:.8rem; color:var(--text-secondary); font-weight:600">Custom Color:</span>
-                    <input type="color" id="custom-color-picker" value="#10a37f" style="width:34px; height:34px; border-radius:8px; border:2px solid var(--border); cursor:pointer; background:none; padding:2px" oninput="applyAccentColor(this.value, adjustColor(this.value,-20), hexToRgba(this.value,0.15), 'custom')">
-                    <span style="font-size:.78rem; color:var(--text-muted)">Select any hex hue</span>
+
+                  <!-- Color Swatches Grid -->
+                  <div id="color-palette" class="color-palette-grid">
+                    <button type="button" class="color-swatch active" id="swatch-teal" style="background:#10a37f" title="Teal (Default)" onclick="applyAccentColor('#10a37f','#0d8c6d','rgba(16,163,127,0.18)','teal')"><i class="fa-solid fa-check"></i></button>
+                    <button type="button" class="color-swatch" id="swatch-indigo" style="background:#6366f1" title="Indigo" onclick="applyAccentColor('#6366f1','#4f52d0','rgba(99,102,241,0.18)','indigo')"><i class="fa-solid fa-check"></i></button>
+                    <button type="button" class="color-swatch" id="swatch-violet" style="background:#8b5cf6" title="Violet" onclick="applyAccentColor('#8b5cf6','#7c3aed','rgba(139,92,246,0.18)','violet')"><i class="fa-solid fa-check"></i></button>
+                    <button type="button" class="color-swatch" id="swatch-rose" style="background:#f43f5e" title="Rose" onclick="applyAccentColor('#f43f5e','#e11d48','rgba(244,63,94,0.18)','rose')"><i class="fa-solid fa-check"></i></button>
+                    <button type="button" class="color-swatch" id="swatch-amber" style="background:#f59e0b" title="Amber" onclick="applyAccentColor('#f59e0b','#d97706','rgba(245,158,11,0.18)','amber')"><i class="fa-solid fa-check"></i></button>
+                    <button type="button" class="color-swatch" id="swatch-sky" style="background:#0ea5e9" title="Sky Blue" onclick="applyAccentColor('#0ea5e9','#0284c7','rgba(14,165,233,0.18)','sky')"><i class="fa-solid fa-check"></i></button>
+                    <button type="button" class="color-swatch" id="swatch-emerald" style="background:#34d399" title="Emerald" onclick="applyAccentColor('#34d399','#10b981','rgba(52,211,153,0.18)','emerald')"><i class="fa-solid fa-check"></i></button>
+                    <button type="button" class="color-swatch" id="swatch-pink" style="background:#ec4899" title="Pink" onclick="applyAccentColor('#ec4899','#db2777','rgba(236,72,153,0.18)','pink')"><i class="fa-solid fa-check"></i></button>
+                    <button type="button" class="color-swatch" id="swatch-orange" style="background:#f97316" title="Orange" onclick="applyAccentColor('#f97316','#ea6a06','rgba(249,115,22,0.18)','orange')"><i class="fa-solid fa-check"></i></button>
+                    <button type="button" class="color-swatch" id="swatch-gold" style="background:#eab308" title="Gold" onclick="applyAccentColor('#eab308','#ca9e00','rgba(234,179,8,0.18)','gold')"><i class="fa-solid fa-check"></i></button>
+                    <button type="button" class="color-swatch" id="swatch-cyan" style="background:#06b6d4" title="Electric Cyan" onclick="applyAccentColor('#06b6d4','#0891b2','rgba(6,182,212,0.18)','cyan')"><i class="fa-solid fa-check"></i></button>
+                    <button type="button" class="color-swatch" id="swatch-mint" style="background:#14b8a6" title="Mint Medical" onclick="applyAccentColor('#14b8a6','#0d9488','rgba(20,184,166,0.18)','mint')"><i class="fa-solid fa-check"></i></button>
+                    <button type="button" class="color-swatch" id="swatch-crimson" style="background:#ef4444" title="Crimson" onclick="applyAccentColor('#ef4444','#dc2626','rgba(239,68,68,0.18)','crimson')"><i class="fa-solid fa-check"></i></button>
+                    <button type="button" class="color-swatch" id="swatch-neonpurple" style="background:#d946ef" title="Neon Purple" onclick="applyAccentColor('#d946ef','#c026d3','rgba(217,70,239,0.18)','neonpurple')"><i class="fa-solid fa-check"></i></button>
+                    <button type="button" class="color-swatch" id="swatch-coral" style="background:#ff6b6b" title="Coral Sunset" onclick="applyAccentColor('#ff6b6b','#ee5253','rgba(255,107,107,0.18)','coral')"><i class="fa-solid fa-check"></i></button>
+                    <button type="button" class="color-swatch" id="swatch-lime" style="background:#84cc16" title="Lime Energy" onclick="applyAccentColor('#84cc16','#65a30d','rgba(132,204,22,0.18)','lime')"><i class="fa-solid fa-check"></i></button>
+                  </div>
+
+                  <!-- Custom Color Studio Box -->
+                  <div class="custom-color-studio-card" id="custom-color-card">
+                    <div class="custom-color-header">
+                      <div class="custom-color-title-wrap">
+                        <i class="fa-solid fa-eye-dropper" style="color:var(--accent); font-size:1.05rem"></i>
+                        <div>
+                          <h4 style="font-size:.86rem; font-weight:700; color:var(--text-primary); margin:0">Custom Color Studio</h4>
+                          <p style="font-size:.73rem; color:var(--text-muted); margin:2px 0 0 0">Interactive color picker or direct HEX input code</p>
+                        </div>
+                      </div>
+                      <div class="custom-color-live-preview-chip">
+                        <span class="preview-dot" id="custom-live-preview-dot" style="background:var(--accent)"></span>
+                        <span class="preview-text" id="custom-live-preview-text" style="color:var(--accent)">Live Glow</span>
+                      </div>
+                    </div>
+
+                    <div class="custom-color-controls">
+                      <!-- Interactive Color Picker Swatch -->
+                      <div class="custom-picker-wrapper" title="Click to open color palette modal">
+                        <input type="color" id="custom-color-picker" value="#10a37f" class="custom-native-picker" oninput="handleCustomColorInput(this.value)">
+                        <div class="custom-color-display-box" id="custom-color-preview-box" style="background:#10a37f">
+                          <i class="fa-solid fa-wand-magic-sparkles"></i>
+                        </div>
+                      </div>
+
+                      <!-- Hex Code Direct Input -->
+                      <div class="custom-hex-input-group">
+                        <span class="hex-symbol">#</span>
+                        <input type="text" id="custom-color-hex-input" value="10A37F" maxlength="7" placeholder="10A37F" class="custom-hex-field" oninput="handleCustomHexInput(this.value)" onblur="handleCustomHexBlur(this.value)" title="Type or paste a 6-character hex color code">
+                      </div>
+
+                      <!-- Quick Action Buttons -->
+                      <button type="button" class="custom-color-btn" onclick="triggerCustomColorPicker()" title="Pick custom color">
+                        <i class="fa-solid fa-palette"></i> Pick Hue
+                      </button>
+                      <button type="button" class="custom-color-btn-copy" onclick="copyCurrentAccentHex()" title="Copy active color hex code">
+                        <i class="fa-solid fa-copy" id="copy-hex-icon"></i>
+                      </button>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -1211,12 +1493,12 @@
   </div> <!-- /app-container -->
 
 
-  <script src="/static/js/main.js?v=14.0"></script>
-  <script src="/static/js/theme.js?v=14.0"></script>
-  <script src="/static/js/auth.js?v=14.0"></script>
-  <script src="/static/js/chat.js?v=14.0"></script>
-  <script src="/static/js/profile.js?v=14.0"></script>
-  <script src="/static/js/admin.js?v=14.0"></script>
+  <script src="/static/js/theme.js?v=18.0"></script>
+  <script src="/static/js/main.js?v=18.0"></script>
+  <script src="/static/js/auth.js?v=18.0"></script>
+  <script src="/static/js/chat.js?v=18.0"></script>
+  <script src="/static/js/profile.js?v=18.0"></script>
+  <script src="/static/js/admin.js?v=18.0"></script>
 
 </body>
 

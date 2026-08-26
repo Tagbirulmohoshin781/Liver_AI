@@ -1,0 +1,48 @@
+{
+  "model_name": "LiverVision_EfficientNetB0",
+  "format": "ONNX",
+  "input_name": "input",
+  "output_name": "probabilities",
+  "input_shape": [
+    1,
+    3,
+    224,
+    224
+  ],
+  "input_mean": [
+    0.485,
+    0.456,
+    0.406
+  ],
+  "input_std": [
+    0.229,
+    0.224,
+    0.225
+  ],
+  "labels": [
+    {
+      "id": "ballooning",
+      "name": "Hepatocyte Ballooning",
+      "description": "Cellular swelling & degeneration",
+      "threshold": 0.5
+    },
+    {
+      "id": "fibrosis",
+      "name": "Tissue Fibrosis",
+      "description": "Connective tissue scarring & expansion",
+      "threshold": 0.5
+    },
+    {
+      "id": "inflammation",
+      "name": "Lobular Inflammation",
+      "description": "Inflammatory cellular aggregates",
+      "threshold": 0.5
+    },
+    {
+      "id": "steatosis",
+      "name": "Hepatic Steatosis",
+      "description": "Intracellular fat droplet accumulation",
+      "threshold": 0.5
+    }
+  ]
+}

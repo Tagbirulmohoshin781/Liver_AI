@@ -50,10 +50,7 @@ body {
 }
 
 #login-view {
-  display: none;
-  width: 100%;
-  height: 100%;
-  flex-direction: row;
+  display: none; /* Initially hidden; JS & auth.css take over when shown */
 }
 
 #chat-view {

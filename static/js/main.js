@@ -27,8 +27,13 @@ function showToast(msg, type = 'info') {
 
 // Global View & Router Switchers
 function showLogin() {
-  $('#chat-view').hide().css('display', 'none');
-  $('#login-view').css('display', 'flex').show();
+  $('#chat-view').hide();
+  const lv = document.getElementById('login-view');
+  if (lv) { lv.style.display = 'flex'; }
+  toggleAuthMode('signin');
+  setTimeout(function() {
+    if (typeof initAuthParticles === 'function') initAuthParticles();
+  }, 80);
 }
 
 function showChat() {
@@ -61,35 +66,170 @@ function switchTab(tabName) {
   }
 }
 
-// Auth Tab Switching & Errors
-function toggleAuthTab(tab) {
+// ─── Auth Mode Switching (Sign In <-> Sign Up) ─────────────────
+function toggleAuthMode(mode) {
   showAuthError('');
-  if (tab === 'signup') {
-    $('#tab-auth-login').removeClass('active');
-    $('#tab-auth-signup').addClass('active');
-    $('#form-login').hide();
-    $('#form-signup').show();
-    $('#auth-greeting-title').text('Create an account');
-    $('#auth-greeting-sub').text('Sign up to access your liver health assistant');
+  if (mode === 'signup') {
+    $('#auth-signin-view').hide();
+    $('#auth-signup-view').fadeIn(220);
+    $('#signup-name').focus();
   } else {
-    $('#tab-auth-signup').removeClass('active');
-    $('#tab-auth-login').addClass('active');
-    $('#form-signup').hide();
-    $('#form-login').show();
-    $('#auth-greeting-title').text('Welcome back');
-    $('#auth-greeting-sub').text('Sign in to continue to LiverAI');
+    $('#auth-signup-view').hide();
+    $('#auth-signin-view').fadeIn(220);
+    $('#login-email').focus();
   }
 }
+window.toggleAuthMode = toggleAuthMode;
 
-function showAuthError(msg) {
+// Backwards compatibility alias
+function toggleAuthTab(tab) {
+  toggleAuthMode(tab);
+}
+window.toggleAuthTab = toggleAuthTab;
+
+function showAuthError(msg, target = 'all') {
   if (msg) {
-    $('#login-error-text').text(msg);
-    $('#login-error').show();
+    if (target === 'signup') {
+      $('#signup-error-text').text(msg);
+      $('#signup-error').show();
+      $('#login-error').hide();
+    } else {
+      $('#login-error-text').text(msg);
+      $('#login-error').show();
+      $('#signup-error').hide();
+    }
   } else {
     $('#login-error-text').text('');
     $('#login-error').hide();
+    $('#signup-error-text').text('');
+    $('#signup-error').hide();
   }
 }
+window.showAuthError = showAuthError;
+
+// ─── Forgot Password Modal Handlers ────────────────────────────
+function openForgotModal() {
+  const currentEmail = $('#login-email').val().trim();
+  if (currentEmail) {
+    $('#forgot-email').val(currentEmail);
+  }
+  $('#forgot-modal').fadeIn(200).css('display', 'flex');
+  setTimeout(() => $('#forgot-email').focus(), 150);
+}
+window.openForgotModal = openForgotModal;
+
+function closeForgotModal() {
+  $('#forgot-modal').fadeOut(180);
+}
+window.closeForgotModal = closeForgotModal;
+
+function handleForgotSubmit() {
+  const email = $('#forgot-email').val().trim();
+  if (!email) {
+    showToast('Please enter a valid email address.', 'warning');
+    return;
+  }
+  const btn = $('#btn-forgot-submit');
+  btn.prop('disabled', true).html('<span>Sending Instructions…</span> <i class="fa-solid fa-spinner fa-spin"></i>');
+  
+  setTimeout(() => {
+    btn.prop('disabled', false).html('<span>Send Reset Link</span> <i class="fa-solid fa-paper-plane auth-btn-icon"></i>');
+    closeForgotModal();
+    showToast(`Password recovery link dispatched to ${email}`, 'success');
+  }, 900);
+}
+window.handleForgotSubmit = handleForgotSubmit;
+
+// ─── Ambient Neural Network Particle Canvas ───────────────────
+var _authParticlesRunning = false;
+function initAuthParticles() {
+  const canvas = document.getElementById('auth-particles-canvas');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  if (!ctx) return;
+
+  let width = canvas.width = window.innerWidth;
+  let height = canvas.height = window.innerHeight;
+
+  window.addEventListener('resize', () => {
+    if ($('#login-view').is(':visible')) {
+      width = canvas.width = window.innerWidth;
+      height = canvas.height = window.innerHeight;
+    }
+  });
+
+  const particles = [];
+  const particleCount = Math.min(Math.floor(window.innerWidth / 28), 45);
+  const colors = ['rgba(56, 189, 248, ', 'rgba(96, 165, 250, ', 'rgba(255, 255, 255, '];
+
+  for (let i = 0; i < particleCount; i++) {
+    particles.push({
+      x: Math.random() * width,
+      y: Math.random() * height,
+      vx: (Math.random() - 0.5) * 0.55,
+      vy: (Math.random() - 0.5) * 0.55,
+      radius: Math.random() * 2.2 + 1.2,
+      baseAlpha: Math.random() * 0.5 + 0.3,
+      color: colors[Math.floor(Math.random() * colors.length)]
+    });
+  }
+
+  if (_authParticlesRunning) return;
+  _authParticlesRunning = true;
+
+  function render() {
+    if (!$('#login-view').is(':visible')) {
+      _authParticlesRunning = false;
+      return;
+    }
+
+    ctx.clearRect(0, 0, width, height);
+
+    // Draw connecting lines between close particles
+    for (let i = 0; i < particles.length; i++) {
+      for (let j = i + 1; j < particles.length; j++) {
+        const dx = particles[i].x - particles[j].x;
+        const dy = particles[i].y - particles[j].y;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+
+        if (dist < 125) {
+          const alpha = (1 - dist / 125) * 0.22;
+          ctx.strokeStyle = `rgba(56, 189, 248, ${alpha})`;
+          ctx.lineWidth = 0.85;
+          ctx.beginPath();
+          ctx.moveTo(particles[i].x, particles[i].y);
+          ctx.lineTo(particles[j].x, particles[j].y);
+          ctx.stroke();
+        }
+      }
+    }
+
+    // Draw nodes
+    for (let i = 0; i < particles.length; i++) {
+      const p = particles[i];
+      p.x += p.vx;
+      p.y += p.vy;
+
+      if (p.x < 0) p.x = width;
+      if (p.x > width) p.x = 0;
+      if (p.y < 0) p.y = height;
+      if (p.y > height) p.y = 0;
+
+      ctx.fillStyle = p.color + p.baseAlpha + ')';
+      ctx.shadowBlur = 8;
+      ctx.shadowColor = 'rgba(56, 189, 248, 0.6)';
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.shadowBlur = 0;
+    }
+
+    requestAnimationFrame(render);
+  }
+
+  requestAnimationFrame(render);
+}
+window.initAuthParticles = initAuthParticles;
 
 function togglePw(inputId, btn) {
   const inp = document.getElementById(inputId);
@@ -102,6 +242,7 @@ function togglePw(inputId, btn) {
     $(btn).html('<i class="fa-regular fa-eye"></i>');
   }
 }
+
 
 function handleSocialComingSoon(provider) {
   showToast(`${provider} sign-in coming soon! Please use Google, GitHub, Facebook, or Email.`, 'info');
