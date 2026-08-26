@@ -42,7 +42,10 @@ function showChat() {
   const cv = document.getElementById('chat-view');
   if (cv) { cv.style.display = 'flex'; cv.style.flexDirection = 'row'; }
   switchTab('chat');
-  loadDatabaseHistory();
+  // On sign-in open a fresh new-chat window; populate sidebar/history only
+  $('#msg-group').empty().hide();
+  $('#welcome-screen').show();
+  loadDatabaseHistory(true); // sidebar + history tab only, not main chat area
 }
 
 function switchTab(tabName) {

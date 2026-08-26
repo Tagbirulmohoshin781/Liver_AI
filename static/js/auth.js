@@ -51,7 +51,8 @@ function applyUserData(user) {
   sessionStorage.setItem('loggedIn', 'true');
   sessionStorage.setItem('liverai_auth', '1');
   sessionStorage.setItem('userEmail', user.email);
-  loadDatabaseHistory();
+  // History is loaded into sidebar by showChat(); no full-history dump on login
+
 
   // Admin badge & button visibility
   if (user.is_admin) {
