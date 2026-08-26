@@ -542,7 +542,7 @@ def generate_rag_answer(
             return lora_ans
 
     # 0. Try OpenAI-compatible API if configured (Groq, OpenRouter, OpenAI, etc.)
-    if OPENAI_API_KEY or LLM_API_KEY or GROQ_API_KEY or os.getenv("OPENROUTER_API_KEY"):
+    if OPENAI_API_KEY or os.getenv("LLM_API_KEY") or os.getenv("GROQ_API_KEY") or os.getenv("OPENROUTER_API_KEY"):
         oa_ans = generate_openai_answer(
             system_prompt_str=full_system_prompt,
             user_input_str=augmented_input,
