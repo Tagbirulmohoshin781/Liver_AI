@@ -17,6 +17,7 @@ function applyUserData(user) {
   _chatMemory = [];
   localStorage.removeItem(HISTORY_KEY);
   $('#msg-group').empty().hide();
+  $('#welcome-screen').show();  // Always reset to fresh new-chat on sign-in
   $('#history-list').html('<li class="history-empty"><i class="fa-regular fa-clock"></i> No recent chats</li>');
   $('#history-tab-list').empty();
 
