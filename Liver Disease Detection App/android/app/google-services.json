@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "528254457830",
+    "project_id": "liver-ai-medical-assistant",
+    "storage_bucket": "liver-ai-medical-assistant.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:528254457830:android:20a77b467b02ef34f4a827",
+        "android_client_info": {
+          "package_name": "com.example.liver_disease_detection_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "528254457830-2bu33qkiuqh2u3084m0jt6ir2ol5nhc5.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.liver_disease_detection_app",
+            "certificate_hash": "c9937faad5a1c8eb68d165fef3bd7911cfc1c0c4"
+          }
+        },
+        {
+          "client_id": "528254457830-1cdvlrfcn3ra18uv5ju3q998nnvugnmb.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCoyXFUbSpJnSVoKOQYDTgGEUEneU2LTYM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "528254457830-1cdvlrfcn3ra18uv5ju3q998nnvugnmb.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
