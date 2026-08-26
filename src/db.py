@@ -32,7 +32,16 @@ DB_PATH = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__)
 
 # Supabase Configuration — all values MUST come from environment; no fallback secrets
 SUPABASE_URL = os.getenv("SUPABASE_URL", "").strip()
-SUPABASE_KEY = (os.getenv("SUPABASE_KEY") or os.getenv("SUPABASE_ANON_KEY") or "").strip()
+_raw_key = os.getenv("SUPABASE_KEY", "").strip()
+_anon_key = os.getenv("SUPABASE_ANON_KEY", "").strip()
+
+# Prefer valid JWT key (eyJ...) for python supabase client
+if _anon_key and _anon_key.startswith("eyJ"):
+    SUPABASE_KEY = _anon_key
+elif _raw_key and _raw_key.startswith("eyJ"):
+    SUPABASE_KEY = _raw_key
+else:
+    SUPABASE_KEY = _anon_key or _raw_key
 
 # MySQL Config
 MYSQL_HOST = os.getenv("MYSQL_HOST")
