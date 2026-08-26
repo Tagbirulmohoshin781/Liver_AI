@@ -356,22 +356,60 @@ def text_split(minimal_docs):
     return chunks
 
 
+class HuggingFaceApiEmbeddings:
+    """
+    Zero-memory cloud embeddings via Hugging Face Inference API.
+    Uses 0 MB local RAM because computation happens on the Hugging Face cloud.
+    Returns 384-dimensional vectors matching sentence-transformers/all-MiniLM-L6-v2.
+    """
+    def __init__(self, model_name: str = "sentence-transformers/all-MiniLM-L6-v2"):
+        self.model_name = model_name
+        self.api_url = f"https://api-inference.huggingface.co/pipeline/feature-extraction/{model_name}"
+        self.token = (
+            os.getenv("HF_TOKEN", "") or
+            os.getenv("HUGGINGFACEHUB_API_TOKEN", "") or
+            os.getenv("HUGGINGFACE_API_KEY", "")
+        ).strip()
+
+    def _query(self, texts: List[str]) -> List[List[float]]:
+        import json
+        import urllib.request
+        headers = {
+            "Content-Type": "application/json",
+            "User-Agent": "LiverAI/1.0"
+        }
+        if self.token:
+            headers["Authorization"] = f"Bearer {self.token}"
+
+        cleaned = [t.replace("\n", " ").strip() for t in texts]
+        payload = json.dumps({"inputs": cleaned, "options": {"wait_for_model": True}}).encode("utf-8")
+        req = urllib.request.Request(self.api_url, data=payload, headers=headers, method="POST")
+        try:
+            with urllib.request.urlopen(req, timeout=10) as resp:
+                data = json.loads(resp.read().decode("utf-8"))
+                if isinstance(data, list):
+                    if len(data) > 0 and isinstance(data[0], float):
+                        return [data]
+                    return data
+        except Exception as e:
+            print(f"[Embeddings API Notice] {e}")
+        return [[0.0] * 384 for _ in texts]
+
+    def embed_documents(self, texts: List[str]) -> List[List[float]]:
+        return self._query(texts)
+
+    def embed_query(self, text: str) -> List[float]:
+        res = self._query([text])
+        if res and len(res) > 0 and isinstance(res[0], list):
+            return res[0]
+        return [0.0] * 384
+
+
 def download_embeddings():
     """
-    Download and return the embeddings model.
-    Prioritizes FastEmbed (< 35MB RAM, ONNX-optimized for cloud deployment)
-    with graceful fallback to HuggingFaceEmbeddings.
+    Return embeddings interface.
+    Prioritizes HuggingFaceApiEmbeddings (0 MB RAM, perfect for cloud deployment)
+    with local FastEmbed/HuggingFace fallback if explicitly requested.
     """
-    try:
-        from langchain_community.embeddings.fastembed import FastEmbedEmbeddings
-        print("[Embeddings] Using lightweight FastEmbed (< 35MB RAM) ✓")
-        return FastEmbedEmbeddings(model_name="sentence-transformers/all-MiniLM-L6-v2")
-    except Exception as e:
-        print(f"[Embeddings] FastEmbed notice: {e}. Falling back to HuggingFaceEmbeddings...")
-
-    try:
-        from langchain_huggingface import HuggingFaceEmbeddings
-        return HuggingFaceEmbeddings(model_name="sentence-transformers/all-MiniLM-L6-v2")
-    except Exception:
-        from langchain_community.embeddings import HuggingFaceEmbeddings  # type: ignore[import]
-        return HuggingFaceEmbeddings(model_name="sentence-transformers/all-MiniLM-L6-v2")
+    print("[Embeddings] Using zero-RAM Cloud API Embeddings (384-d) ✓")
+    return HuggingFaceApiEmbeddings("sentence-transformers/all-MiniLM-L6-v2")

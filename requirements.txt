@@ -8,7 +8,6 @@ python-dotenv==1.1.0
 langchain==0.3.26
 langchain-community==0.3.26
 langchain-pinecone
-langchain-huggingface
 langchain-google-genai
 langchain-core
 
@@ -16,19 +15,13 @@ langchain-core
 pinecone
 google-generativeai
 
-# ── Embeddings & Transformers ─────────────────────────────────────────────────
-fastembed
-sentence-transformers==4.1.0
-huggingface_hub
-transformers
-
 # ── Machine Learning & Data Science ──────────────────────────────────────────
 numpy
 pandas
 scikit-learn
 joblib
 
-# ── Deep Learning (Vision Model) ──────────────────────────────────────────────
+# ── Deep Learning (Vision Model - CPU) ───────────────────────────────────────
 torch
 torchvision
 Pillow
@@ -46,6 +39,7 @@ firebase-admin
 # ── Database & Cloud Services ────────────────────────────────────────────────
 supabase
 pymysql
+cryptography
 
 # ── Production Server ────────────────────────────────────────────────────────
 gunicorn

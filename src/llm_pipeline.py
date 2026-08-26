@@ -165,61 +165,44 @@ def _background_init():
     chunks = text_split(minimal)
     with _lock:
         _local_docs = chunks
-        _retriever = LocalFallbackRetriever(chunks)   # early fallback
+        _retriever = LocalFallbackRetriever(chunks)   # instant local retriever
+        _rag_ready = True                             # mark ready immediately so server is 100% responsive
     print(f"[RAG] {len(chunks)} local fallback chunks ready.")
     gc.collect()
 
-    # 2. Connect to Pinecone
+    # 2. Connect to Pinecone (optional cloud vector enhancement)
     if not (PINECONE_API_KEY and HAS_PINECONE and HAS_PINECONE_LC):
         print("[RAG] Pinecone credentials unavailable — using local documents only.")
-        with _lock:
-            _rag_ready = True
         return
 
     try:
-        print("[RAG] Loading embedding model ...")
+        print("[RAG] Connecting to Pinecone with zero-RAM cloud embeddings ...")
         embedding = download_embeddings()
 
         os.environ["PINECONE_API_KEY"] = PINECONE_API_KEY
         pc = Pinecone(api_key=PINECONE_API_KEY)
 
-        if INDEX_NAME not in pc.list_indexes().names():
-            print(f"[RAG] Index '{INDEX_NAME}' not found — creating ...")
-            pc.create_index(
-                name=INDEX_NAME,
-                dimension=384,
-                metric="cosine",
-                spec=ServerlessSpec(cloud="aws", region="us-east-1"),
-            )
-            while not pc.describe_index(INDEX_NAME).status["ready"]:
-                time.sleep(1)
-            ds = PineconeVectorStore.from_documents(
-                documents=chunks, index_name=INDEX_NAME, embedding=embedding
-            )
-            print("[RAG] Pinecone index created and populated.")
-        else:
-            print(f"[RAG] Index '{INDEX_NAME}' found — connecting ...")
+        existing = pc.list_indexes().names()
+        if INDEX_NAME in existing:
+            print(f"[RAG] Index '{INDEX_NAME}' found — connecting vector store ...")
             ds = PineconeVectorStore.from_existing_index(
                 index_name=INDEX_NAME, embedding=embedding
             )
-
-        ret = ds.as_retriever(
-            search_type="mmr",
-            search_kwargs={"k": 8, "fetch_k": 20, "lambda_mult": 0.7},
-        )
-
-        with _lock:
-            _docsearch = ds
-            _retriever = ret
-            _rag_ready = True
-
-        print("[RAG] Pinecone retriever ready ✓")
+            ret = ds.as_retriever(
+                search_type="mmr",
+                search_kwargs={"k": 8, "fetch_k": 20, "lambda_mult": 0.7},
+            )
+            with _lock:
+                _docsearch = ds
+                _retriever = ret
+            print("[RAG] Pinecone retriever connected successfully ✓")
+        else:
+            print(f"[RAG] Index '{INDEX_NAME}' not found in Pinecone. Using local knowledge base.")
         gc.collect()
 
     except Exception as exc:
-        print(f"[RAG] Pinecone init failed: {exc} — falling back to local retriever.")
-        with _lock:
-            _rag_ready = True  # still mark ready so the app doesn't hang
+        print(f"[RAG] Pinecone connection notice: {exc} — continuing with local clinical retriever.")
+
 
 
 def init_rag_pipeline():
