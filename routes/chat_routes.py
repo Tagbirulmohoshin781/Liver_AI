@@ -160,19 +160,31 @@ def chat_json():
         except Exception as _v_err:
             print(f"[Vision Context Notice]: {_v_err}")
 
-    bot_response = generate_rag_answer(
-        user_message,
-        image_path=resolved_image_path,
-        chat_history=history_json if isinstance(history_json, list) else []
-    )
+    try:
+        bot_response = generate_rag_answer(
+            user_message,
+            image_path=resolved_image_path,
+            chat_history=history_json if isinstance(history_json, list) else []
+        )
+    except Exception as _rag_err:
+        print(f"[RAG Generation Error] {_rag_err}")
+        bot_response = (
+            "I'm currently unable to connect to the medical AI service. "
+            "Please check your network connection and try again in a moment.\n\n"
+            "*Please consult your healthcare provider for clinical diagnosis and personalized treatment.*"
+        )
 
     # Persist in DB for authenticated user
     if user_id:
-        session_id = session.get("session_id", "default")
-        save_chat_message(user_id=user_id, session_id=session_id, role="user", message=user_message)
-        save_chat_message(user_id=user_id, session_id=session_id, role="assistant", message=bot_response)
+        try:
+            session_id = session.get("session_id", "default")
+            save_chat_message(user_id=user_id, session_id=session_id, role="user", message=user_message)
+            save_chat_message(user_id=user_id, session_id=session_id, role="assistant", message=bot_response)
+        except Exception as _db_save_err:
+            print(f"[Chat Save Notice] {_db_save_err}")
 
     return jsonify({"response": bot_response})
+
 
 
 @chat_bp.route("/get", methods=["POST"])
