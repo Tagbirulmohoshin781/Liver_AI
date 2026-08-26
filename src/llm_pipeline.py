@@ -66,7 +66,7 @@ except ImportError:
     HAS_PINECONE = False
 
 from .helper import (
-    load_all_files, filter_to_minimal_docs, text_split, download_embeddings
+    load_all_files, load_txt_files, filter_to_minimal_docs, text_split, download_embeddings
 )
 from .prompt import system_prompt
 
@@ -156,16 +156,18 @@ class LocalFallbackRetriever:
 def _background_init():
     """Load local docs, connect to Pinecone, build RAG prompt — all off the main thread."""
     global _rag_ready, _retriever, _docsearch, _local_docs
+    import gc
 
-    # 1. Load + chunk local documents
-    print("[RAG] Loading local documents from Data/ ...")
-    raw   = load_all_files("Data", include_urls=False)
+    # 1. Load lightweight text documents for fast startup and low RAM consumption (< 1MB)
+    print("[RAG] Loading local fallback clinical documents from Data/ ...")
+    raw = load_txt_files("Data")
     minimal = filter_to_minimal_docs(raw)
-    chunks  = text_split(minimal)
+    chunks = text_split(minimal)
     with _lock:
         _local_docs = chunks
-        _retriever  = LocalFallbackRetriever(chunks)   # early fallback
-    print(f"[RAG] {len(chunks)} local chunks ready.")
+        _retriever = LocalFallbackRetriever(chunks)   # early fallback
+    print(f"[RAG] {len(chunks)} local fallback chunks ready.")
+    gc.collect()
 
     # 2. Connect to Pinecone
     if not (PINECONE_API_KEY and HAS_PINECONE and HAS_PINECONE_LC):
@@ -212,6 +214,7 @@ def _background_init():
             _rag_ready = True
 
         print("[RAG] Pinecone retriever ready ✓")
+        gc.collect()
 
     except Exception as exc:
         print(f"[RAG] Pinecone init failed: {exc} — falling back to local retriever.")
