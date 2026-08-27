@@ -88,28 +88,49 @@ def api_me():
 
 @auth_bp.route("/api/firebase-login", methods=["POST"])
 def api_firebase_login():
-    if not HAS_FIREBASE:
-        return jsonify({
-            "success": False,
-            "message": "Firebase Admin SDK not available.",
-        }), 503
-
     data     = request.get_json(silent=True) or {}
     id_token = data.get("idToken", "").strip()
 
     if not id_token:
-        return jsonify({"success": False, "message": "No Firebase ID token provided."}), 400
+        return jsonify({"success": False, "message": "No authentication token provided."}), 400
 
-    try:
-        decoded = fb_auth.verify_id_token(id_token)
-    except Exception as e:
-        print(f"[Firebase] Verification error: {e}")
-        return jsonify({"success": False, "message": "Authentication failed."}), 401
+    decoded = None
+
+    # 1. Try Firebase Admin SDK verification if initialized
+    if HAS_FIREBASE:
+        try:
+            decoded = fb_auth.verify_id_token(id_token)
+        except Exception as e:
+            print(f"[Firebase Admin Verify Notice]: {e}")
+
+    # 2. Fallback: Verify directly via Google OAuth TokenInfo public service
+    if not decoded:
+        try:
+            import urllib.request
+            import json
+            url = f"https://oauth2.googleapis.com/tokeninfo?id_token={id_token}"
+            req = urllib.request.Request(url, headers={"User-Agent": "LiverAI-Auth/1.0"})
+            with urllib.request.urlopen(req, timeout=8) as resp:
+                if resp.status == 200:
+                    info = json.loads(resp.read().decode("utf-8"))
+                    email = info.get("email")
+                    if email:
+                        decoded = {
+                            "uid": info.get("sub") or info.get("user_id") or email,
+                            "email": email,
+                            "name": info.get("name") or info.get("email", "").split("@")[0],
+                            "firebase": {"sign_in_provider": "google.com"}
+                        }
+        except Exception as _g_err:
+            print(f"[Google TokenInfo Verify Error]: {_g_err}")
+
+    if not decoded:
+        return jsonify({"success": False, "message": "Authentication token verification failed."}), 401
 
     firebase_uid = decoded.get("uid", "")
     email        = (decoded.get("email") or f"{firebase_uid}@firebase.user").lower().strip()
     display_name = decoded.get("name") or decoded.get("display_name") or email.split("@")[0]
-    provider     = decoded.get("firebase", {}).get("sign_in_provider", "firebase")
+    provider     = decoded.get("firebase", {}).get("sign_in_provider", "google")
 
     user_id, username = upsert_firebase_user(email, display_name)
 
@@ -126,3 +147,4 @@ def api_firebase_login():
         "message": f"Signed in with {provider}!",
         "user":    full_profile or {"id": user_id, "username": username, "email": email},
     })
+
