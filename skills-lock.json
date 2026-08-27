@@ -7,6 +7,12 @@
       "skillPath": "skills/aiq-research/SKILL.md",
       "computedHash": "520f64d652b93e5ec05e0f865f6b95d44b1b719d091082c1ec6af9082f23be54"
     },
+    "huggingface-spaces": {
+      "source": "huggingface/skills",
+      "sourceType": "github",
+      "skillPath": "skills/huggingface-spaces/SKILL.md",
+      "computedHash": "fcab17ea835b76b600fcb350ef426da614511a79a1c119f684ebe07068c0cdc2"
+    },
     "rag-blueprint": {
       "source": "NVIDIA/skills",
       "sourceType": "github",
