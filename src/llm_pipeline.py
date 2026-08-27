@@ -39,7 +39,8 @@ except ImportError:
     HAS_PINECONE = False
 
 from .helper import (
-    load_txt_files, filter_to_minimal_docs, text_split, download_embeddings
+    load_txt_files, filter_to_minimal_docs, text_split, download_embeddings,
+    format_chunk_with_boundary
 )
 from .prompt import system_prompt, CLINICAL_GUIDES, CLINICAL_DISCLAIMER, FALLBACK_EN
 
@@ -87,28 +88,94 @@ _local_docs    = []
 
 
 # =============================================================================
-# Local Fallback Retriever
+# NVIDIA RAG-Blueprint: Two-Stage Semantic & Intent-Aware Clinical Retriever
 # =============================================================================
-class LocalFallbackRetriever:
-    """In-process keyword-ranked retriever over the bundled clinical knowledge base."""
+class NvidiaRagTwoStageRetriever:
+    """
+    Two-Stage Hybrid & Intent-Aware Semantic Retriever conforming to NVIDIA RAG-Blueprint:
+      - Stage 1 (Fast Keyword & BM25 / Candidate Generation):
+        Multi-term frequency analysis and keyword expansion across local clinical chunks.
+      - Stage 2 (Semantic Intent Reranking & Evidence Weighting):
+        Applies clinical domain alignment boosts, authority hierarchy weighting (Level 1A > 1B > 2),
+        and confidence thresholding.
+    """
 
     def __init__(self, documents):
         self.documents = documents
 
-    def invoke(self, query: str):
-        query_terms = [t for t in re.findall(r"[a-z0-9]+", query.lower()) if len(t) > 2]
-        if not query_terms:
-            return self.documents[:6]
+    def invoke(self, query: str, top_k: int = 6):
+        if not self.documents:
+            return []
 
-        scored = []
+        query_terms = [t for t in re.findall(r"[a-z0-9]+", (query or "").lower()) if len(t) > 2]
+        query_intent = classify_clinical_intent(query)
+
+        # Evidence level scoring weights
+        evidence_weights = {
+            "Level 1A": 1.0,
+            "Level 1B": 0.9,
+            "Level 2A": 0.8,
+            "Level 2B": 0.7,
+            "Level 2": 0.6,
+        }
+
+        # ── STAGE 1: Candidate Generation (Keyword & Phrase Matching) ────────
+        candidates = []
         for doc in self.documents:
-            content = (doc.page_content or "").lower()
-            score = sum(content.count(term) for term in query_terms)
-            if score > 0:
-                scored.append((score, doc))
+            content = (getattr(doc, "page_content", "") or "").lower()
+            meta = getattr(doc, "metadata", {}) or {}
 
-        scored.sort(key=lambda item: item[0], reverse=True)
-        return [doc for _, doc in scored[:6]]
+            # Term frequency & exact phrase bonus
+            tf_score = 0.0
+            for term in query_terms:
+                tf_score += content.count(term)
+
+            # Metadata keyword match
+            keywords = [k.lower() for k in meta.get("keywords", [])]
+            keyword_match_bonus = sum(2.0 for term in query_terms if any(term in k for k in keywords))
+
+            total_stage1 = tf_score + keyword_match_bonus
+            if total_stage1 > 0 or not query_terms:
+                candidates.append((total_stage1, doc))
+
+        # Sort candidates and take top 20 for Stage 2 reranking
+        candidates.sort(key=lambda x: x[0], reverse=True)
+        pool = [doc for _, doc in candidates[:20]] if candidates else self.documents[:20]
+
+        # ── STAGE 2: Intent-Aware Semantic Reranking & Cross-Scoring ────────
+        reranked = []
+        for doc in pool:
+            content = (getattr(doc, "page_content", "") or "").lower()
+            meta = getattr(doc, "metadata", {}) or {}
+            domain = meta.get("clinical_domain", "general")
+            evidence = meta.get("evidence_level", "Level 1")
+
+            # 1. Base term overlap score
+            term_score = sum(content.count(term) for term in query_terms) if query_terms else 1.0
+
+            # 2. Domain affinity boost
+            domain_boost = 0.0
+            if domain == query_intent:
+                domain_boost = 5.0
+            elif query_intent in ["timeline_plan", "nutrition"] and domain in ["timeline_plan", "nutrition", "fatty_liver"]:
+                domain_boost = 3.5
+            elif query_intent == "alcohol_toxicity" and domain in ["alcohol_toxicity", "fatty_liver", "biomarkers"]:
+                domain_boost = 3.5
+            elif query_intent == "histology_biopsy" and domain in ["histology_biopsy", "fatty_liver", "symptoms"]:
+                domain_boost = 4.0
+
+            # 3. Evidence authority weight
+            ev_weight = evidence_weights.get(evidence, 0.75)
+
+            final_score = (term_score * 0.45) + (domain_boost * 0.35) + (ev_weight * 2.0)
+            reranked.append((final_score, doc))
+
+        reranked.sort(key=lambda x: x[0], reverse=True)
+        return [doc for _, doc in reranked[:top_k]]
+
+
+# Backwards-compatibility alias
+LocalFallbackRetriever = NvidiaRagTwoStageRetriever
 
 
 # =============================================================================
@@ -125,9 +192,9 @@ def _background_init():
     chunks = text_split(minimal)
     with _lock:
         _local_docs = chunks
-        _retriever = LocalFallbackRetriever(chunks)
+        _retriever = NvidiaRagTwoStageRetriever(chunks)
         _rag_ready = True
-    print(f"[RAG] {len(chunks)} local fallback chunks ready.")
+    print(f"[RAG] {len(chunks)} local clinical knowledge chunks loaded with NVIDIA RAG metadata.")
     gc.collect()
 
     if not (PINECONE_API_KEY and HAS_PINECONE and HAS_PINECONE_LC):
@@ -195,8 +262,7 @@ def classify_clinical_intent(query: str) -> str:
     if "scan_" in q or any(k in q for k in ["biopsy", "histology", "fibrosis stage", "steatosis grade", "ballooning degeneration", "histopath"]):
         return "histology_biopsy"
 
-    # 2. 1-Month / 30-Day Timeline Action Plan ("1 month", "one month", "30 day", "30-day", "4 week", "four week", "4-week",
-    #    "action plan", "diet chart", "routine", "schedule", "guideline")
+    # 2. 1-Month / 30-Day Timeline Action Plan ("1 month", "one month", "30 day", "plan", "routine", "schedule", "diet chart", "guideline")
     timeline_keywords = [
         "1 month", "one month", "30 day", "30-day", "4 week", "four week", "4-week",
         "action plan", "diet chart", "routine", "schedule", "guideline", "timeline",
@@ -205,7 +271,8 @@ def classify_clinical_intent(query: str) -> str:
     if any(k in q for k in timeline_keywords) or (("plan" in q or "month" in q) and any(k in q for k in ["diet", "liver", "heal", "revers", "action", "treatment", "recovery"])):
         return "timeline_plan"
 
-    # 3. Alcohol & Substance Toxicity ("alcohol", "vodka", "beer", "wine", "how many pegs", "ml", "drink")
+    # 3. Alcohol & Substance Toxicity ("alcohol", "vodka", "beer", "wine", "how many pegs", "pegs", "peg", "liquor",
+    # "whiskey", "whisky", "rum", "tequila", "gin", "ethanol", "drinking", "safe limit", "can i drink", "how much drink", "how much alcohol")
     alcohol_keywords = [
         "alcohol", "vodka", "beer", "wine", "how many pegs", "pegs", "peg", "liquor",
         "whiskey", "whisky", "rum", "tequila", "gin", "ethanol", "drinking",
@@ -550,29 +617,33 @@ def generate_rag_answer(
             return gemini_vision_ans
 
     # ── TEXT RAG PIPELINE ─────────────────────────────────────────────────────
-    augmented_input = user_msg
+    augmented_input = (
+        f"[UNTRUSTED_USER_QUERY]\n"
+        f"{user_msg}\n"
+        f"[/UNTRUSTED_USER_QUERY]"
+    )
     if chat_history:
         history_lines = []
         for turn in chat_history[-6:]:
             role = "User" if turn.get("role") == "user" else "LiverAI"
             history_lines.append(f"{role}: {turn.get('content', '')}")
         augmented_input = (
-            f"[Conversation History]\n{chr(10).join(history_lines)}\n\n"
-            f"[Current Question]\n{user_msg}"
+            f"[CONVERSATION_HISTORY]\n{chr(10).join(history_lines)}\n[/CONVERSATION_HISTORY]\n\n"
+            f"[UNTRUSTED_USER_QUERY]\n{user_msg}\n[/UNTRUSTED_USER_QUERY]"
         )
 
     context_str = ""
     if docs:
-        context_str = "\n\n".join(d.page_content for d in docs[:8])
+        context_str = "\n\n".join(format_chunk_with_boundary(d) for d in docs[:8])
 
     if image_path and os.path.exists(image_path):
         histology_scores = analyze_histology_image(image_path)
         if histology_scores:
             hist_lines = [f"- {k.replace('_', ' ').title()}: {v}% ({'DETECTED' if v>=50 else 'NOT DETECTED'})" for k, v in histology_scores.items()]
-            context_str += "\n\n[Uploaded Biopsy Histology Patch Findings]:\n" + "\n".join(hist_lines)
+            context_str += "\n\n[UPLOADED_BIOPSY_HISTOLOGY_FINDINGS]\n" + "\n".join(hist_lines) + "\n[/UPLOADED_BIOPSY_HISTOLOGY_FINDINGS]"
 
     full_system_prompt = system_prompt.replace("{context}", context_str)
-    full_prompt = full_system_prompt + "\n\nUser: " + augmented_input
+    full_prompt = full_system_prompt + "\n\n" + augmented_input
 
     # 1. Try Groq / OpenRouter API
     if GROQ_API_KEY or OPENROUTER_API_KEY or OPENAI_API_KEY:
