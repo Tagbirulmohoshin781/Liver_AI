@@ -56,6 +56,42 @@ class TestQCAuditSuite(unittest.TestCase):
         self.assertIn("status", data_r)
         self.assertIn("rag", data_r)
 
+    def test_clinical_intent_classification(self):
+        """Verify query-aware intent classification across all clinical domains."""
+        from src.llm_pipeline import classify_clinical_intent
+        self.assertEqual(classify_clinical_intent("Give me a 1 month diet chart and action plan"), "timeline_plan")
+        self.assertEqual(classify_clinical_intent("30 day routine to heal liver"), "timeline_plan")
+        self.assertEqual(classify_clinical_intent("How many pegs of alcohol or beer are safe?"), "alcohol_toxicity")
+        self.assertEqual(classify_clinical_intent("Can I drink vodka with fatty liver?"), "alcohol_toxicity")
+        self.assertEqual(classify_clinical_intent("What are early warning signs of liver disease?"), "symptoms")
+        self.assertEqual(classify_clinical_intent("Why is my ALT and AST elevated?"), "biomarkers")
+        self.assertEqual(classify_clinical_intent("Interpret scan_1787846492516 biopsy"), "histology_biopsy")
+        self.assertEqual(classify_clinical_intent("How to reverse fatty liver MASLD?"), "fatty_liver")
+
+    def test_1_month_timeline_action_plan_structure(self):
+        """Verify 4-week step-by-step liver regeneration protocol generation."""
+        resp = build_local_fallback_answer("Give me a 1 month action plan to heal my liver")
+        self.assertIn("4-Week Step-by-Step Liver Regeneration Protocol", resp)
+        self.assertIn("Week 1: Metabolic Reset", resp)
+        self.assertIn("Week 2: Anti-Inflammatory", resp)
+        self.assertIn("Week 3: Mitochondrial", resp)
+        self.assertIn("Week 4: Biomarker Re-evaluation", resp)
+        for section in REQUIRED_5_SECTIONS:
+            self.assertIn(section, resp)
+        for forbidden in FORBIDDEN_LEGACY_STRINGS:
+            self.assertNotIn(forbidden, resp)
+
+    def test_alcohol_substance_toxicity_structure(self):
+        """Verify AASLD zero tolerance and acetaldehyde toxicity guidance."""
+        resp = build_local_fallback_answer("How many pegs of alcohol or whiskey are safe?")
+        self.assertIn("NO safe threshold", resp)
+        self.assertIn("acetaldehyde", resp)
+        self.assertIn("Mandatory Complete Abstinence", resp)
+        for section in REQUIRED_5_SECTIONS:
+            self.assertIn(section, resp)
+        for forbidden in FORBIDDEN_LEGACY_STRINGS:
+            self.assertNotIn(forbidden, resp)
+
     def test_clinical_fallback_structure(self):
         """Verify that fallback answers return the mandatory 5 clinical sections."""
         resp = build_local_fallback_answer("What causes ALT and AST to spike?")
