@@ -1,57 +1,42 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 850 360" width="100%" height="100%">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 380 320" width="100%" height="100%">
   <defs>
-    <!-- Liver Lobe Main Gradient -->
-    <linearGradient id="liverBaseGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+    <linearGradient id="emblemLiverGrad" x1="0%" y1="0%" x2="100%" y2="100%">
       <stop offset="0%" stop-color="#05203D" />
       <stop offset="50%" stop-color="#0A467B" />
       <stop offset="100%" stop-color="#072B4F" />
     </linearGradient>
 
-    <!-- Liver Right Lobe Gradient -->
-    <linearGradient id="liverRightGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+    <linearGradient id="emblemRightGrad" x1="0%" y1="0%" x2="100%" y2="100%">
       <stop offset="0%" stop-color="#09355E" />
       <stop offset="100%" stop-color="#041B33" />
     </linearGradient>
 
-    <!-- Cyan Glowing Network Line Gradient -->
-    <linearGradient id="cyanLineGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+    <linearGradient id="emblemCyanGrad" x1="0%" y1="0%" x2="100%" y2="100%">
       <stop offset="0%" stop-color="#00F2FE" />
-      <stop offset="60%" stop-color="#00D2FF" />
+      <stop offset="50%" stop-color="#00D2FF" />
       <stop offset="100%" stop-color="#10B981" />
     </linearGradient>
 
-    <!-- AI Text Cyan Gradient -->
-    <linearGradient id="aiTextGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-      <stop offset="0%" stop-color="#00E5FF" />
-      <stop offset="100%" stop-color="#14B8A6" />
-    </linearGradient>
-
-    <!-- Glow Filters -->
-    <filter id="coreGlow" x="-50%" y="-50%" width="200%" height="200%">
+    <filter id="emblemCoreGlow" x="-50%" y="-50%" width="200%" height="200%">
       <feGaussianBlur stdDeviation="8" result="blur" />
       <feComposite in="SourceGraphic" in2="blur" operator="over" />
     </filter>
-    <filter id="nodeGlow" x="-40%" y="-40%" width="180%" height="180%">
+    <filter id="emblemNodeGlow" x="-40%" y="-40%" width="180%" height="180%">
       <feGaussianBlur stdDeviation="3.5" result="blur" />
       <feComposite in="SourceGraphic" in2="blur" operator="over" />
     </filter>
   </defs>
 
-  <!-- EMBLEM GROUP (Anatomical Liver + Neural Mesh) -->
   <g transform="translate(15, 20)">
-    <!-- Main Anatomical Liver Base Lobe (Left) -->
     <path d="M 165,55 C 235,50 285,80 290,120 C 295,160 275,190 245,220 C 205,255 145,250 110,230 C 80,210 65,175 70,140 C 77,95 115,60 165,55 Z" 
-          fill="url(#liverBaseGrad)" 
+          fill="url(#emblemLiverGrad)" 
           stroke="#00D2FF" stroke-width="1.2" stroke-opacity="0.5" />
 
-    <!-- Right Lobe -->
     <path d="M 275,110 C 315,120 350,140 345,170 C 340,200 300,220 260,205 C 273,180 277,145 275,110 Z" 
-          fill="url(#liverRightGrad)" 
+          fill="url(#emblemRightGrad)" 
           stroke="#00D2FF" stroke-width="1" stroke-opacity="0.35" />
 
-    <!-- Interconnected Neural Network Circuit Lines -->
-    <g stroke="url(#cyanLineGrad)" stroke-width="2.8" stroke-linecap="round" opacity="0.95">
-      <!-- Central Spoke Lines -->
+    <g stroke="url(#emblemCyanGrad)" stroke-width="2.8" stroke-linecap="round" opacity="0.95">
       <line x1="170" y1="150" x2="120" y2="110" />
       <line x1="170" y1="150" x2="220" y2="100" />
       <line x1="170" y1="150" x2="240" y2="150" />
@@ -60,7 +45,6 @@
       <line x1="170" y1="150" x2="95" y2="155" />
       <line x1="170" y1="150" x2="180" y2="90" />
 
-      <!-- Secondary Outer Connections -->
       <line x1="120" y1="110" x2="95" y2="155" />
       <line x1="120" y1="110" x2="180" y2="90" />
       <line x1="180" y1="90" x2="220" y2="100" />
@@ -76,15 +60,13 @@
       <line x1="95" y1="155" x2="130" y2="200" />
       <line x1="95" y1="155" x2="60" y2="190" />
 
-      <!-- Top Circuit Arcs -->
       <line x1="220" y1="100" x2="250" y2="60" />
       <line x1="250" y1="60" x2="280" y2="75" />
       <line x1="280" y1="75" x2="330" y2="100" />
       <line x1="300" y1="120" x2="330" y2="100" />
     </g>
 
-    <!-- Glowing Cyan Nodes -->
-    <g fill="url(#cyanLineGrad)" filter="url(#nodeGlow)">
+    <g fill="url(#emblemCyanGrad)" filter="url(#emblemNodeGlow)">
       <circle cx="120" cy="110" r="5.5" />
       <circle cx="180" cy="90" r="5.5" />
       <circle cx="220" cy="100" r="6.5" />
@@ -93,7 +75,6 @@
       <circle cx="130" cy="200" r="5.5" />
       <circle cx="95" cy="155" r="6.5" />
 
-      <!-- Extension Nodes -->
       <circle cx="250" cy="60" r="5" />
       <circle cx="280" cy="75" r="5.5" />
       <circle cx="330" cy="100" r="6" />
@@ -105,27 +86,8 @@
       <circle cx="60" cy="190" r="4.5" />
     </g>
 
-    <!-- Central Radiant Core Node -->
-    <circle cx="170" cy="150" r="16" fill="#00E5FF" opacity="0.4" filter="url(#coreGlow)" />
-    <circle cx="170" cy="150" r="10" fill="#00F2FE" filter="url(#nodeGlow)" />
+    <circle cx="170" cy="150" r="16" fill="#00E5FF" opacity="0.4" filter="url(#emblemCoreGlow)" />
+    <circle cx="170" cy="150" r="10" fill="#00F2FE" filter="url(#emblemNodeGlow)" />
     <circle cx="170" cy="150" r="5" fill="#FFFFFF" />
-  </g>
-
-  <!-- BRAND TYPOGRAPHY GROUP (Right Side) -->
-  <g transform="translate(365, 185)">
-    <!-- LIVER AI Text -->
-    <text x="0" y="0" font-family="'Inter', 'Montserrat', -apple-system, sans-serif" font-size="82" font-weight="900" letter-spacing="-1">
-      <tspan fill="#0A2540">LIVER </tspan>
-      <tspan fill="url(#aiTextGrad)">AI</tspan>
-    </text>
-
-    <!-- Underline Accent Bars -->
-    <line x1="0" y1="24" x2="330" y2="24" stroke="#0A2540" stroke-width="4.5" stroke-linecap="round" />
-    <line x1="230" y1="24" x2="330" y2="24" stroke="url(#aiTextGrad)" stroke-width="4.5" stroke-linecap="round" />
-
-    <!-- Tagline: PRECISION DIAGNOSTICS & ANALYTICS -->
-    <text x="2" y="52" font-family="'Inter', -apple-system, sans-serif" font-size="18" font-weight="800" fill="#0A2540" letter-spacing="2.4">
-      PRECISION DIAGNOSTICS &amp; ANALYTICS
-    </text>
   </g>
 </svg>

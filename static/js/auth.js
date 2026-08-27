@@ -166,54 +166,100 @@ function handleLogout() {
   });
 }
 
-// ─── Social OAuth Fallback Helper ─────────────────
-function _processSocialLoginFallback(providerLabel, defaultEmail) {
-  const email = prompt("Enter your " + providerLabel + " Account Email to sign in:", defaultEmail);
-  if (!email || !email.trim()) return;
-  const cleanEmail = email.trim().toLowerCase();
-  const rawName = cleanEmail.split('@')[0].replace(/[._-]/g, ' ');
-  const username = rawName.charAt(0).toUpperCase() + rawName.slice(1);
+// ─── Social OAuth & Fallback Account Modal System ───────────────
+function _showSocialAccountModal(providerLabel, defaultEmail, callback) {
+  let modal = $('#social-auth-modal');
+  if (!modal.length) {
+    $('body').append(`
+      <div id="social-auth-modal" style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; z-index:99999; background:rgba(4,10,22,0.85); backdrop-filter:blur(8px); display:flex; align-items:center; justify-content:center;">
+        <div style="background:rgba(15,23,42,0.95); border:1px solid rgba(255,255,255,0.18); border-radius:20px; width:90%; max-width:420px; padding:28px 24px; box-shadow:0 20px 50px rgba(0,0,0,0.6); color:#fff; text-align:center; font-family:'Inter',sans-serif;">
+          <div id="social-modal-icon" style="font-size:36px; margin-bottom:12px;"></div>
+          <h3 id="social-modal-title" style="margin:0 0 6px 0; font-weight:700; font-size:20px; color:#fff;"></h3>
+          <p style="margin:0 0 20px 0; font-size:13px; color:#94a3b8;">Choose or enter your account email to continue:</p>
+          
+          <div style="margin-bottom:14px; text-align:left;">
+            <label style="display:block; font-size:12px; font-weight:600; color:#cbd5e1; margin-bottom:6px;">Account Email</label>
+            <input type="email" id="social-modal-email-input" style="width:100%; box-sizing:border-box; padding:12px 14px; border-radius:10px; border:1px solid #334155; background:#0f172a; color:#fff; font-size:14px;" />
+          </div>
 
-  $.ajax({
-    url: '/api/register',
-    type: 'POST',
-    contentType: 'application/json',
-    data: JSON.stringify({
-      username: username,
-      email: cleanEmail,
-      password: 'oauth_pass_' + cleanEmail
-    }),
-    success: function (res) {
-      if (res.success) {
-        applyUserData(res.user);
-        showChat();
-        showToast('Signed in with ' + providerLabel + ' as ' + cleanEmail + '!', 'success');
-      }
-    },
-    error: function () {
-      $.ajax({
-        url: '/api/login',
-        type: 'POST',
-        contentType: 'application/json',
-        data: JSON.stringify({
-          email: cleanEmail,
-          password: 'oauth_pass_' + cleanEmail
-        }),
-        success: function (res) {
-          if (res.success) {
-            applyUserData(res.user);
-            showChat();
-            showToast('Welcome back, ' + res.user.username + '!', 'success');
-          } else {
-            showAuthError(providerLabel + ' sign in failed.');
-          }
-        },
-        error: function (xhr) {
-          const msg = xhr.responseJSON ? xhr.responseJSON.message : providerLabel + ' sign-in failed.';
-          showAuthError(msg);
+          <div style="display:flex; gap:10px; margin-top:20px;">
+            <button type="button" id="social-modal-cancel" style="flex:1; padding:12px; border-radius:10px; border:1px solid #334155; background:transparent; color:#94a3b8; font-weight:600; cursor:pointer;">Cancel</button>
+            <button type="button" id="social-modal-confirm" style="flex:1; padding:12px; border-radius:10px; border:none; background:#2563eb; color:#fff; font-weight:700; cursor:pointer;">Sign In</button>
+          </div>
+        </div>
+      </div>
+    `);
+    modal = $('#social-auth-modal');
+  }
+
+  const iconHtml = providerLabel === 'Google' ? '<span style="color:#ea4335; font-weight:900;">G</span>' :
+                   providerLabel === 'Facebook' ? '<i class="fa-brands fa-facebook" style="color:#1877f2;"></i>' :
+                   '<i class="fa-brands fa-github" style="color:#fff;"></i>';
+
+  $('#social-modal-icon').html(iconHtml);
+  $('#social-modal-title').text(`Sign In with ${providerLabel}`);
+  $('#social-modal-email-input').val(defaultEmail);
+
+  modal.css('display', 'flex').hide().fadeIn(200);
+
+  $('#social-modal-cancel').off('click').on('click', function() {
+    modal.fadeOut(150);
+  });
+
+  $('#social-modal-confirm').off('click').on('click', function() {
+    const email = $('#social-modal-email-input').val().trim();
+    if (!email) return;
+    modal.fadeOut(150);
+    callback(email);
+  });
+}
+
+function _processSocialLoginFallback(providerLabel, defaultEmail) {
+  _showSocialAccountModal(providerLabel, defaultEmail, function(cleanEmail) {
+    const rawName = cleanEmail.split('@')[0].replace(/[._-]/g, ' ');
+    const username = rawName.charAt(0).toUpperCase() + rawName.slice(1);
+
+    $.ajax({
+      url: '/api/register',
+      type: 'POST',
+      contentType: 'application/json',
+      data: JSON.stringify({
+        username: username,
+        email: cleanEmail,
+        password: 'oauth_pass_' + cleanEmail
+      }),
+      success: function (res) {
+        if (res.success) {
+          applyUserData(res.user);
+          showChat();
+          showToast('Signed in with ' + providerLabel + ' as ' + cleanEmail + '!', 'success');
         }
-      });
-    }
+      },
+      error: function () {
+        $.ajax({
+          url: '/api/login',
+          type: 'POST',
+          contentType: 'application/json',
+          data: JSON.stringify({
+            email: cleanEmail,
+            password: 'oauth_pass_' + cleanEmail
+          }),
+          success: function (res) {
+            if (res.success) {
+              applyUserData(res.user);
+              showChat();
+              showToast('Welcome back, ' + res.user.username + '!', 'success');
+            } else {
+              showAuthError(providerLabel + ' sign in failed.');
+            }
+          },
+          error: function (xhr) {
+            const msg = xhr.responseJSON ? xhr.responseJSON.message : providerLabel + ' sign-in failed.';
+            showAuthError(msg);
+          }
+        });
+      }
+    });
   });
 }
 

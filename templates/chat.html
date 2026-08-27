@@ -85,61 +85,12 @@
           <div class="auth-mode-view" id="auth-signin-view">
             <!-- Brand Logo & Header -->
             <div class="auth-brand-header">
-              <div class="auth-logo-symbol" title="LiverAI Neural Core">
-                <svg class="liver-neural-svg" viewBox="0 0 120 100" width="56" height="48" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <defs>
-                    <linearGradient id="liverGrad" x1="10%" y1="10%" x2="90%" y2="90%">
-                      <stop offset="0%" stop-color="#0f172a" />
-                      <stop offset="45%" stop-color="#1e3a8a" />
-                      <stop offset="100%" stop-color="#2563eb" />
-                    </linearGradient>
-                    <filter id="nodeGlow" x="-20%" y="-20%" width="140%" height="140%">
-                      <feGaussianBlur stdDeviation="2.5" result="blur" />
-                      <feComposite in="SourceGraphic" in2="blur" operator="over" />
-                    </filter>
-                    <linearGradient id="neuralLineGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                      <stop offset="0%" stop-color="#38bdf8" stop-opacity="0.85" />
-                      <stop offset="100%" stop-color="#60a5fa" stop-opacity="0.45" />
-                    </linearGradient>
-                  </defs>
-                  
-                  <!-- Stylized Dark Blue Anatomical Liver Silhouette -->
-                  <path d="M22 36 C 28 20, 62 16, 96 26 C 108 30, 112 46, 106 64 C 98 84, 76 92, 48 92 C 28 92, 14 82, 14 60 C 14 48, 17 40, 22 36 Z" 
-                        fill="url(#liverGrad)" 
-                        stroke="rgba(56, 189, 248, 0.45)" 
-                        stroke-width="1.8" />
-                  
-                  <!-- Interconnected Neural Network Lines -->
-                  <g stroke="url(#neuralLineGrad)" stroke-width="1.4" stroke-linecap="round">
-                    <line x1="36" y1="42" x2="56" y2="34" />
-                    <line x1="56" y1="34" x2="82" y2="38" />
-                    <line x1="36" y1="42" x2="48" y2="60" />
-                    <line x1="56" y1="34" x2="68" y2="54" />
-                    <line x1="82" y1="38" x2="94" y2="58" />
-                    <line x1="48" y1="60" x2="68" y2="54" />
-                    <line x1="68" y1="54" x2="94" y2="58" />
-                    <line x1="48" y1="60" x2="60" y2="78" />
-                    <line x1="68" y1="54" x2="60" y2="78" />
-                    <line x1="94" y1="58" x2="78" y2="76" />
-                    <line x1="60" y1="78" x2="78" y2="76" />
-                  </g>
-
-                  <!-- Interconnected Neural Network Nodes with Glowing Highlights -->
-                  <g filter="url(#nodeGlow)">
-                    <circle cx="36" cy="42" r="3.5" fill="#38bdf8" class="neural-node pulse-fast" />
-                    <circle cx="56" cy="34" r="4" fill="#ffffff" class="neural-node pulse-med" />
-                    <circle cx="82" cy="38" r="3.5" fill="#38bdf8" class="neural-node pulse-slow" />
-                    <circle cx="48" cy="60" r="3.5" fill="#60a5fa" class="neural-node pulse-med" />
-                    <circle cx="68" cy="54" r="4.5" fill="#38bdf8" class="neural-node pulse-fast" />
-                    <circle cx="94" cy="58" r="3" fill="#93c5fd" class="neural-node pulse-slow" />
-                    <circle cx="60" cy="78" r="3.5" fill="#38bdf8" class="neural-node pulse-med" />
-                    <circle cx="78" cy="76" r="3" fill="#60a5fa" class="neural-node pulse-fast" />
-                  </g>
-                </svg>
+              <div class="auth-logo-symbol" title="LiverAI Brand" style="display:flex; align-items:center; justify-content:center; width:44px; height:44px; background:rgba(255,255,255,0.95); border-radius:50%; box-shadow:0 4px 14px rgba(0,0,0,0.25);">
+                <div style="width:18px; height:18px; border-radius:50%; background:#000000;"></div>
               </div>
               <div class="auth-brand-text">
-                <h1 class="auth-brand-title">LiverAI</h1>
-                <p class="auth-tagline">Your Journey to Liver Health</p>
+                <h1 class="auth-brand-title" style="font-family:'Inter', sans-serif; font-weight:800; font-size:1.85rem; letter-spacing:-0.5px; color:#1D4ED8;">Liver<span style="color:#1E3A8A;">AI</span></h1>
+                <p class="auth-tagline" style="font-size:0.75rem; letter-spacing:0.5px; color:#94A3B8; margin-top:2px;">Your Journey to Liver Health</p>
               </div>
             </div>
 
@@ -229,40 +180,18 @@
 
           <!-- ─── 2. SIGN UP VIEW (TOGGLEABLE) ─── -->
           <div class="auth-mode-view" id="auth-signup-view" style="display:none">
-            <!-- Brand Logo & Header -->
-            <div class="auth-brand-header">
-              <div class="auth-logo-symbol">
-                <svg class="liver-neural-svg" viewBox="0 0 120 100" width="56" height="48" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M22 36 C 28 20, 62 16, 96 26 C 108 30, 112 46, 106 64 C 98 84, 76 92, 48 92 C 28 92, 14 82, 14 60 C 14 48, 17 40, 22 36 Z" 
-                        fill="url(#liverGrad)" stroke="rgba(56, 189, 248, 0.45)" stroke-width="1.8" />
-                  <g stroke="url(#neuralLineGrad)" stroke-width="1.4" stroke-linecap="round">
-                    <line x1="36" y1="42" x2="56" y2="34" />
-                    <line x1="56" y1="34" x2="82" y2="38" />
-                    <line x1="36" y1="42" x2="48" y2="60" />
-                    <line x1="56" y1="34" x2="68" y2="54" />
-                    <line x1="82" y1="38" x2="94" y2="58" />
-                    <line x1="48" y1="60" x2="68" y2="54" />
-                    <line x1="68" y1="54" x2="94" y2="58" />
-                    <line x1="48" y1="60" x2="60" y2="78" />
-                    <line x1="68" y1="54" x2="60" y2="78" />
-                    <line x1="94" y1="58" x2="78" y2="76" />
-                    <line x1="60" y1="78" x2="78" y2="76" />
-                  </g>
-                  <g filter="url(#nodeGlow)">
-                    <circle cx="36" cy="42" r="3.5" fill="#38bdf8" />
-                    <circle cx="56" cy="34" r="4" fill="#ffffff" />
-                    <circle cx="82" cy="38" r="3.5" fill="#38bdf8" />
-                    <circle cx="48" cy="60" r="3.5" fill="#60a5fa" />
-                    <circle cx="68" cy="54" r="4.5" fill="#38bdf8" />
-                    <circle cx="94" cy="58" r="3" fill="#93c5fd" />
-                    <circle cx="60" cy="78" r="3.5" fill="#38bdf8" />
-                    <circle cx="78" cy="76" r="3" fill="#60a5fa" />
-                  </g>
-                </svg>
+            <!-- Official Brand Logo & Header -->
+            <div class="auth-brand-header" style="flex-direction:column; align-items:center; text-align:center; gap:0.5rem;">
+              <div class="auth-logo-symbol" title="LiverAI Diagnostic System" style="width:72px; height:62px; background:rgba(7,27,46,0.9); border:1px solid rgba(0,229,255,0.4); border-radius:16px; display:flex; align-items:center; justify-content:center; box-shadow:0 0 20px rgba(0,229,255,0.25); padding:4px;">
+                <img src="/static/images/liverai_emblem.svg" alt="LiverAI Emblem" style="width:100%; height:100%; object-fit:contain;" />
               </div>
-              <div class="auth-brand-text">
-                <h1 class="auth-brand-title">LiverAI</h1>
-                <p class="auth-tagline">Your Journey to Liver Health</p>
+              <div class="auth-brand-text" style="text-align:center;">
+                <h1 class="auth-brand-title" style="font-family:'Inter', sans-serif; font-weight:900; font-size:2rem; letter-spacing:-0.5px; margin:0;">
+                  <span style="color:#ffffff;">LIVER </span><span style="color:#00E5FF;">AI</span>
+                </h1>
+                <p class="auth-tagline" style="font-size:0.68rem; font-weight:800; letter-spacing:1.4px; color:#38BDF8; margin-top:3px; text-transform:uppercase;">
+                  PRECISION DIAGNOSTICS &amp; ANALYTICS
+                </p>
               </div>
             </div>
 
