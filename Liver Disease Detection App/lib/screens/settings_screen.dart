@@ -150,16 +150,29 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    const Text('Theme Presets (Website Engine)', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w700)),
-                    Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 2),
-                      decoration: BoxDecoration(
-                        color: accent.withValues(alpha: 0.15),
-                        borderRadius: BorderRadius.circular(8),
-                      ),
+                    const Expanded(
                       child: Text(
-                        theme.currentPreset.name,
-                        style: TextStyle(fontSize: 10, fontWeight: FontWeight.w800, color: accent),
+                        'Theme Presets (Website Engine)',
+                        style: TextStyle(fontSize: 14, fontWeight: FontWeight.w700),
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 1,
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    Flexible(
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                        decoration: BoxDecoration(
+                          color: accent.withValues(alpha: 0.15),
+                          borderRadius: BorderRadius.circular(8),
+                          border: Border.all(color: accent.withValues(alpha: 0.3)),
+                        ),
+                        child: Text(
+                          theme.currentPreset.name,
+                          style: TextStyle(fontSize: 10, fontWeight: FontWeight.w800, color: accent),
+                          overflow: TextOverflow.ellipsis,
+                          maxLines: 1,
+                        ),
                       ),
                     ),
                   ],
@@ -315,7 +328,14 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    const Text('Glass Blur Intensity', style: TextStyle(fontSize: 12.5, fontWeight: FontWeight.w600)),
+                    const Expanded(
+                      child: Text(
+                        'Glass Blur Intensity',
+                        style: TextStyle(fontSize: 12.5, fontWeight: FontWeight.w600),
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                    const SizedBox(width: 8),
                     Text('${theme.blurSigma.toInt()} px', style: TextStyle(fontSize: 11.5, fontWeight: FontWeight.w700, color: accent)),
                   ],
                 ),
@@ -331,7 +351,14 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    const Text('Font Size Scale', style: TextStyle(fontSize: 12.5, fontWeight: FontWeight.w600)),
+                    const Expanded(
+                      child: Text(
+                        'Font Size Scale',
+                        style: TextStyle(fontSize: 12.5, fontWeight: FontWeight.w600),
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                    const SizedBox(width: 8),
                     Text('${(theme.fontScale * 100).toInt()}%', style: TextStyle(fontSize: 11.5, fontWeight: FontWeight.w700, color: accent)),
                   ],
                 ),
@@ -358,7 +385,13 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   children: [
                     Icon(Icons.psychology, size: 20, color: accent),
                     const SizedBox(width: 8),
-                    const Text('AI Model Tuning & Intelligence', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w700)),
+                    const Expanded(
+                      child: Text(
+                        'AI Model Tuning & Intelligence',
+                        style: TextStyle(fontSize: 14, fontWeight: FontWeight.w700),
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
                   ],
                 ),
                 const SizedBox(height: 14),
@@ -403,9 +436,14 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     const Text('Diagnostic Temperature', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600)),
-                    Text(
-                      '$_temperature (${_temperature <= 0.3 ? "Strict Factual" : (_temperature <= 0.7 ? "Balanced" : "Exploratory")})',
-                      style: TextStyle(fontSize: 11, fontWeight: FontWeight.w700, color: accent),
+                    const SizedBox(width: 8),
+                    Flexible(
+                      child: Text(
+                        '$_temperature (${_temperature <= 0.3 ? "Strict Factual" : (_temperature <= 0.7 ? "Balanced" : "Exploratory")})',
+                        style: TextStyle(fontSize: 11, fontWeight: FontWeight.w700, color: accent),
+                        overflow: TextOverflow.ellipsis,
+                        textAlign: TextAlign.end,
+                      ),
                     ),
                   ],
                 ),
@@ -423,7 +461,14 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    const Text('Max Output Tokens', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600)),
+                    const Expanded(
+                      child: Text(
+                        'Max Output Tokens',
+                        style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600),
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                    const SizedBox(width: 8),
                     Text('$_maxTokens tokens', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w700, color: accent)),
                   ],
                 ),

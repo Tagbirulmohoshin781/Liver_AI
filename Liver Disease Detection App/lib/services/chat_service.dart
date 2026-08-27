@@ -346,7 +346,7 @@ In its early stages, chronic liver disease is frequently silent and asymptomatic
     // Intent B: Fatty Liver & NAFLD / NASH / Steatosis
     if (lower.contains('fatty') || lower.contains('nafld') || lower.contains('nash') || lower.contains('steatosis') || lower.contains('fat') || lower.contains('masld') || lower.contains('mash')) {
       return '''### 🩺 Clinical Overview & Assessment
-Metabolic Dysfunction-Associated Steatotic Liver Disease (MASLD / NAFLD) involves triglyceride accumulation in > 5% of hepatocytes. It ranges from simple steatosis (fully reversible) to MASH/NASH with active lobular inflammation and progressive fibrogenesis.
+Metabolic Dysfunction-Associated Steatotic Liver Disease (MASLD / NAFLD / Fatty Liver Disease) involves triglyceride accumulation in > 5% of hepatocytes. It ranges from simple steatosis (fully reversible) to MASH/NASH with active lobular inflammation and progressive fibrogenesis.
 
 ### 🔬 Biomarker / Histological Analysis
 - **Disease Staging Spectrum:**
