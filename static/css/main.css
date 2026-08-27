@@ -1,5 +1,5 @@
 /* =============================================================================
-   static/css/main.css — Core Design System Tokens, Layout Reset & Global UI
+   static/css/main.css — Tier-1 Healthcare Pro-Max Design System & Global Tokens
    ============================================================================= */
 
 *,
@@ -11,36 +11,80 @@
 }
 
 :root {
-  --bg-primary: #212121;
-  --bg-secondary: #2f2f2f;
-  --bg-sidebar: #171717;
-  --bg-input: #2f2f2f;
-  --bg-hover: #3a3a3a;
-  --border: #3f3f3f;
-  --text-primary: #ececec;
-  --text-secondary: #8e8ea0;
-  --text-muted: #6b6b7b;
-  --accent: #10a37f;
-  --accent-hover: #0d8c6d;
-  --accent-glow: rgba(16, 163, 127, 0.15);
-  --user-bubble: #2f2f2f;
-  --ai-bg: transparent;
-  --radius: 16px;
-  --sidebar-w: 260px;
-  --danger: #f87171;
-  --warn: #fbbf24;
+  /* ── Canvas & Surface Tokens (Deep Obsidian Navy & Frosted Glass) ── */
+  --bg-primary: #060D17;
+  --bg-canvas: #060D17;
+  --bg-secondary: rgba(13, 27, 46, 0.75);
+  --bg-surface: rgba(13, 27, 46, 0.85);
+  --bg-card: rgba(15, 30, 52, 0.80);
+  --bg-card-hover: rgba(22, 42, 70, 0.90);
+  --bg-sidebar: rgba(8, 17, 30, 0.96);
+  --bg-input: rgba(13, 27, 46, 0.90);
+  --bg-hover: rgba(30, 58, 95, 0.45);
+  
+  /* ── Border Tokens ── */
+  --border: rgba(255, 255, 255, 0.08);
+  --border-subtle: rgba(255, 255, 255, 0.05);
+  --border-focus: rgba(0, 240, 255, 0.50);
+  --border-accent: rgba(0, 240, 255, 0.25);
+  
+  /* ── Typography Colors ── */
+  --text-primary: #F8FAFC;
+  --text-secondary: #94A3B8;
+  --text-muted: #64748B;
+  
+  /* ── Accent & Brand Palette ── */
+  --accent: #00F0FF;
+  --accent-cyan: #00F0FF;
+  --accent-blue: #0284C7;
+  --accent-hover: #38BDF8;
+  --accent-glow: rgba(0, 240, 255, 0.22);
+  --accent-glow-strong: rgba(0, 240, 255, 0.45);
+  
+  /* ── Clinical Semantics ── */
+  --emerald: #10B981;
+  --emerald-glow: rgba(16, 185, 129, 0.25);
+  --danger: #EF4444;
+  --danger-glow: rgba(239, 68, 68, 0.25);
+  --warn: #F59E0B;
+  --warn-glow: rgba(245, 158, 11, 0.25);
+  --purple: #A78BFA;
+  
+  /* ── Geometry & Layout ── */
+  --radius-xs: 6px;
+  --radius-sm: 10px;
+  --radius-md: 16px;
+  --radius-lg: 22px;
+  --radius-xl: 30px;
+  --radius-pill: 9999px;
+  --sidebar-w: 270px;
+  
+  /* ── Font Stacks ── */
+  --font-display: 'Plus Jakarta Sans', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-body: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
 }
 
 html,
 body {
   height: 100%;
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  width: 100%;
+  font-family: var(--font-body);
   background: var(--bg-primary);
   color: var(--text-primary);
   overflow: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
-/* ─── APP LAYOUT ──────────────────────────────── */
+body {
+  background: radial-gradient(circle at 12% 18%, rgba(2, 132, 199, 0.12) 0%, transparent 48%),
+              radial-gradient(circle at 88% 82%, rgba(0, 240, 255, 0.07) 0%, transparent 42%),
+              radial-gradient(circle at 50% 50%, rgba(13, 27, 46, 0.6) 0%, transparent 100%),
+              #060D17;
+  background-attachment: fixed;
+}
+
+/* ─── APP CONTAINER ──────────────────────────────── */
 #app-container {
   display: flex;
   height: 100vh;
@@ -50,7 +94,7 @@ body {
 }
 
 #login-view {
-  display: none; /* Initially hidden; JS & auth.css take over when shown */
+  display: none;
 }
 
 #chat-view {
@@ -61,6 +105,12 @@ body {
   overflow-x: hidden !important;
   max-width: 100%;
   box-sizing: border-box;
+}
+
+#chat-view[style*="flex"],
+#chat-view[style*="block"] {
+  display: flex !important;
+  flex-direction: row;
 }
 
 /* ─── TAB CONTENT BASE ────────────────────────── */
@@ -83,94 +133,119 @@ body {
   display: none !important;
 }
 
-/* When chat-view is visible, it should be flex row to show sidebar + main */
-#chat-view[style*="flex"],
-#chat-view[style*="block"] {
-  display: flex !important;
-  flex-direction: row;
+/* ─── PULSE DOT INDICATOR ────────────────────────────── */
+.pulse-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #64748B;
+  display: inline-block;
+  flex-shrink: 0;
+  transition: all 0.3s ease;
+}
+
+.pulse-dot.active {
+  background: var(--emerald);
+  box-shadow: 0 0 8px var(--emerald-glow);
+  animation: pulseGlow 2s ease-in-out infinite;
+}
+
+@keyframes pulseGlow {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 1;
+    box-shadow: 0 0 8px rgba(16, 185, 129, 0.4);
+  }
+  50% {
+    transform: scale(1.15);
+    opacity: 0.7;
+    box-shadow: 0 0 14px rgba(16, 185, 129, 0.8);
+  }
 }
 
 /* ─── TOAST NOTIFICATIONS ────────────────────────────── */
 #toast-container {
   position: fixed;
-  top: 1.2rem;
-  right: 1.2rem;
+  top: 1.25rem;
+  right: 1.25rem;
   z-index: 9999;
   display: flex;
   flex-direction: column;
-  gap: .5rem;
+  gap: 0.6rem;
   pointer-events: none;
 }
 
 .toast {
-  padding: .7rem 1.1rem;
-  border-radius: 10px;
-  font-size: .85rem;
+  padding: 0.75rem 1.15rem;
+  border-radius: 12px;
+  font-size: 0.85rem;
   font-weight: 500;
   display: flex;
   align-items: center;
-  gap: .6rem;
+  gap: 0.65rem;
   pointer-events: all;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, .4);
-  animation: toastIn .25s ease;
-  max-width: 320px;
-  line-height: 1.4;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5);
+  animation: toastIn 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  max-width: 340px;
+  line-height: 1.45;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
 }
 
 .toast.success {
-  background: rgba(16, 163, 127, .18);
-  border: 1px solid rgba(16, 163, 127, .35);
-  color: #34d399;
+  background: rgba(16, 185, 129, 0.16);
+  border: 1px solid rgba(16, 185, 129, 0.4);
+  color: #34D399;
 }
 
 .toast.error {
-  background: rgba(248, 113, 113, .15);
-  border: 1px solid rgba(248, 113, 113, .3);
-  color: #f87171;
+  background: rgba(239, 68, 68, 0.16);
+  border: 1px solid rgba(239, 68, 68, 0.4);
+  color: #F87171;
 }
 
 .toast.info {
-  background: rgba(99, 102, 241, .15);
-  border: 1px solid rgba(99, 102, 241, .3);
-  color: #a5b4fc;
+  background: rgba(2, 132, 199, 0.16);
+  border: 1px solid rgba(0, 240, 255, 0.35);
+  color: #38BDF8;
 }
 
 .toast.warning {
-  background: rgba(245, 158, 11, .12);
-  border: 1px solid rgba(245, 158, 11, .25);
-  color: #fbbf24;
+  background: rgba(245, 158, 11, 0.14);
+  border: 1px solid rgba(245, 158, 11, 0.35);
+  color: #FBBF24;
 }
 
 .toast.out {
-  animation: toastOut .2s ease forwards;
+  animation: toastOut 0.2s ease forwards;
 }
 
 @keyframes toastIn {
   from {
     opacity: 0;
-    transform: translateX(30px);
+    transform: translateY(-8px) scale(0.96);
   }
   to {
     opacity: 1;
-    transform: translateX(0);
+    transform: translateY(0) scale(1);
   }
 }
 
 @keyframes toastOut {
   from {
     opacity: 1;
-    transform: translateX(0);
+    transform: translateY(0);
   }
   to {
     opacity: 0;
-    transform: translateX(30px);
+    transform: translateY(-8px) scale(0.96);
   }
 }
 
 @keyframes fadeUp {
   from {
     opacity: 0;
-    transform: translateY(8px);
+    transform: translateY(10px);
   }
   to {
     opacity: 1;

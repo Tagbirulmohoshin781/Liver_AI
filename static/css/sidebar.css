@@ -1,14 +1,16 @@
 /* =============================================================================
-   static/css/sidebar.css — Sidebar Navigation, Recent Chats & User Badge
+   static/css/sidebar.css — Pro-Max Glassmorphic Sidebar, Status Card & Navigation
    ============================================================================= */
 
 .sidebar-overlay {
   display: none;
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, .5);
+  background: rgba(6, 13, 23, 0.75);
   z-index: 100;
-  backdrop-filter: blur(2px);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  transition: opacity 0.25s ease;
 }
 
 .sidebar-overlay.open {
@@ -20,14 +22,19 @@
   background: var(--bg-sidebar);
   display: flex;
   flex-direction: column;
-  padding: .75rem .5rem;
+  padding: 1rem 0.75rem;
   border-right: 1px solid var(--border);
   flex-shrink: 0;
   overflow: hidden;
-  transition: transform .25s ease;
+  position: relative;
+  z-index: 90;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  box-shadow: 4px 0 24px rgba(0, 0, 0, 0.35);
+  transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-@media (max-width: 680px) {
+@media (max-width: 768px) {
   .sidebar {
     position: fixed;
     top: 0;
@@ -35,6 +42,7 @@
     height: 100vh;
     z-index: 110;
     transform: translateX(-100%);
+    box-shadow: 10px 0 40px rgba(0, 0, 0, 0.7);
   }
 
   .sidebar.mobile-open {
@@ -42,34 +50,147 @@
   }
 }
 
+/* ─── NEW CHAT BUTTON ─── */
 .btn-new-chat {
   display: flex;
   align-items: center;
-  gap: .6rem;
-  background: transparent;
-  border: 1px solid var(--border);
-  color: var(--text-primary);
-  padding: .6rem .9rem;
-  border-radius: 10px;
-  font-size: .875rem;
+  justify-content: center;
+  gap: 0.65rem;
+  background: linear-gradient(135deg, rgba(2, 132, 199, 0.25) 0%, rgba(0, 240, 255, 0.15) 100%);
+  border: 1px solid rgba(0, 240, 255, 0.4);
+  color: #FFFFFF;
+  padding: 0.75rem 1rem;
+  border-radius: var(--radius-sm);
+  font-size: 0.88rem;
+  font-weight: 600;
   font-family: inherit;
   cursor: pointer;
-  transition: background .15s;
+  transition: all 0.22s ease;
   width: 100%;
   margin-bottom: 1rem;
+  box-shadow: 0 4px 16px rgba(0, 240, 255, 0.12);
 }
 
 .btn-new-chat:hover {
-  background: var(--bg-hover);
+  background: linear-gradient(135deg, rgba(2, 132, 199, 0.45) 0%, rgba(0, 240, 255, 0.3) 100%);
+  border-color: #00F0FF;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(0, 240, 255, 0.28);
 }
 
-.sidebar-label {
-  font-size: .7rem;
+.btn-new-chat i {
+  color: #00F0FF;
+  font-size: 0.95rem;
+}
+
+/* ─── SIDEBAR NAVIGATION APPS ─── */
+.sidebar-nav-section {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-bottom: 1rem;
+}
+
+.sidebar-nav-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  width: 100%;
+  padding: 0.65rem 0.85rem;
+  border-radius: var(--radius-sm);
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--text-secondary);
+  font-size: 0.85rem;
+  font-weight: 500;
+  font-family: inherit;
+  cursor: pointer;
+  text-align: left;
+  transition: all 0.18s ease;
+}
+
+.sidebar-nav-btn i {
+  font-size: 1rem;
+  width: 20px;
+  text-align: center;
+  color: var(--text-muted);
+  transition: color 0.18s ease;
+}
+
+.sidebar-nav-btn:hover {
+  background: var(--bg-hover);
+  color: var(--text-primary);
+  border-color: rgba(255, 255, 255, 0.06);
+}
+
+.sidebar-nav-btn:hover i {
+  color: #38BDF8;
+}
+
+.sidebar-nav-btn.active {
+  background: rgba(2, 132, 199, 0.18);
+  border: 1px solid rgba(0, 240, 255, 0.35);
+  color: #F8FAFC;
   font-weight: 600;
+  box-shadow: inset 3px 0 0 #00F0FF, 0 2px 10px rgba(0, 240, 255, 0.1);
+}
+
+.sidebar-nav-btn.active i {
+  color: #00F0FF;
+}
+
+/* ─── SIDEBAR CLINICAL STATUS CARD ─── */
+.sidebar-status-card {
+  background: rgba(13, 27, 46, 0.65);
+  border: 1px solid rgba(0, 240, 255, 0.2);
+  border-radius: var(--radius-sm);
+  padding: 0.75rem 0.85rem;
+  margin-bottom: 1rem;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
+}
+
+.sidebar-status-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #F8FAFC;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.sidebar-status-title {
+  color: #38BDF8;
+}
+
+.sidebar-status-details {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  font-size: 0.72rem;
+  color: var(--text-secondary);
+}
+
+.sidebar-status-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.sidebar-status-row strong {
+  font-size: 0.72rem;
+}
+
+/* ─── RECENT INQUIRIES LIST ─── */
+.sidebar-label {
+  font-size: 0.68rem;
+  font-weight: 700;
   color: var(--text-muted);
   text-transform: uppercase;
-  letter-spacing: .08em;
-  padding: .3rem .5rem;
+  letter-spacing: 0.08em;
+  padding: 0.4rem 0.6rem 0.25rem;
 }
 
 .sidebar-list {
@@ -82,7 +203,7 @@
   overflow-y: auto;
   flex: 1;
   scrollbar-width: thin;
-  scrollbar-color: var(--border) transparent;
+  scrollbar-color: rgba(255, 255, 255, 0.1) transparent;
 }
 
 .sidebar-list::-webkit-scrollbar {
@@ -90,20 +211,20 @@
 }
 
 .sidebar-list::-webkit-scrollbar-thumb {
-  background: var(--border);
+  background: rgba(255, 255, 255, 0.1);
   border-radius: 4px;
 }
 
 .sidebar-list li {
   display: flex;
   align-items: center;
-  gap: .55rem;
-  padding: .55rem .7rem;
-  border-radius: 8px;
-  font-size: .84rem;
+  gap: 0.55rem;
+  padding: 0.55rem 0.75rem;
+  border-radius: var(--radius-xs);
+  font-size: 0.82rem;
   color: var(--text-secondary);
   cursor: pointer;
-  transition: background .15s, color .15s;
+  transition: all 0.15s ease;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -116,24 +237,24 @@
 
 .sidebar-list li i {
   flex-shrink: 0;
-  font-size: .8rem;
+  font-size: 0.8rem;
 }
 
 .sidebar-spacer {
   flex-shrink: 0;
-  height: .75rem;
+  height: 0.5rem;
 }
 
 .sidebar-list li.history-item {
   display: flex;
   align-items: center;
-  gap: .55rem;
+  gap: 0.55rem;
   cursor: pointer;
-  padding: .5rem .75rem;
-  border-radius: 8px;
-  font-size: .82rem;
+  padding: 0.5rem 0.75rem;
+  border-radius: var(--radius-xs);
+  font-size: 0.82rem;
   color: var(--text-secondary);
-  transition: background .15s;
+  transition: background 0.15s ease;
   position: relative;
 }
 
@@ -143,8 +264,10 @@
 }
 
 .sidebar-list li.history-item.active-session {
-  background: var(--bg-hover);
-  color: var(--text-primary);
+  background: rgba(2, 132, 199, 0.22);
+  color: #F8FAFC;
+  font-weight: 600;
+  border-left: 2px solid #00F0FF;
 }
 
 .history-title {
@@ -160,15 +283,16 @@
   border: none;
   color: var(--text-muted);
   cursor: pointer;
-  font-size: .75rem;
-  padding: 2px 4px;
+  font-size: 0.75rem;
+  padding: 2px 5px;
   border-radius: 4px;
   flex-shrink: 0;
+  transition: all 0.15s ease;
 }
 
 .history-delete:hover {
-  color: #f87171;
-  background: rgba(239, 68, 68, .15);
+  color: #EF4444;
+  background: rgba(239, 68, 68, 0.2);
 }
 
 .sidebar-list li.history-item:hover .history-delete {
@@ -177,49 +301,59 @@
 
 .history-empty {
   color: var(--text-muted);
-  font-size: .8rem;
-  padding: .5rem .75rem;
+  font-size: 0.8rem;
+  padding: 0.6rem 0.75rem;
   display: flex;
   align-items: center;
-  gap: .5rem;
+  gap: 0.5rem;
 }
 
+/* ─── SIDEBAR FOOTER & USER PROFILE ─── */
 .sidebar-bottom {
   flex-shrink: 0;
+  padding-top: 0.5rem;
+  border-top: 1px solid var(--border);
 }
 
 .sidebar-user {
   display: flex;
   align-items: center;
-  gap: .7rem;
-  padding: .6rem .7rem;
-  border-radius: 10px;
+  gap: 0.75rem;
+  padding: 0.65rem 0.75rem;
+  border-radius: var(--radius-sm);
   cursor: pointer;
-  transition: background .15s;
+  background: rgba(13, 27, 46, 0.45);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  transition: all 0.18s ease;
 }
 
 .sidebar-user:hover {
   background: var(--bg-hover);
+  border-color: rgba(0, 240, 255, 0.25);
 }
 
 .user-avatar {
   width: 32px;
   height: 32px;
   border-radius: 50%;
-  background: var(--accent);
+  background: linear-gradient(135deg, #0284C7, #00F0FF);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: .8rem;
+  font-size: 0.82rem;
   font-weight: 700;
-  color: #fff;
+  color: #060D17;
   flex-shrink: 0;
+  box-shadow: 0 0 10px rgba(0, 240, 255, 0.35);
 }
 
 .user-name {
-  font-size: .875rem;
-  font-weight: 500;
-  flex: 1;
+  font-size: 0.84rem;
+  font-weight: 600;
+  color: #F8FAFC;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .btn-logout-icon,
@@ -228,11 +362,18 @@
   border: none;
   color: var(--text-muted);
   cursor: pointer;
-  font-size: .85rem;
-  transition: color .15s;
+  font-size: 0.88rem;
+  padding: 4px 6px;
+  border-radius: 4px;
+  transition: all 0.18s ease;
 }
 
-.btn-logout-icon:hover,
+.btn-logout-icon:hover {
+  color: #EF4444;
+  background: rgba(239, 68, 68, 0.15);
+}
+
 .btn-settings-icon:hover {
-  color: var(--text-primary);
+  color: #00F0FF;
+  background: rgba(0, 240, 255, 0.12);
 }

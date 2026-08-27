@@ -32,7 +32,7 @@
   <meta name="twitter:description" content="AI-Powered Clinical Liver Disease Detection, Microscopic Biopsy Patch Classifier & RAG Hepatology Assistant." />
   <meta name="twitter:image" content="/static/logo.svg" />
 
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css" />
   <link rel="stylesheet" href="/static/mobile.css?v=20.0" />
@@ -367,25 +367,25 @@
       <!-- Sidebar -->
       <aside class="sidebar" id="sidebar">
         <button class="btn-new-chat" onclick="clearChat(); switchTab('chat'); closeSidebar();">
-          <i class="fa-solid fa-plus"></i> New chat
+          <i class="fa-solid fa-plus"></i> New Chat
         </button>
 
         <!-- Sidebar Navigation Apps -->
         <div class="sidebar-nav-section">
           <button class="sidebar-nav-btn active" id="nav-btn-chat" onclick="switchTab('chat'); closeSidebar();">
-            <i class="fa-regular fa-comments"></i> Chat
+            <i class="fa-regular fa-comments"></i> Clinical Chat
           </button>
           <button class="sidebar-nav-btn" id="nav-btn-biopsy" onclick="switchTab('biopsy'); closeSidebar();">
-            <i class="fa-solid fa-microscope"></i> Biopsy AI
+            <i class="fa-solid fa-microscope"></i> Biopsy AI Analyzer
           </button>
           <button class="sidebar-nav-btn" id="nav-btn-history" onclick="switchTab('history'); closeSidebar();">
-            <i class="fa-solid fa-clock-rotate-left"></i> History
+            <i class="fa-solid fa-clock-rotate-left"></i> Diagnostic History
           </button>
           <button class="sidebar-nav-btn" id="nav-btn-settings" onclick="switchTab('settings'); closeSidebar();">
-            <i class="fa-solid fa-sliders"></i> Settings
+            <i class="fa-solid fa-sliders"></i> Engine Settings
           </button>
           <button class="sidebar-nav-btn" id="nav-btn-profile" onclick="switchTab('profile'); closeSidebar();">
-            <i class="fa-solid fa-circle-user"></i> My Profile
+            <i class="fa-solid fa-circle-user"></i> Patient Profile
           </button>
           <button class="sidebar-nav-btn" id="nav-btn-admin" onclick="switchTab('admin'); closeSidebar();"
             style="display:none; color:#a78bfa">
@@ -393,7 +393,29 @@
           </button>
         </div>
 
-        <p class="sidebar-label">Recent</p>
+        <!-- Sidebar Clinical Engine Status Card -->
+        <div class="sidebar-status-card">
+          <div class="sidebar-status-header">
+            <span class="pulse-dot active"></span>
+            <span class="sidebar-status-title">Clinical Engine Active</span>
+          </div>
+          <div class="sidebar-status-details">
+            <div class="sidebar-status-row">
+              <span>Standard:</span>
+              <strong style="color:#00F0FF">AASLD / EASL</strong>
+            </div>
+            <div class="sidebar-status-row">
+              <span>Security:</span>
+              <strong style="color:#10B981">Zero-Trust RLS</strong>
+            </div>
+            <div class="sidebar-status-row">
+              <span>Vision AI:</span>
+              <strong style="color:#A78BFA">EfficientNet-B0</strong>
+            </div>
+          </div>
+        </div>
+
+        <p class="sidebar-label">Recent Inquiries</p>
         <ul class="sidebar-list" id="history-list">
           <li class="history-empty" id="history-empty">
             <i class="fa-regular fa-clock"></i> No recent chats
@@ -404,7 +426,10 @@
         <div class="sidebar-bottom">
           <div class="sidebar-user">
             <div class="user-avatar" id="sidebar-avatar">A</div>
-            <span class="user-name" id="sidebar-username">Admin</span>
+            <div style="flex:1; overflow:hidden;">
+              <span class="user-name" id="sidebar-username">Admin</span>
+              <span class="user-role-label" id="sidebar-user-role" style="font-size:0.68rem; color:#94A3B8; display:block;">Clinical Evaluator</span>
+            </div>
             <button class="btn-settings-icon" onclick="openSettings()" title="Settings">
               <i class="fa-solid fa-gear"></i>
             </button>
@@ -430,10 +455,17 @@
                 <img src="/static/logo.svg" alt="LiverAI Logo" class="topbar-logo-img" style="height:36px; width:auto; filter: drop-shadow(0 0 10px rgba(2, 132, 199, 0.35)); transition: transform 0.2s ease;" />
               </a>
             </div>
+            <div class="topbar-engine-badge">
+              <span class="pulse-dot active"></span>
+              <span>AASLD 2023 Engine Online</span>
+            </div>
           </div>
           <div class="topbar-actions">
             <button class="topbar-btn" onclick="clearChat()" title="Start New Chat">
-              <i class="fa-solid fa-square-plus"></i> New
+              <i class="fa-solid fa-square-plus"></i> <span class="hide-mobile">New</span>
+            </button>
+            <button class="topbar-btn" onclick="switchTab('biopsy')" title="Open Biopsy AI Scanner">
+              <i class="fa-solid fa-microscope" style="color:#a78bfa"></i> <span class="hide-mobile">Biopsy</span>
             </button>
             <button class="topbar-btn" onclick="switchTab('history')" title="View Chat History">
               <i class="fa-solid fa-clock-rotate-left"></i>
@@ -453,40 +485,39 @@
               <div class="welcome-hero-content">
                 <div class="welcome-icon"><i class="fa-solid fa-heart-pulse"></i></div>
                 <h1 class="welcome-title">Hi! I'm LiverAI 👋</h1>
-                <p class="welcome-sub">Ask me anything about liver health — in simple, easy-to-understand language. I'm
-                  here to explain things clearly, like a knowledgeable friend.</p>
+                <p class="welcome-sub">Precision clinical hepatology assistant grounded in AASLD 2023 &amp; EASL guidelines. Ask questions about liver biomarkers, fatty liver disease (MASLD/MASH), histology scans, or management protocols.</p>
                 <div class="welcome-pills">
-                  <span class="welcome-pill">🧬 RAG-Powered</span>
-                  <span class="welcome-pill">🔬 Biopsy AI</span>
-                  <span class="welcome-pill">📚 Medical KB</span>
-                  <span class="welcome-pill">⚡ Evidence-Based</span>
+                  <span class="welcome-pill"><i class="fa-solid fa-dna"></i> RAG-Powered</span>
+                  <span class="welcome-pill"><i class="fa-solid fa-microscope"></i> Histology AI</span>
+                  <span class="welcome-pill"><i class="fa-solid fa-book-medical"></i> AASLD &amp; EASL Guidelines</span>
+                  <span class="welcome-pill"><i class="fa-solid fa-bolt"></i> Evidence-Based</span>
                 </div>
               </div>
             </div>
             <div class="suggestions">
               <div class="suggestion-chip" onclick="sendSuggestion(this)">
                 <i class="fa-solid fa-circle-exclamation"></i>
-                What are the early warning signs of liver disease?
+                <span>What are the early warning signs of liver disease?</span>
               </div>
               <div class="suggestion-chip" onclick="sendSuggestion(this)">
                 <i class="fa-solid fa-droplet"></i>
-                What is fatty liver and how do I treat it?
+                <span>What is fatty liver (MASLD) and how do I treat it?</span>
               </div>
               <div class="suggestion-chip" onclick="sendSuggestion(this)">
                 <i class="fa-solid fa-shield-virus"></i>
-                Is hepatitis C curable? Explain simply.
+                <span>Is hepatitis C curable? Explain clinical protocols.</span>
               </div>
               <div class="suggestion-chip" onclick="sendSuggestion(this)">
                 <i class="fa-solid fa-flask-vial"></i>
-                My ALT is high — what does that mean?
+                <span>My ALT and AST are high — what does that mean?</span>
               </div>
               <div class="suggestion-chip" onclick="sendSuggestion(this)">
                 <i class="fa-solid fa-utensils"></i>
-                What diet is best for NAFLD and fatty liver?
+                <span>What Mediterranean diet &amp; lifestyle is best for liver health?</span>
               </div>
               <div class="suggestion-chip" onclick="sendSuggestion(this)">
                 <i class="fa-solid fa-microscope"></i>
-                Upload a biopsy image for histology analysis
+                <span>Upload a biopsy patch image for deep histology analysis</span>
               </div>
             </div>
           </div>
@@ -497,17 +528,26 @@
 
         <!-- Input area -->
         <div class="input-area">
+          <!-- Quick Prompt Carousel Chips above input -->
+          <div class="quick-prompt-carousel">
+            <button type="button" class="quick-chip" onclick="sendSuggestion(this)"><i class="fa-solid fa-circle-exclamation"></i> Warning Signs</button>
+            <button type="button" class="quick-chip" onclick="sendSuggestion(this)"><i class="fa-solid fa-droplet"></i> Reverse Fatty Liver</button>
+            <button type="button" class="quick-chip" onclick="sendSuggestion(this)"><i class="fa-solid fa-flask-vial"></i> ALT / AST Labs</button>
+            <button type="button" class="quick-chip" onclick="sendSuggestion(this)"><i class="fa-solid fa-mug-hot"></i> Coffee Polyphenols</button>
+            <button type="button" class="quick-chip" onclick="sendSuggestion(this)"><i class="fa-solid fa-microscope"></i> Biopsy Scan</button>
+            <button type="button" class="quick-chip" onclick="switchTab('biopsy')"><i class="fa-solid fa-cloud-arrow-up"></i> Upload Slide</button>
+          </div>
+
           <div class="input-box">
-            <button class="btn-attach" id="btn-attach" onclick="openUploadModal()" title="Upload document">
+            <button class="btn-attach" id="btn-attach" onclick="openUploadModal()" title="Upload document / slide">
               <i class="fa-solid fa-paperclip"></i>
             </button>
-            <textarea id="chat-input" rows="1" placeholder="Message LiverAI…"></textarea>
-            <button class="btn-send" id="btn-send" title="Send">
+            <textarea id="chat-input" rows="1" placeholder="Ask LiverAI about liver health, biomarkers, MASLD, or histology…"></textarea>
+            <button class="btn-send" id="btn-send" title="Send message">
               <i class="fa-solid fa-arrow-up"></i>
             </button>
           </div>
-          <p class="input-disclaimer">LiverAI can make mistakes. Always verify critical health information with a
-            qualified medical professional.</p>
+          <p class="input-disclaimer">LiverAI provides educational guidance grounded in AASLD/EASL consensus. Always verify clinical diagnoses with a licensed hepatologist.</p>
         </div>
       </div>
 
