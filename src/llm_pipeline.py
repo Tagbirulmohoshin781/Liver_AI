@@ -169,48 +169,114 @@ def init_rag_pipeline():
 
 
 # =============================================================================
-# Helper: Deterministic AASLD / EASL Clinical Intelligence Engine
+# Helper: Query-Aware Clinical Intent Classifier & AASLD/EASL Engine
 # =============================================================================
+def classify_clinical_intent(query: str) -> str:
+    """
+    Exact-Match & Semantic Clinical Query Classifier.
+    Maps user input to high-fidelity AASLD/EASL clinical knowledge domains:
+      1. 'timeline_plan'     - 1-Month / 30-Day Timeline Action Plan & 4-Week Protocol
+      2. 'alcohol_toxicity'  - Alcohol & Substance Toxicity (Zero tolerance, acetaldehyde pathway)
+      3. 'histology_biopsy'  - Microscopic Scans, Histology & Biopsy Staging
+      4. 'symptoms'          - Early Warning Signs, Symptoms, Jaundice, Pain
+      5. 'biomarkers'        - Liver Function Tests (LFTs), Enzymes, Ratios, FIB-4
+      6. 'fatty_liver'       - MASLD / NAFLD / MASH / Steatosis Reversal
+      7. 'hepatitis'         - Viral Hepatitis A, B, C, D, E
+      8. 'cirrhosis'         - Cirrhosis, Portal HTN, Ascites, End-Stage
+      9. 'nutrition'         - Mediterranean Diet, Coffee Polyphenols, Exercise
+      10. 'general'          - General Hepatic Physiology / Fallback
+    """
+    if not query:
+        return "general"
+
+    q = query.lower().strip()
+
+    # 1. Histology Biopsy & Microscopic Scans (e.g. scan_1787846492516, biopsy, histology)
+    if "scan_" in q or any(k in q for k in ["biopsy", "histology", "fibrosis stage", "steatosis grade", "ballooning degeneration", "histopath"]):
+        return "histology_biopsy"
+
+    # 2. 1-Month / 30-Day Timeline Action Plan ("1 month", "one month", "30 day", "plan", "routine", "schedule", "diet chart", "guideline")
+    timeline_keywords = [
+        "1 month", "one month", "30 day", "30-day", "4 week", "four week", "4-week",
+        "action plan", "diet chart", "routine", "schedule", "guideline", "timeline",
+        "protocol", "step-by-step", "roadmap", "regimen", "regime"
+    ]
+    if any(k in q for k in timeline_keywords) or (("plan" in q or "month" in q) and any(k in q for k in ["diet", "liver", "heal", "revers", "action", "treatment", "recovery"])):
+        return "timeline_plan"
+
+    # 3. Alcohol & Substance Toxicity ("alcohol", "vodka", "beer", "wine", "how many pegs", "ml", "drink")
+    alcohol_keywords = [
+        "alcohol", "vodka", "beer", "wine", "how many pegs", "pegs", "peg", "liquor",
+        "whiskey", "whisky", "rum", "tequila", "gin", "ethanol", "drinking",
+        "safe limit", "can i drink", "how much drink", "how much alcohol"
+    ]
+    if any(k in q for k in alcohol_keywords):
+        return "alcohol_toxicity"
+
+    # 4. Early Warning Signs & Symptoms ("warning signs", "symptoms", "pain", "jaundice", "dark urine", "fatigue")
+    symptoms_keywords = [
+        "warning sign", "warning signs", "symptom", "symptoms", "early sign", "early signs",
+        "jaundice", "yellow eye", "yellow skin", "dark urine", "pale stool", "clay-colored",
+        "pruritus", "itching", "ruq", "right upper", "fatigue", "pain in liver", "liver pain"
+    ]
+    if any(k in q for k in symptoms_keywords):
+        return "symptoms"
+
+    # 5. Biomarkers & LFT Panels ("alt", "ast", "sgpt", "sgot", "bilirubin", "fib-4", "albumin", "alp")
+    biomarker_keywords = [
+        "alt", "ast", "sgpt", "sgot", "bilirubin", "alp", "alk phos", "alkaline phosphatase",
+        "albumin", "fib-4", "fib4", "de ritis", "lft", "liver function test", "liver enzyme",
+        "platelet", "inr", "prothrombin", "a/g ratio", "transaminase"
+    ]
+    if any(k in q for k in biomarker_keywords):
+        return "biomarkers"
+
+    # 6. General MASLD / NAFLD Health & Reversal ("fatty", "nafld", "nash", "masld", "mash", "steatosis")
+    fatty_keywords = ["fatty", "nafld", "nash", "masld", "mash", "steatosis", "fat in liver", "reverse fatty", "reversing fatty"]
+    if any(k in q for k in fatty_keywords):
+        return "fatty_liver"
+
+    # 7. Viral Hepatitis
+    if any(k in q for k in ["hepatitis", "hep a", "hep b", "hep c", "hcv", "hbv", "viral"]):
+        return "hepatitis"
+
+    # 8. Cirrhosis & Portal Hypertension
+    if any(k in q for k in ["cirrhosis", "portal hypertension", "ascites", "varices", "child-pugh", "meld", "bleeding"]):
+        return "cirrhosis"
+
+    # 9. Nutrition & Lifestyle
+    if any(k in q for k in ["diet", "food", "nutrition", "coffee", "exercise", "lifestyle", "eat", "meal"]):
+        return "nutrition"
+
+    return "general"
+
+
 def build_local_fallback_answer(user_msg: str, docs=None) -> str:
     """
     Generate a pure, structured 5-part clinical answer grounded in AASLD 2023 / EASL guidelines.
     Guaranteed to NEVER output fallback disclaimers or raw unformatted text dumps.
     """
-    query_lower = (user_msg or "").lower()
+    intent = classify_clinical_intent(user_msg)
 
-    # 1. Biopsy / Histology Scan Identification (e.g. scan_1787846492516 or biopsy terms)
-    if "scan_" in query_lower or any(k in query_lower for k in ["scan", "biopsy", "histology", "ballooning", "fibrosis", "f1", "f2", "f3", "f4"]):
+    if intent == "histology_biopsy":
         return CLINICAL_GUIDES.get("scan_biopsy", CLINICAL_GUIDES["biopsy"])
-
-    # 2. Symptoms, Early Warning Signs, Jaundice, Pain
-    if any(k in query_lower for k in ["symptom", "warning sign", "early sign", "jaundice", "yellow eye", "fatigue", "dark urine", "pale stool", "pruritus", "itching", "ruq", "right upper"]):
+    elif intent == "timeline_plan":
+        return CLINICAL_GUIDES.get("timeline_plan", CLINICAL_GUIDES["nutrition"])
+    elif intent == "alcohol_toxicity":
+        return CLINICAL_GUIDES.get("alcohol_toxicity", CLINICAL_GUIDES["biomarkers"])
+    elif intent == "symptoms":
         return CLINICAL_GUIDES.get("symptoms", CLINICAL_GUIDES["biomarkers"])
-
-    # 3. Biomarkers, LFTs, Enzymes, Ratios, FIB-4
-    if any(k in query_lower for k in ["alt", "ast", "sgpt", "sgot", "bilirubin", "alp", "albumin", "lft", "enzyme", "biomarker", "fib-4", "de ritis", "platelet"]):
+    elif intent == "biomarkers":
         return CLINICAL_GUIDES["biomarkers"]
-
-    # 4. Fatty Liver, MASLD, MASH, NAFLD, NASH, Steatosis
-    if any(k in query_lower for k in ["fatty", "nafld", "nash", "masld", "mash", "steatosis", "fat"]):
+    elif intent == "fatty_liver":
         return CLINICAL_GUIDES["fatty_liver"]
-
-    # 5. Viral Hepatitis (A, B, C, D, E)
-    if any(k in query_lower for k in ["hepatitis", "hep a", "hep b", "hep c", "hcv", "hbv", "viral"]):
+    elif intent == "hepatitis":
         return CLINICAL_GUIDES["hepatitis"]
-
-    # 6. Cirrhosis, End-Stage, Portal HTN, Ascites, MELD
-    if any(k in query_lower for k in ["cirrhosis", "portal hypertension", "ascites", "varices", "child-pugh", "meld", "bleeding"]):
+    elif intent == "cirrhosis":
         return CLINICAL_GUIDES["cirrhosis"]
-
-    # 7. Alcohol, Drug-Induced Liver Injury (DILI), Acetaminophen
-    if any(k in query_lower for k in ["alcohol", "drinking", "dili", "toxic", "acetaminophen", "paracetamol", "tylenol", "hepatotoxin"]):
-        return CLINICAL_GUIDES.get("alcohol_dili", CLINICAL_GUIDES["biomarkers"])
-
-    # 8. Diet, Nutrition, Mediterranean, Coffee Polyphenols
-    if any(k in query_lower for k in ["diet", "food", "nutrition", "coffee", "exercise", "lifestyle", "drink", "eat"]):
+    elif intent == "nutrition":
         return CLINICAL_GUIDES["nutrition"]
 
-    # 9. General default clinical guidance (AASLD/EASL structured)
     return FALLBACK_EN
 
 

@@ -280,15 +280,87 @@ class ChatService {
     );
   }
 
+  static String classifyClinicalIntent(String query) {
+    if (query.trim().isEmpty) return 'general';
+    final q = query.toLowerCase().trim();
+
+    // 1. Biopsy & Histology Scan Interpretation
+    if (q.contains('scan_') || q.contains('biopsy') || q.contains('histology') || q.contains('fibrosis stage') || q.contains('steatosis grade') || q.contains('ballooning')) {
+      return 'histology_biopsy';
+    }
+
+    // 2. 1-Month / 30-Day Timeline Action Plan & 4-Week Protocol
+    const timelineKeywords = [
+      '1 month', 'one month', '30 day', '30-day', '4 week', 'four week', '4-week',
+      'action plan', 'diet chart', 'routine', 'schedule', 'guideline', 'timeline',
+      'protocol', 'step-by-step', 'roadmap', 'regimen', 'regime'
+    ];
+    if (timelineKeywords.any((k) => q.contains(k)) || ((q.contains('plan') || q.contains('month')) && ['diet', 'liver', 'heal', 'revers', 'action', 'treatment', 'recovery'].any((k) => q.contains(k)))) {
+      return 'timeline_plan';
+    }
+
+    // 3. Alcohol & Substance Toxicity
+    const alcoholKeywords = [
+      'alcohol', 'vodka', 'beer', 'wine', 'how many pegs', 'pegs', 'peg', 'liquor',
+      'whiskey', 'whisky', 'rum', 'tequila', 'gin', 'ethanol', 'drinking',
+      'safe limit', 'can i drink', 'how much drink', 'how much alcohol'
+    ];
+    if (alcoholKeywords.any((k) => q.contains(k))) {
+      return 'alcohol_toxicity';
+    }
+
+    // 4. Early Warning Signs & Symptoms
+    const symptomsKeywords = [
+      'warning sign', 'warning signs', 'symptom', 'symptoms', 'early sign', 'early signs',
+      'jaundice', 'yellow eye', 'yellow skin', 'dark urine', 'pale stool', 'clay-colored',
+      'pruritus', 'itching', 'ruq', 'right upper', 'fatigue', 'pain in liver', 'liver pain', 'pain'
+    ];
+    if (symptomsKeywords.any((k) => q.contains(k))) {
+      return 'symptoms';
+    }
+
+    // 5. Biomarkers & LFT Panels
+    const biomarkerKeywords = [
+      'alt', 'ast', 'sgpt', 'sgot', 'bilirubin', 'alp', 'alk phos', 'alkaline phosphatase',
+      'albumin', 'fib-4', 'fib4', 'de ritis', 'lft', 'liver function test', 'liver enzyme',
+      'platelet', 'inr', 'prothrombin', 'a/g ratio', 'transaminase'
+    ];
+    if (biomarkerKeywords.any((k) => q.contains(k))) {
+      return 'biomarkers';
+    }
+
+    // 6. General MASLD / NAFLD Health & Reversal
+    const fattyKeywords = ['fatty', 'nafld', 'nash', 'masld', 'mash', 'steatosis', 'fat in liver', 'reverse fatty', 'reversing fatty'];
+    if (fattyKeywords.any((k) => q.contains(k))) {
+      return 'fatty_liver';
+    }
+
+    // 7. Nutrition & Diet Protocols
+    const nutritionKeywords = ['diet', 'food', 'lifestyle', 'exercise', 'nutrition', 'coffee', 'water', 'eat', 'meal'];
+    if (nutritionKeywords.any((k) => q.contains(k))) {
+      return 'nutrition';
+    }
+
+    // 8. Greetings
+    const greetingKeywords = ['hello', 'hi', 'help', 'who are you', 'liverai', 'assistant', 'hey'];
+    if (greetingKeywords.any((k) => q.contains(k))) {
+      return 'greetings';
+    }
+
+    return 'general';
+  }
+
   String _queryOfflineKnowledge({
     required String userMessage,
     UserProfile? profile,
     Map<String, dynamic>? biopsyData,
   }) {
-    final lower = userMessage.toLowerCase().trim();
+    final intent = (biopsyData != null && biopsyData.isNotEmpty)
+        ? 'histology_biopsy'
+        : classifyClinicalIntent(userMessage);
 
-    // Intent D: Biopsy & Histology Scan Interpretation
-    if (biopsyData != null || lower.contains('biopsy') || lower.contains('histology') || lower.contains('findings') || lower.contains('scan') || lower.contains('fibrosis')) {
+    // Intent 1: Biopsy & Histology Scan Interpretation
+    if (intent == 'histology_biopsy') {
       final fibrosis = biopsyData?['fibrosis'] ?? 'Stage F1 - Mild Perilobular Fibrosis';
       final inflammation = biopsyData?['inflammation'] ?? 'Grade 1 - Mild Lobular Inflammation';
       final ballooning = biopsyData?['ballooning'] ?? 'Few Hepatocyte Balloon Cells Present';
@@ -319,8 +391,67 @@ Microscopic biopsy histological evaluation (Scan ID: $scanId) indicates early-st
 *Please consult your healthcare provider for clinical diagnosis and personalized treatment.*''';
     }
 
-    // Intent A: Early Warning Signs & Symptoms
-    if (lower.contains('warning') || lower.contains('early') || lower.contains('symptom') || lower.contains('sign') || lower.contains('fatigue') || lower.contains('jaundice') || lower.contains('pain')) {
+    // Intent 2: 1-Month / 30-Day Timeline Action Plan & 4-Week Protocol
+    if (intent == 'timeline_plan') {
+      return '''### 🩺 Clinical Overview & Assessment
+A structured 30-day (1-month) hepatic regeneration protocol targets rapid reduction of intrahepatic lipid content, improves peripheral and hepatic insulin sensitivity, and lowers systemic inflammatory markers in accordance with AASLD and EASL clinical guidelines. Reversing metabolic steatosis and halting early fibrogenesis begins with immediate metabolic decompression.
+
+### 🔬 Biomarker / Histological Analysis
+| Timeline Target | Primary Biomarker Focus | Expected Cellular & Metabolic Response |
+| :--- | :--- | :--- |
+| **Week 1 (Days 1–7)** | Fasting Insulin & ALT | Reduction in hepatic glycogen over-saturation and cessation of acute de novo lipogenesis. |
+| **Week 2 (Days 8–14)** | AST, ALT & hs-CRP | Clearance of toxic lipid intermediates (diacylglycerols/ceramides); dampening lobular cytokine release. |
+| **Week 3 (Days 15–21)** | Triglycerides & HDL | Increased mitochondrial fatty acid beta-oxidation; enhancement of skeletal muscle glucose uptake. |
+| **Week 4 (Days 22–30)** | LFT Panel & FIB-4 Index | Measurable reduction in serum transaminases (ALT/AST normalization) and stabilization of hepatic steatosis. |
+
+### ⚠️ Risk Stratification & Red Flags
+> **Clinical Caution:** Rapid 'crash dieting' or starvation (< 1,000 kcal/day) induces massive peripheral lipolysis that overloads the liver with free fatty acids, accelerating steatohepatitis. Adhere strictly to structured, nutrient-dense caloric moderation (500–750 kcal/day deficit). Emergency symptoms (jaundice, hematemesis, severe right upper quadrant pain) require immediate emergency medical care.
+
+### 📋 Evidence-Based Management & Nutrition Protocol
+#### 🗓️ 4-Week Step-by-Step Liver Regeneration Protocol
+- **Week 1: Metabolic Reset & Toxic Clearance**
+  - *Diet:* Eliminate 100% of added sugars, high-fructose corn syrup (HFCS), sweetened beverages, refined flours, and ultra-processed trans fats.
+  - *Hydration & Polyphenols:* Drink 2.5–3.0 L of water daily. Introduce 2–3 cups of unsweetened filtered black coffee daily (chlorogenic acid attenuates hepatic stellate cell activation).
+  - *Toxin Elimination:* Zero alcohol consumption and audit all over-the-counter medications.
+- **Week 2: Anti-Inflammatory Nutritional Phase**
+  - *Mediterranean Framework:* Prioritize Extra Virgin Olive Oil (EVOO, 2–3 tbsp/day), wild-caught fatty fish (salmon, sardines for EPA/DHA omega-3s), and cruciferous vegetables (broccoli, Brussels sprouts, kale for glutathione upregulation).
+  - *Fiber & Satiety:* Aim for 30–35g dietary fiber daily via chia seeds, flaxseeds, legumes, and avocados to optimize the gut-liver microbiome axis.
+- **Week 3: Mitochondrial & Exercise Activation**
+  - *Aerobic Conditioning:* 150–300 minutes/week of Zone 2 cardio (brisk walking, cycling, swimming) to stimulate hepatic mitochondrial biogenesis.
+  - *Resistance Training:* 2–3 sessions/week of progressive resistance training (bodyweight or weights) to increase skeletal muscle glucose disposal and reduce hepatic insulin resistance.
+- **Week 4: Biomarker Re-evaluation & Long-Term Maintenance**
+  - *Laboratory Re-check:* Repeat serum LFTs (ALT, AST, ALP, Total Bilirubin) and lipid panel to assess biochemical response.
+  - *Non-Invasive Staging:* Re-calculate FIB-4 score; establish sustainable Mediterranean eating habits for long-term weight management (targeting 7%–10% total body weight reduction).
+
+### ⚖️ Clinical Disclaimer
+*Please consult your healthcare provider for clinical diagnosis and personalized treatment.*''';
+    }
+
+    // Intent 3: Alcohol & Substance Toxicity
+    if (intent == 'alcohol_toxicity') {
+      return '''### 🩺 Clinical Overview & Assessment
+Under authoritative AASLD and EASL clinical hepatology guidelines, there is NO safe threshold or permissible limit for alcohol intake in the presence of hepatic steatosis, fibrosis, or liver disease. Hepatic ethanol metabolism generates high concentrations of toxic acetaldehyde and reactive oxygen species (ROS), causing immediate hepatocyte injury, mitochondrial collapse, and rapid fibrogenesis.
+
+### 🔬 Biomarker / Histological Analysis
+- **Metabolic Toxicity Pathway:** Ethanol is oxidized by Alcohol Dehydrogenase (ADH) and Cytochrome P450 (CYP2E1) into acetaldehyde—a potent cellular toxin and carcinogen that forms damaging DNA/protein adducts.
+- **Biomarker Profile:**
+  - **De Ritis Ratio (AST/ALT):** AST/ALT > 2.0 with significant Gamma-Glutamyl Transferase (GGT) elevation is a classic biochemical signature of alcohol-induced hepatocellular and mitochondrial damage.
+- **Histological Pathology:** Alcohol accelerates Mallory-Denk body formation, pericellular/perisinusoidal 'chicken-wire' fibrosis, and rapidly converts reversible steatosis into irreversible cirrhosis.
+
+### ⚠️ Risk Stratification & Red Flags
+> **Critical Toxicity Warning:** Even minimal quantities ('one drink', 'a few pegs', or occasional beer/wine) trigger lipid peroxidation and synergistic toxicity in fatty liver disease. Sudden jaundice, fever, tender hepatomegaly, or coagulopathy (elevated INR) indicates acute alcoholic hepatitis with high 30-day mortality.
+
+### 📋 Evidence-Based Management & Nutrition Protocol
+- **Mandatory Complete Abstinence:** Total cessation of all alcoholic beverages (spirits, beer, wine) with zero exceptions.
+- **Nutritional Replenishment:** High-protein nutrition (1.2–1.5 g/kg/day), aggressive Thiamine (Vitamin B1, 100–300 mg/day), Folate, Pyridoxine (B6), and Zinc repletion to repair cellular enzyme cofactors.
+- **Clinical Surveillance:** Complete LFT evaluation, abdominal ultrasound, and screening for portal hypertension and esophageal varices if bridging fibrosis is suspected.
+
+### ⚖️ Clinical Disclaimer
+*Please consult your healthcare provider for clinical diagnosis and personalized treatment.*''';
+    }
+
+    // Intent 4: Early Warning Signs & Symptoms
+    if (intent == 'symptoms') {
       return '''### 🩺 Clinical Overview & Assessment
 In its early stages, chronic liver disease is frequently silent and asymptomatic due to the liver's substantial functional reserve. Recognizing early constitutional signs is critical for timely diagnostic intervention before fibrosis progresses.
 
@@ -343,8 +474,8 @@ In its early stages, chronic liver disease is frequently silent and asymptomatic
 *Please consult your healthcare provider for clinical diagnosis and personalized treatment.*''';
     }
 
-    // Intent B: Fatty Liver & NAFLD / NASH / Steatosis
-    if (lower.contains('fatty') || lower.contains('nafld') || lower.contains('nash') || lower.contains('steatosis') || lower.contains('fat') || lower.contains('masld') || lower.contains('mash')) {
+    // Intent 5: Fatty Liver & NAFLD / NASH / Steatosis
+    if (intent == 'fatty_liver') {
       return '''### 🩺 Clinical Overview & Assessment
 Metabolic Dysfunction-Associated Steatotic Liver Disease (MASLD / NAFLD / Fatty Liver Disease) involves triglyceride accumulation in > 5% of hepatocytes. It ranges from simple steatosis (fully reversible) to MASH/NASH with active lobular inflammation and progressive fibrogenesis.
 
@@ -367,8 +498,8 @@ Metabolic Dysfunction-Associated Steatotic Liver Disease (MASLD / NAFLD / Fatty 
 *Please consult your healthcare provider for clinical diagnosis and personalized treatment.*''';
     }
 
-    // Intent C: Liver Enzymes & Biomarkers (LFTs)
-    if (lower.contains('alt') || lower.contains('sgpt') || lower.contains('ast') || lower.contains('sgot') || lower.contains('bilirubin') || lower.contains('alp') || lower.contains('albumin') || lower.contains('a/g') || lower.contains('lft') || lower.contains('enzyme') || lower.contains('biomarker') || lower.contains('test')) {
+    // Intent 6: Liver Enzymes & Biomarkers (LFTs)
+    if (intent == 'biomarkers') {
       return '''### 🩺 Clinical Overview & Assessment
 Serum Liver Function Tests (LFTs) evaluate hepatocyte membrane integrity, biliary excretion, and hepatic synthetic function. Isolated enzyme elevations must be differentiated between hepatocellular patterns (ALT/AST) and cholestatic patterns (ALP/Bilirubin).
 
@@ -395,8 +526,8 @@ Serum Liver Function Tests (LFTs) evaluate hepatocyte membrane integrity, biliar
 *Please consult your healthcare provider for clinical diagnosis and personalized treatment.*''';
     }
 
-    // Intent E: Liver Nutrition & Diet Protocols
-    if (lower.contains('diet') || lower.contains('food') || lower.contains('lifestyle') || lower.contains('exercise') || lower.contains('nutrition') || lower.contains('drink') || lower.contains('coffee') || lower.contains('water') || lower.contains('eat')) {
+    // Intent 7: Liver Nutrition & Diet Protocols
+    if (intent == 'nutrition') {
       return '''### 🩺 Clinical Overview & Assessment
 Evidence-based hepatic nutritional protocols directly modulate hepatocyte lipid accumulation, improve peripheral insulin sensitivity, reduce systemic oxidative stress, and attenuate hepatic stellate cell fibrogenesis according to AASLD and EASL clinical guidelines.
 
@@ -417,8 +548,8 @@ Evidence-based hepatic nutritional protocols directly modulate hepatocyte lipid 
 *Please consult your healthcare provider for clinical diagnosis and personalized treatment.*''';
     }
 
-    // Intent F: Greetings & Conversational Intro
-    if (lower.contains('hello') || lower.contains('hi') || lower.contains('help') || lower.contains('who are you') || lower.contains('liverai') || lower.contains('assistant') || lower.contains('hey')) {
+    // Intent 8: Greetings & Conversational Intro
+    if (intent == 'greetings') {
       return '''### 🩺 Clinical Overview & Assessment
 Hello! I am LiverAI, an advanced clinical hepatology medical assistant grounded in international clinical consensus guidelines from the **AASLD** (American Association for the Study of Liver Diseases) and **EASL** (European Association for the Study of the Liver).
 
@@ -429,7 +560,7 @@ I provide deep, evidence-based clinical reasoning across:
 - **Disease Staging:** Guidance on MASLD/NAFLD, MASH/NASH, Viral Hepatitis (A-E), Cirrhosis (Child-Pugh/MELD), and DILI.
 
 ### ⚠️ Risk Stratification & Red Flags
-> **Triage Assistance:** Automated recognition of emergency symptoms (hematemesis, melena, severe jaundice, encephalopathy) requiring immediate emergency medical evaluation.
+> **Triage Assistance:** Automated recognition of emergency symptoms (hematemesis, melena, severe jaundice, encephalopathy) requiring immediate emergency medical care.
 
 ### 📋 Evidence-Based Management & Nutrition Protocol
 - Personalized Mediterranean dietary guidelines, 7%–10% metabolic weight management protocols, and coffee polyphenol guidance.
@@ -438,7 +569,7 @@ I provide deep, evidence-based clinical reasoning across:
 *Please consult your healthcare provider for clinical diagnosis and personalized treatment.*''';
     }
 
-    // Intent G: Universal Fallback
+    // Intent 9: Universal Fallback
     return '''### 🩺 Clinical Overview & Assessment
 The liver is the primary metabolic organ responsible for detoxification, bile acid synthesis, protein production (Albumin, clotting factors), and glycogen storage. Maintaining liver health requires early screening, metabolic management, and protection from hepatotoxins.
 
