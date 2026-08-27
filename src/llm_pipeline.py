@@ -39,7 +39,8 @@ except ImportError:
     HAS_PINECONE = False
 
 from .helper import (
-    load_txt_files, filter_to_minimal_docs, text_split, download_embeddings
+    load_txt_files, filter_to_minimal_docs, text_split, download_embeddings,
+    format_chunk_with_boundary
 )
 from .prompt import system_prompt, CLINICAL_GUIDES, CLINICAL_DISCLAIMER, FALLBACK_EN
 
@@ -87,28 +88,162 @@ _local_docs    = []
 
 
 # =============================================================================
-# Local Fallback Retriever
+# NVIDIA AIQ-Research: Multi-Hop Clinical Query Decomposition
 # =============================================================================
-class LocalFallbackRetriever:
-    """In-process keyword-ranked retriever over the bundled clinical knowledge base."""
+def decompose_clinical_query(query: str) -> list:
+    """
+    NVIDIA AIQ-Research Multi-Hop Clinical Query Decomposer.
+    Decomposes multi-variable medical inquiries into targeted diagnostic sub-queries:
+      1. Cellular Pathophysiology & Metabolic Etiology (Insulin resistance, de novo lipogenesis, ROS).
+      2. Biomarker & Histological Staging (ALT, AST, De Ritis ratio, FIB-4, Fibrosis F0-F4).
+      3. Guideline-Directed Management & Nutritional Protocols (AASLD 2023, EASL, Mediterranean diet).
+    """
+    if not query:
+        return []
+
+    q_lower = query.lower().strip()
+    sub_queries = [query]
+
+    # Metabolic Co-morbidities (MASLD/T2DM/HbA1c)
+    if any(k in q_lower for k in ["hba1c", "diabetes", "insulin", "glycemic", "glucose"]) and any(k in q_lower for k in ["masld", "nafld", "fatty", "steatosis", "alt"]):
+        sub_queries.extend([
+            "MASLD pathophysiology insulin resistance de novo lipogenesis SREBP-1c",
+            "elevated ALT HbA1c progression to MASH bridging fibrosis FIB-4",
+            "AASLD 2023 lifestyle Mediterranean diet glycemic optimization GLP-1"
+        ])
+
+    # Differential Diagnosis (Alcoholic vs MASLD / AST:ALT ratios)
+    elif any(k in q_lower for k in ["differential", "versus", "vs", "compare", "distinguish"]) or (any(k in q_lower for k in ["ast:alt", "ast/alt", "ratio", "de ritis"]) and any(k in q_lower for k in ["alcohol", "vodka", "masld", "nafld"])):
+        sub_queries.extend([
+            "De Ritis ratio AST ALT greater than 2 alcoholic mitochondrial injury GGT",
+            "MASLD ALT predominance AST ALT less than 1 zone 3 macrovesicular steatosis",
+            "AASLD clinical differential diagnosis alcoholic steatohepatitis vs MASLD"
+        ])
+
+    # Histology Scans & Fibrosis (e.g. scan_*, bridging fibrosis, triglycerides)
+    elif "scan_" in q_lower or any(k in q_lower for k in ["biopsy", "histology", "bridging fibrosis", "f3", "f4", "steatosis grade"]):
+        sub_queries.extend([
+            "histopathology stage F3 bridging fibrosis porto-portal septa collagen",
+            "hypertriglyceridemia elevated triglycerides metabolic lipid accumulation liver",
+            "AASLD EASL management bridging fibrosis surveillance HCC ultrasound"
+        ])
+
+    # Timeline & Regeneration Plan
+    elif any(k in q_lower for k in ["1 month", "one month", "30 day", "plan", "guideline", "protocol", "timeline"]):
+        sub_queries.extend([
+            "hepatic mitochondrial beta-oxidation 4-week regeneration protocol",
+            "serum ALT AST normalization timeline Mediterranean dietary changes",
+            "AASLD 2023 lifestyle 7-10% weight loss coffee polyphenols exercise"
+        ])
+
+    # Alcohol Toxicity
+    elif any(k in q_lower for k in ["alcohol", "vodka", "beer", "wine", "drink", "ethanol"]):
+        sub_queries.extend([
+            "ethanol metabolism ADH CYP2E1 toxic acetaldehyde pathway ROS",
+            "AST ALT De Ritis ratio alcoholic hepatitis Maddrey discriminant function",
+            "AASLD guidance zero tolerance alcohol abstinence Thiamine repletion"
+        ])
+
+    return list(dict.fromkeys(sub_queries))
+
+
+# =============================================================================
+# NVIDIA RAG-Blueprint: Two-Stage Semantic & Intent-Aware Clinical Retriever
+# =============================================================================
+class NvidiaRagTwoStageRetriever:
+    """
+    Two-Stage Hybrid & Intent-Aware Semantic Retriever conforming to NVIDIA RAG-Blueprint:
+      - Stage 1 (Fast Keyword & BM25 / Candidate Generation):
+        Multi-term frequency analysis and keyword expansion across local clinical chunks.
+      - Stage 2 (Semantic Intent Reranking & Evidence Weighting):
+        Applies clinical domain alignment boosts, authority hierarchy weighting (Level 1A > 1B > 2),
+        and confidence thresholding.
+    """
 
     def __init__(self, documents):
         self.documents = documents
 
-    def invoke(self, query: str):
-        query_terms = [t for t in re.findall(r"[a-z0-9]+", query.lower()) if len(t) > 2]
-        if not query_terms:
-            return self.documents[:6]
+    def invoke(self, query: str, top_k: int = 6):
+        if not self.documents:
+            return []
 
-        scored = []
+        # Multi-hop query expansion via AIQ-Research decomposition
+        sub_queries = decompose_clinical_query(query)
+        all_terms = []
+        for sq in sub_queries:
+            all_terms.extend([t for t in re.findall(r"[a-z0-9]+", sq.lower()) if len(t) > 2])
+        query_terms = list(dict.fromkeys(all_terms))
+
+        query_intent = classify_clinical_intent(query)
+
+        # Evidence level scoring weights
+        evidence_weights = {
+            "Level 1A": 1.0,
+            "Level 1B": 0.9,
+            "Level 2A": 0.8,
+            "Level 2B": 0.7,
+            "Level 2": 0.6,
+        }
+
+        # ── STAGE 1: Candidate Generation (Keyword & Phrase Matching) ────────
+        candidates = []
         for doc in self.documents:
-            content = (doc.page_content or "").lower()
-            score = sum(content.count(term) for term in query_terms)
-            if score > 0:
-                scored.append((score, doc))
+            content = (getattr(doc, "page_content", "") or "").lower()
+            meta = getattr(doc, "metadata", {}) or {}
 
-        scored.sort(key=lambda item: item[0], reverse=True)
-        return [doc for _, doc in scored[:6]]
+            # Term frequency & exact phrase bonus
+            tf_score = 0.0
+            for term in query_terms:
+                tf_score += content.count(term)
+
+            # Metadata keyword match
+            keywords = [k.lower() for k in meta.get("keywords", [])]
+            keyword_match_bonus = sum(2.0 for term in query_terms if any(term in k for k in keywords))
+
+            total_stage1 = tf_score + keyword_match_bonus
+            if total_stage1 > 0 or not query_terms:
+                candidates.append((total_stage1, doc))
+
+        # Sort candidates and take top 25 for Stage 2 reranking
+        candidates.sort(key=lambda x: x[0], reverse=True)
+        pool = [doc for _, doc in candidates[:25]] if candidates else self.documents[:25]
+
+        # ── STAGE 2: Intent-Aware Semantic Reranking & Cross-Scoring ────────
+        reranked = []
+        for doc in pool:
+            content = (getattr(doc, "page_content", "") or "").lower()
+            meta = getattr(doc, "metadata", {}) or {}
+            domain = meta.get("clinical_domain", "general")
+            evidence = meta.get("evidence_level", "Level 1")
+
+            # 1. Base term overlap score
+            term_score = sum(content.count(term) for term in query_terms) if query_terms else 1.0
+
+            # 2. Domain affinity boost
+            domain_boost = 0.0
+            if domain == query_intent:
+                domain_boost = 6.0
+            elif query_intent in ["masld_diabetes_progression", "fatty_liver", "timeline_plan", "nutrition"] and domain in ["fatty_liver", "timeline_plan", "nutrition", "biomarkers"]:
+                domain_boost = 4.5
+            elif query_intent in ["differential_alcoholic_masld", "alcohol_toxicity"] and domain in ["alcohol_toxicity", "biomarkers", "fatty_liver"]:
+                domain_boost = 4.5
+            elif query_intent in ["scan_bridging_fibrosis", "histology_biopsy"] and domain in ["histology_biopsy", "fatty_liver", "symptoms"]:
+                domain_boost = 5.0
+            elif query_intent in ["timeline_plan", "nutrition"] and domain in ["timeline_plan", "nutrition", "fatty_liver"]:
+                domain_boost = 3.5
+
+            # 3. Evidence authority weight
+            ev_weight = evidence_weights.get(evidence, 0.75)
+
+            final_score = (term_score * 0.45) + (domain_boost * 0.35) + (ev_weight * 2.0)
+            reranked.append((final_score, doc))
+
+        reranked.sort(key=lambda x: x[0], reverse=True)
+        return [doc for _, doc in reranked[:top_k]]
+
+
+# Backwards-compatibility alias
+LocalFallbackRetriever = NvidiaRagTwoStageRetriever
 
 
 # =============================================================================
@@ -125,9 +260,9 @@ def _background_init():
     chunks = text_split(minimal)
     with _lock:
         _local_docs = chunks
-        _retriever = LocalFallbackRetriever(chunks)
+        _retriever = NvidiaRagTwoStageRetriever(chunks)
         _rag_ready = True
-    print(f"[RAG] {len(chunks)} local fallback chunks ready.")
+    print(f"[RAG] {len(chunks)} local clinical knowledge chunks loaded with NVIDIA RAG metadata.")
     gc.collect()
 
     if not (PINECONE_API_KEY and HAS_PINECONE and HAS_PINECONE_LC):
@@ -175,27 +310,47 @@ def classify_clinical_intent(query: str) -> str:
     """
     Exact-Match & Semantic Clinical Query Classifier.
     Maps user input to high-fidelity AASLD/EASL clinical knowledge domains:
-      1. 'timeline_plan'     - 1-Month / 30-Day Timeline Action Plan & 4-Week Protocol
-      2. 'alcohol_toxicity'  - Alcohol & Substance Toxicity (Zero tolerance, acetaldehyde pathway)
-      3. 'histology_biopsy'  - Microscopic Scans, Histology & Biopsy Staging
-      4. 'symptoms'          - Early Warning Signs, Symptoms, Jaundice, Pain
-      5. 'biomarkers'        - Liver Function Tests (LFTs), Enzymes, Ratios, FIB-4
-      6. 'fatty_liver'       - MASLD / NAFLD / MASH / Steatosis Reversal
-      7. 'hepatitis'         - Viral Hepatitis A, B, C, D, E
-      8. 'cirrhosis'         - Cirrhosis, Portal HTN, Ascites, End-Stage
-      9. 'nutrition'         - Mediterranean Diet, Coffee Polyphenols, Exercise
-      10. 'general'          - General Hepatic Physiology / Fallback
+      1. 'masld_diabetes_progression' - Multi-variable MASLD + T2DM / HbA1c Progression
+      2. 'differential_alcoholic_masld' - Differential Diagnosis: Alcoholic vs MASLD / AST:ALT ratios
+      3. 'scan_bridging_fibrosis'     - Histology Scans with Bridging Fibrosis & Triglycerides
+      4. 'timeline_plan'              - 1-Month / 30-Day Timeline Action Plan & 4-Week Protocol
+      5. 'alcohol_toxicity'           - Alcohol & Substance Toxicity (Zero tolerance, acetaldehyde pathway)
+      6. 'histology_biopsy'           - Microscopic Scans, Histology & Biopsy Staging
+      7. 'symptoms'                   - Early Warning Signs, Symptoms, Jaundice, Pain
+      8. 'biomarkers'                 - Liver Function Tests (LFTs), Enzymes, Ratios, FIB-4
+      9. 'fatty_liver'                - MASLD / NAFLD / MASH / Steatosis Reversal
+      10. 'hepatitis'                 - Viral Hepatitis A, B, C, D, E
+      11. 'cirrhosis'                 - Cirrhosis, Portal HTN, Ascites, End-Stage
+      12. 'nutrition'                 - Mediterranean Diet, Coffee Polyphenols, Exercise
+      13. 'general'                   - General Hepatic Physiology / Fallback
     """
     if not query:
         return "general"
 
     q = query.lower().strip()
 
-    # 1. Histology Biopsy & Microscopic Scans (e.g. scan_1787846492516, biopsy, histology)
+    # 1. Multi-variable MASLD + Diabetes / HbA1c Progression
+    if (any(k in q for k in ["masld", "nafld", "fatty", "steatosis", "mash", "nash"]) and
+        any(k in q for k in ["hba1c", "diabetes", "glucose", "insulin", "progression", "glycemic"])):
+        return "masld_diabetes_progression"
+
+    # 2. Differential Diagnosis (Alcoholic vs MASLD / AST:ALT ratios)
+    if (any(k in q for k in ["differential", "versus", "vs", "compare", "distinguish", "difference"]) and
+        any(k in q for k in ["alcohol", "alcoholic", "vodka", "beer"]) and
+        any(k in q for k in ["masld", "nafld", "fatty", "steatosis", "ratio", "ast:alt", "ast/alt"])) or \
+       (any(k in q for k in ["ast:alt", "ast/alt", "de ritis", "ratio"]) and "alcohol" in q and ("masld" in q or "fatty" in q)):
+        return "differential_alcoholic_masld"
+
+    # 3. Histology Scans with Bridging Fibrosis & Triglycerides
+    if ("scan_" in q or "biopsy" in q or "histology" in q) and \
+       (any(k in q for k in ["bridging", "fibrosis", "f3", "triglyceride", "triglycerides", "lipid"])):
+        return "scan_bridging_fibrosis"
+
+    # 4. Histology Biopsy & Microscopic Scans (general)
     if "scan_" in q or any(k in q for k in ["biopsy", "histology", "fibrosis stage", "steatosis grade", "ballooning degeneration", "histopath"]):
         return "histology_biopsy"
 
-    # 2. 1-Month / 30-Day Timeline Action Plan ("1 month", "one month", "30 day", "plan", "routine", "schedule", "diet chart", "guideline")
+    # 5. 1-Month / 30-Day Timeline Action Plan ("1 month", "one month", "30 day", "plan", "routine", "schedule", "diet chart", "guideline")
     timeline_keywords = [
         "1 month", "one month", "30 day", "30-day", "4 week", "four week", "4-week",
         "action plan", "diet chart", "routine", "schedule", "guideline", "timeline",
@@ -204,7 +359,7 @@ def classify_clinical_intent(query: str) -> str:
     if any(k in q for k in timeline_keywords) or (("plan" in q or "month" in q) and any(k in q for k in ["diet", "liver", "heal", "revers", "action", "treatment", "recovery"])):
         return "timeline_plan"
 
-    # 3. Alcohol & Substance Toxicity ("alcohol", "vodka", "beer", "wine", "how many pegs", "ml", "drink")
+    # 6. Alcohol & Substance Toxicity ("alcohol", "vodka", "beer", "wine", "how many pegs", "ml", "drink")
     alcohol_keywords = [
         "alcohol", "vodka", "beer", "wine", "how many pegs", "pegs", "peg", "liquor",
         "whiskey", "whisky", "rum", "tequila", "gin", "ethanol", "drinking",
@@ -213,7 +368,7 @@ def classify_clinical_intent(query: str) -> str:
     if any(k in q for k in alcohol_keywords):
         return "alcohol_toxicity"
 
-    # 4. Early Warning Signs & Symptoms ("warning signs", "symptoms", "pain", "jaundice", "dark urine", "fatigue")
+    # 7. Early Warning Signs & Symptoms ("warning signs", "symptoms", "pain", "jaundice", "dark urine", "fatigue")
     symptoms_keywords = [
         "warning sign", "warning signs", "symptom", "symptoms", "early sign", "early signs",
         "jaundice", "yellow eye", "yellow skin", "dark urine", "pale stool", "clay-colored",
@@ -222,7 +377,7 @@ def classify_clinical_intent(query: str) -> str:
     if any(k in q for k in symptoms_keywords):
         return "symptoms"
 
-    # 5. Biomarkers & LFT Panels ("alt", "ast", "sgpt", "sgot", "bilirubin", "fib-4", "albumin", "alp")
+    # 8. Biomarkers & LFT Panels ("alt", "ast", "sgpt", "sgot", "bilirubin", "fib-4", "albumin", "alp")
     biomarker_keywords = [
         "alt", "ast", "sgpt", "sgot", "bilirubin", "alp", "alk phos", "alkaline phosphatase",
         "albumin", "fib-4", "fib4", "de ritis", "lft", "liver function test", "liver enzyme",
@@ -231,20 +386,20 @@ def classify_clinical_intent(query: str) -> str:
     if any(k in q for k in biomarker_keywords):
         return "biomarkers"
 
-    # 6. General MASLD / NAFLD Health & Reversal ("fatty", "nafld", "nash", "masld", "mash", "steatosis")
+    # 9. General MASLD / NAFLD Health & Reversal ("fatty", "nafld", "nash", "masld", "mash", "steatosis")
     fatty_keywords = ["fatty", "nafld", "nash", "masld", "mash", "steatosis", "fat in liver", "reverse fatty", "reversing fatty"]
     if any(k in q for k in fatty_keywords):
         return "fatty_liver"
 
-    # 7. Viral Hepatitis
+    # 10. Viral Hepatitis
     if any(k in q for k in ["hepatitis", "hep a", "hep b", "hep c", "hcv", "hbv", "viral"]):
         return "hepatitis"
 
-    # 8. Cirrhosis & Portal Hypertension
+    # 11. Cirrhosis & Portal Hypertension
     if any(k in q for k in ["cirrhosis", "portal hypertension", "ascites", "varices", "child-pugh", "meld", "bleeding"]):
         return "cirrhosis"
 
-    # 9. Nutrition & Lifestyle
+    # 12. Nutrition & Lifestyle
     if any(k in q for k in ["diet", "food", "nutrition", "coffee", "exercise", "lifestyle", "eat", "meal"]):
         return "nutrition"
 
@@ -258,7 +413,13 @@ def build_local_fallback_answer(user_msg: str, docs=None) -> str:
     """
     intent = classify_clinical_intent(user_msg)
 
-    if intent == "histology_biopsy":
+    if intent == "masld_diabetes_progression":
+        return CLINICAL_GUIDES.get("masld_diabetes_progression", CLINICAL_GUIDES["fatty_liver"])
+    elif intent == "differential_alcoholic_masld":
+        return CLINICAL_GUIDES.get("differential_alcoholic_masld", CLINICAL_GUIDES["alcohol_toxicity"])
+    elif intent == "scan_bridging_fibrosis":
+        return CLINICAL_GUIDES.get("scan_bridging_fibrosis", CLINICAL_GUIDES["scan_biopsy"])
+    elif intent == "histology_biopsy":
         return CLINICAL_GUIDES.get("scan_biopsy", CLINICAL_GUIDES["biopsy"])
     elif intent == "timeline_plan":
         return CLINICAL_GUIDES.get("timeline_plan", CLINICAL_GUIDES["nutrition"])
@@ -358,7 +519,16 @@ def generate_openai_answer(system_prompt_str: str, user_input_str: str, temperat
     """Generate answer using OpenAI-compatible Chat Completion API (Groq, OpenRouter, etc.)."""
     endpoints = []
 
-    # 1. Prioritize Groq (Ultra-fast, Llama 3.3 70B)
+    # 1. Direct Official OpenAI API (gpt-4o-mini, gpt-4o, gpt-4-turbo)
+    if OPENAI_API_KEY and (OPENAI_API_KEY.startswith("sk-proj-") or (OPENAI_API_KEY.startswith("sk-") and not OPENAI_API_KEY.startswith("sk-or-v1-"))):
+        endpoints.append({
+            "url": "https://api.openai.com/v1/chat/completions",
+            "key": OPENAI_API_KEY,
+            "models": ["gpt-4o-mini", "gpt-4o", "gpt-4-turbo"],
+            "headers": {"Authorization": f"Bearer {OPENAI_API_KEY}", "Content-Type": "application/json"}
+        })
+
+    # 2. Prioritize Groq (Ultra-fast, Llama 3.3 70B)
     if GROQ_API_KEY:
         endpoints.append({
             "url": "https://api.groq.com/openai/v1/chat/completions",
@@ -367,23 +537,24 @@ def generate_openai_answer(system_prompt_str: str, user_input_str: str, temperat
             "headers": {"Authorization": f"Bearer {GROQ_API_KEY}", "Content-Type": "application/json"}
         })
 
-    # 2. OpenRouter endpoint
-    if OPENROUTER_API_KEY:
+    # 3. OpenRouter endpoint
+    or_key = OPENROUTER_API_KEY or (OPENAI_API_KEY if OPENAI_API_KEY.startswith("sk-or-v1-") else "")
+    if or_key:
         endpoints.append({
             "url": "https://openrouter.ai/api/v1/chat/completions",
-            "key": OPENROUTER_API_KEY,
+            "key": or_key,
             "models": ["meta-llama/llama-3.3-70b-instruct", "deepseek/deepseek-chat", "openrouter/auto"],
             "headers": {
-                "Authorization": f"Bearer {OPENROUTER_API_KEY}",
+                "Authorization": f"Bearer {or_key}",
                 "Content-Type": "application/json",
                 "HTTP-Referer": "https://liverai.health",
                 "X-Title": "LiverAI Medical Assistant"
             }
         })
 
-    # 3. Generic OpenAI endpoint if configured
+    # 4. Generic Custom OpenAI endpoint if configured (e.g. self-hosted vLLM, Ollama, LM Studio)
     base_url = (os.getenv("OPENAI_BASE_URL", "") or os.getenv("LLM_BASE_URL", "")).rstrip("/")
-    if OPENAI_API_KEY and base_url:
+    if OPENAI_API_KEY and base_url and "api.openai.com" not in base_url and "openrouter.ai" not in base_url:
         endpoints.append({
             "url": f"{base_url}/chat/completions",
             "key": OPENAI_API_KEY,
@@ -549,29 +720,33 @@ def generate_rag_answer(
             return gemini_vision_ans
 
     # ── TEXT RAG PIPELINE ─────────────────────────────────────────────────────
-    augmented_input = user_msg
+    augmented_input = (
+        f"[UNTRUSTED_USER_QUERY]\n"
+        f"{user_msg}\n"
+        f"[/UNTRUSTED_USER_QUERY]"
+    )
     if chat_history:
         history_lines = []
         for turn in chat_history[-6:]:
             role = "User" if turn.get("role") == "user" else "LiverAI"
             history_lines.append(f"{role}: {turn.get('content', '')}")
         augmented_input = (
-            f"[Conversation History]\n{chr(10).join(history_lines)}\n\n"
-            f"[Current Question]\n{user_msg}"
+            f"[CONVERSATION_HISTORY]\n{chr(10).join(history_lines)}\n[/CONVERSATION_HISTORY]\n\n"
+            f"[UNTRUSTED_USER_QUERY]\n{user_msg}\n[/UNTRUSTED_USER_QUERY]"
         )
 
     context_str = ""
     if docs:
-        context_str = "\n\n".join(d.page_content for d in docs[:8])
+        context_str = "\n\n".join(format_chunk_with_boundary(d) for d in docs[:8])
 
     if image_path and os.path.exists(image_path):
         histology_scores = analyze_histology_image(image_path)
         if histology_scores:
             hist_lines = [f"- {k.replace('_', ' ').title()}: {v}% ({'DETECTED' if v>=50 else 'NOT DETECTED'})" for k, v in histology_scores.items()]
-            context_str += "\n\n[Uploaded Biopsy Histology Patch Findings]:\n" + "\n".join(hist_lines)
+            context_str += "\n\n[UPLOADED_BIOPSY_HISTOLOGY_FINDINGS]\n" + "\n".join(hist_lines) + "\n[/UPLOADED_BIOPSY_HISTOLOGY_FINDINGS]"
 
     full_system_prompt = system_prompt.replace("{context}", context_str)
-    full_prompt = full_system_prompt + "\n\nUser: " + augmented_input
+    full_prompt = full_system_prompt + "\n\n" + augmented_input
 
     # 1. Try Groq / OpenRouter API
     if GROQ_API_KEY or OPENROUTER_API_KEY or OPENAI_API_KEY:

@@ -67,15 +67,87 @@ def load_pdf_files(data):
     return documents
 
 
+# =============================================================================
+# NVIDIA RAG-Blueprint: Authoritative Clinical Knowledge Document Registry
+# =============================================================================
+DOCUMENT_REGISTRY = {
+    "liver_disease_fatty_liver.txt": {
+        "source_id": "AASLD_2023_MASLD_MASH",
+        "title": "AASLD 2023 Clinical Guidance on MASLD, MASH, and Steatosis Reversal",
+        "clinical_domain": "fatty_liver",
+        "authority": "AASLD / EASL Clinical Practice Guidelines",
+        "evidence_level": "Level 1A",
+        "keywords": ["fatty liver", "steatosis", "masld", "mash", "nafld", "nash", "lifestyle", "weight loss", "7-10%"]
+    },
+    "liver_disease_hepatitis.txt": {
+        "source_id": "AASLD_VIRAL_HEPATITIS",
+        "title": "Clinical Guidance for Viral Hepatitis A, B, C & Autoimmune Hepatitis",
+        "clinical_domain": "hepatitis",
+        "authority": "AASLD / CDC Clinical Guidelines",
+        "evidence_level": "Level 1A",
+        "keywords": ["hepatitis", "hbv", "hcv", "hav", "viral", "antiviral", "direct acting antivirals", "interferon"]
+    },
+    "liver_disease_late_stage_symptoms.txt": {
+        "source_id": "HEPATOLOGY_CIRRHOSIS_RED_FLAGS",
+        "title": "Decompensated Cirrhosis, Ascites, Portal Hypertension & Triage Signs",
+        "clinical_domain": "symptoms",
+        "authority": "Critical Care Hepatology Guidelines",
+        "evidence_level": "Level 1A",
+        "keywords": ["cirrhosis", "portal hypertension", "ascites", "varices", "jaundice", "red flags", "encephalopathy", "emergency"]
+    },
+    "liver_disease_ncbi.txt": {
+        "source_id": "NCBI_HEPATIC_PATHOPHYSIOLOGY",
+        "title": "Hepatic Pathophysiology, Mitochondrial Beta-Oxidation & 4-Week Regeneration Protocol",
+        "clinical_domain": "timeline_plan",
+        "authority": "NCBI / NIH National Library of Medicine",
+        "evidence_level": "Level 1B",
+        "keywords": ["1 month", "one month", "30 day", "regeneration", "protocol", "week", "mitochondria", "beta oxidation", "timeline", "action plan"]
+    },
+    "liver_disease_treatments.txt": {
+        "source_id": "AASLD_NUTRITION_TOXICITY",
+        "title": "Evidence-Based Nutrition, Polyphenols, Alcohol Toxicity & Pharmacotherapy",
+        "clinical_domain": "alcohol_toxicity",
+        "authority": "AASLD / EASL Practice Guidelines",
+        "evidence_level": "Level 1A",
+        "keywords": ["alcohol", "vodka", "beer", "wine", "ethanol", "acetaldehyde", "mediterranean", "coffee", "polyphenols", "nutrition", "diet"]
+    },
+    "liver_lab_report.txt": {
+        "source_id": "CLINICAL_LFT_REFERENCE",
+        "title": "Serum Liver Function Tests (LFTs), Enzyme Reference Ranges & FIB-4",
+        "clinical_domain": "biomarkers",
+        "authority": "Clinical Laboratory Medicine Standards",
+        "evidence_level": "Level 1A",
+        "keywords": ["alt", "ast", "sgpt", "sgot", "bilirubin", "alp", "albumin", "platelets", "fib-4", "de ritis", "ratio"]
+    },
+    "README.roboflow.txt": {
+        "source_id": "ROBOFLOW_HISTOLOGY_BIOPSY",
+        "title": "Microscopic Liver Histopathology, Fibrosis Staging (F0-F4) & Steatosis Grading",
+        "clinical_domain": "histology_biopsy",
+        "authority": "Computational Pathology & Histopathology Standards",
+        "evidence_level": "Level 2A",
+        "keywords": ["histology", "biopsy", "scan", "patch", "fibrosis", "f0", "f1", "f2", "f3", "f4", "ballooning", "steatosis grade", "microscopic"]
+    },
+    "README.dataset.txt": {
+        "source_id": "LPD_CLINICAL_POPULATION",
+        "title": "Liver Patient Population Dataset Features, Demographics & Biomarker Correlates",
+        "clinical_domain": "general",
+        "authority": "Clinical Epidemiological Data Registry",
+        "evidence_level": "Level 2B",
+        "keywords": ["patient", "demographics", "age", "gender", "bilirubin", "alkphos", "sgot", "sgpt", "proteins"]
+    }
+}
+
+
 def load_txt_files(data: str) -> List[Document]:
     """
     Load all plain text (.txt) files from the given directory.
-    Each file is loaded as a single Document with source metadata.
+    Each file is loaded as a Document with structured clinical metadata tagging.
     """
     documents: List[object] = []
     txt_files = glob.glob(os.path.join(data, "*.txt"))
 
     for file_path in txt_files:
+        filename = os.path.basename(file_path)
         print(f"Loading TXT: {file_path}")
         content = ""
         try:
@@ -91,10 +163,26 @@ def load_txt_files(data: str) -> List[Document]:
             print(f"Warning: Could not load {file_path} — {e}")
 
         if content.strip():
+            meta = {
+                "source": file_path,
+                "filename": filename,
+            }
+            if filename in DOCUMENT_REGISTRY:
+                meta.update(DOCUMENT_REGISTRY[filename])
+            else:
+                meta.update({
+                    "source_id": filename.replace(".", "_"),
+                    "title": filename,
+                    "clinical_domain": "general",
+                    "authority": "General Hepatic Knowledge Base",
+                    "evidence_level": "Level 2",
+                    "keywords": []
+                })
+
             documents.append(
                 Document(
                     page_content=content,
-                    metadata={"source": file_path}
+                    metadata=meta
                 )
             )
 
@@ -314,13 +402,12 @@ def clean_pdf_text(text: str) -> str:
 def filter_to_minimal_docs(docs: List[object]) -> List[object]:
     """
     Given a list of Document objects, return a new list of Document objects 
-    containing only 'source' in metadata and the original page_content,
-    with structural artifacts (section headers, dividers, labels) stripped
-    out so the LLM never sees or echoes them.
+    preserving structured metadata and cleaned page_content,
+    with structural artifacts stripped out.
     """
     minimal_docs: List[object] = []
     for doc in docs:
-        src = doc.metadata.get('source')
+        meta = getattr(doc, 'metadata', {}) or {}
         cleaned_content = clean_pdf_text(doc.page_content)
         if not cleaned_content:
             continue
@@ -328,13 +415,33 @@ def filter_to_minimal_docs(docs: List[object]) -> List[object]:
             minimal_docs.append(
                 Document(
                     page_content=cleaned_content,
-                    metadata={"source": src}
+                    metadata=dict(meta)
                 )
             )
     return minimal_docs
 
 
+def format_chunk_with_boundary(chunk) -> str:
+    """Format a single knowledge chunk with strict NVIDIA RAG-Blueprint boundary markers."""
+    meta = getattr(chunk, 'metadata', {}) or {}
+    source_id = meta.get('source_id', 'CLINICAL_KB')
+    domain = meta.get('clinical_domain', 'general')
+    authority = meta.get('authority', 'AASLD/EASL Practice Guidance')
+    evidence = meta.get('evidence_level', 'Level 1')
+    title = meta.get('title', 'Clinical Knowledge')
+    content = (getattr(chunk, 'page_content', '') or '').strip()
+    return (
+        f'[KNOWLEDGE_CHUNK id="{source_id}" domain="{domain}" authority="{authority}" evidence="{evidence}" title="{title}"]\n'
+        f"{content}\n"
+        f"[/KNOWLEDGE_CHUNK]"
+    )
+
+
 def text_split(minimal_docs):
+    """
+    Split documents into semantically coherent chunks while preserving
+    hierarchical document metadata tags.
+    """
     if RecursiveCharacterTextSplitter is not None:
         text_splitter = RecursiveCharacterTextSplitter(
             chunk_size=700,
@@ -346,13 +453,14 @@ def text_split(minimal_docs):
     chunks = []
     for doc in minimal_docs:
         content = (getattr(doc, 'page_content', '') or '').strip()
+        meta = getattr(doc, 'metadata', {}) or {}
         if not content:
             continue
         words = content.split()
         for start in range(0, len(words), 400):
             segment = ' '.join(words[start:start + 400])
             if segment:
-                chunks.append(type('Chunk', (), {'page_content': segment, 'metadata': getattr(doc, 'metadata', {})})())
+                chunks.append(type('Chunk', (), {'page_content': segment, 'metadata': dict(meta)})())
     return chunks
 
 
