@@ -113,7 +113,7 @@ class _LiverAIAppState extends State<LiverAIApp> {
     final isDark = widget.glassTheme.isDarkMode;
 
     return MaterialApp(
-      title: 'LiverAI - Medical Intelligence',
+      title: 'LiverAI',
       debugShowCheckedModeBanner: false,
       themeMode: isDark ? ThemeMode.dark : ThemeMode.light,
       theme: widget.glassTheme.themeData,
