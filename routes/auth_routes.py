@@ -87,6 +87,7 @@ def api_me():
 
 
 @auth_bp.route("/api/firebase-login", methods=["POST"])
+@auth_bp.route("/api/v1/auth/session", methods=["POST"])
 def api_firebase_login():
     data     = request.get_json(silent=True) or {}
     id_token = data.get("idToken", "").strip()
@@ -147,4 +148,32 @@ def api_firebase_login():
         "message": f"Signed in with {provider}!",
         "user":    full_profile or {"id": user_id, "username": username, "email": email},
     })
+
+
+@auth_bp.route("/api/guest-login", methods=["POST"])
+def api_guest_login():
+    import uuid
+    guest_id = f"guest_{uuid.uuid4().hex[:8]}"
+    guest_email = f"{guest_id}@guest.liverai.health"
+    guest_name = "Guest Evaluator"
+
+    user_id, username = upsert_firebase_user(guest_email, guest_name)
+
+    session["user_id"]  = user_id
+    session["username"] = username
+    session["email"]    = guest_email
+    session["is_guest"] = True
+
+    return jsonify({
+        "success": True,
+        "message": "Welcome to LiverAI in Guest Mode!",
+        "user": {
+            "id": user_id,
+            "username": username,
+            "email": guest_email,
+            "role": "Guest Evaluator",
+            "is_guest": True
+        }
+    })
+
 

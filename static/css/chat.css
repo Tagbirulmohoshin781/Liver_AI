@@ -12,16 +12,33 @@
   color: var(--text-primary);
 }
 
-/* Header Topbar */
+/* Header Topbar - Sticky Frosted Glass Navbar (#0F172A) */
 .chat-topbar {
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding: .6rem 1.25rem;
-  border-bottom: 1px solid var(--border);
-  background: var(--bg-primary);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(15, 23, 42, 0.85);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  position: sticky;
+  top: 0;
+  z-index: 100;
   flex-shrink: 0;
   gap: .75rem;
+}
+
+.topbar-logo-img {
+  height: 38px;
+  width: auto;
+  filter: drop-shadow(0 0 10px rgba(2, 132, 199, 0.35));
+  transition: transform 0.2s ease, filter 0.2s ease;
+}
+
+.topbar-logo-img:hover {
+  transform: scale(1.03);
+  filter: drop-shadow(0 0 14px rgba(0, 240, 255, 0.5));
 }
 
 .topbar-left {
@@ -355,40 +372,104 @@
 }
 
 .msg-row.user-row .msg-bubble {
-  background: var(--user-bubble);
-  border: 1px solid var(--border);
+  background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%);
+  border: 1px solid rgba(255, 255, 255, 0.15);
   padding: .75rem 1.1rem;
   border-radius: 18px 18px 4px 18px;
+  color: #ffffff;
+  box-shadow: 0 4px 16px rgba(37, 99, 235, 0.25);
 }
 
 .msg-row.ai-row .msg-bubble {
-  padding: .2rem 0;
+  background: rgba(15, 23, 42, 0.75);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  padding: 1.1rem 1.35rem;
+  border-radius: 4px 20px 20px 20px;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.25);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
 }
 
 /* Markdown Formatting inside AI Bubbles */
-.msg-bubble p { margin: 0 0 .6rem; }
+.msg-bubble p { margin: 0 0 .7rem; }
 .msg-bubble p:last-child { margin-bottom: 0; }
-.msg-bubble ul, .msg-bubble ol { padding-left: 1.4rem; margin: .4rem 0 .6rem; }
-.msg-bubble li { margin-bottom: .25rem; line-height: 1.6; }
-.msg-bubble strong { color: var(--text-primary); font-weight: 700; }
+.msg-bubble ul, .msg-bubble ol { padding-left: 1.4rem; margin: .4rem 0 .7rem; }
+.msg-bubble li { margin-bottom: .35rem; line-height: 1.6; }
+.msg-bubble strong { color: #f8fafc; font-weight: 700; }
 .msg-bubble em { color: var(--text-secondary); }
+.msg-bubble h3 {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #38bdf8;
+  margin: 1.1rem 0 0.45rem;
+  letter-spacing: -0.01em;
+}
+.msg-bubble h3:first-child {
+  margin-top: 0;
+}
+.msg-bubble h4 {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #6ee7b7;
+  margin: 0.85rem 0 0.35rem;
+}
+.msg-bubble table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  margin: 0.9rem 0;
+  border-radius: 10px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(15, 23, 42, 0.65);
+  font-size: 0.88rem;
+}
+.msg-bubble th {
+  background: rgba(16, 185, 129, 0.15);
+  color: #34d399;
+  font-weight: 600;
+  text-align: left;
+  padding: 0.65rem 0.9rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+.msg-bubble td {
+  padding: 0.6rem 0.9rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  color: var(--text-primary);
+}
+.msg-bubble tr:last-child td {
+  border-bottom: none;
+}
+.msg-bubble blockquote {
+  margin: 0.85rem 0;
+  padding: 0.8rem 1.1rem;
+  background: rgba(239, 68, 68, 0.12);
+  border-left: 4px solid #ef4444;
+  border-radius: 0 10px 10px 0;
+  color: #fca5a5;
+  font-size: 0.88rem;
+  line-height: 1.55;
+}
+.msg-bubble blockquote strong {
+  color: #fecaca;
+}
 .msg-bubble code {
   background: var(--bg-hover);
-  color: var(--text-primary);
-  padding: .15em .4em;
-  border-radius: 4px;
+  color: #38bdf8;
+  padding: .15em .45em;
+  border-radius: 5px;
   font-size: .85em;
   font-family: 'Courier New', monospace;
 }
 .msg-bubble pre {
-  background: #1a1a2e;
-  border: 1px solid var(--border);
+  background: #0b1528;
+  border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 10px;
   padding: 1rem;
   overflow-x: auto;
-  margin: .6rem 0;
+  margin: .7rem 0;
 }
-.msg-bubble pre code { background: transparent; padding: 0; font-size: .82em; }
+.msg-bubble pre code { background: transparent; padding: 0; font-size: .82em; color: #e2e8f0; }
 
 /* Input Bar Area */
 .input-area {
@@ -611,5 +692,59 @@
   display: flex;
   flex-direction: column;
   gap: .75rem;
+}
+
+/* ══════════════ PRINTABLE DIAGNOSTIC PDF EXPORT REPORT ══════════════ */
+@media print {
+  body {
+    background: #ffffff !important;
+    color: #0f172a !important;
+    font-family: 'Inter', -apple-system, sans-serif !important;
+  }
+
+  /* Hide navigation, topbars, buttons, and sidebars */
+  #sidebar, .sidebar-overlay, .chat-topbar, .biopsy-upload-card, .btn-biopsy-action, .welcome-screen, .suggestion-chip, input, button {
+    display: none !important;
+  }
+
+  /* Show full width diagnostic report */
+  .biopsy-tab-container, #biopsy-report-view, .biopsy-report-container {
+    display: block !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    box-shadow: none !important;
+    border: none !important;
+    background: transparent !important;
+  }
+
+  /* Printable PDF Report Header with logo.svg */
+  .print-report-header {
+    display: flex !important;
+    align-items: center;
+    justify-content: space-between;
+    padding-bottom: 1.25rem;
+    margin-bottom: 1.5rem;
+    border-bottom: 2.5px solid #0284c7;
+  }
+
+  .print-report-header img {
+    height: 48px !important;
+    width: auto !important;
+  }
+
+  .print-report-meta {
+    text-align: right;
+    font-size: 0.8rem;
+    color: #475569;
+  }
+
+  .biopsy-biomarker-card {
+    border: 1px solid #cbd5e1 !important;
+    background: #f8fafc !important;
+    color: #0f172a !important;
+    page-break-inside: avoid;
+  }
 }
 

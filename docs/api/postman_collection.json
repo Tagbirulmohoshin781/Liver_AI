@@ -1,0 +1,108 @@
+{
+	"info": {
+		"_postman_id": "liverai-api-collection-v1",
+		"name": "LiverAI Precision Diagnostics API",
+		"description": "Standardized Postman Collection for automated contract testing of LiverAI backend endpoints.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Health & Readiness",
+			"item": [
+				{
+					"name": "Liveness Probe",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/healthz",
+							"host": ["{{baseUrl}}"],
+							"path": ["healthz"]
+						}
+					},
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Status code is 200', function () { pm.response.to.have.status(200); });",
+									"pm.test('Returns alive status', function () { const jsonData = pm.response.json(); pm.expect(jsonData.status).to.eql('alive'); });"
+								],
+								"type": "text/javascript"
+							}
+						}
+					]
+				},
+				{
+					"name": "Readiness Probe",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/readyz",
+							"host": ["{{baseUrl}}"],
+							"path": ["readyz"]
+						}
+					},
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Status code is 200 or 503', function () { pm.expect(pm.response.code).to.be.oneOf([200, 503]); });",
+									"pm.test('Does not leak keys', function () { const body = pm.response.text(); pm.expect(body).to.not.include('SUPABASE_KEY'); });"
+								],
+								"type": "text/javascript"
+							}
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Clinical Predictions",
+			"item": [
+				{
+					"name": "10-Biomarker Risk Evaluation",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"age\": 45,\n  \"gender\": \"Male\",\n  \"total_bilirubin\": 0.9,\n  \"direct_bilirubin\": 0.2,\n  \"alkaline_phosphotase\": 95.0,\n  \"sgpt\": 28.0,\n  \"sgot\": 25.0,\n  \"total_proteins\": 7.2,\n  \"albumin\": 4.2,\n  \"ag_ratio\": 1.4\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/predict",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "v1", "predict"]
+						}
+					},
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Status code is 200', function () { pm.response.to.have.status(200); });",
+									"pm.test('Returns valid prediction result', function () { const jsonData = pm.response.json(); pm.expect(jsonData.success).to.be.true; pm.expect(jsonData.result.risk_level).to.eql('Low'); });"
+								],
+								"type": "text/javascript"
+							}
+						}
+					]
+				}
+			]
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "http://localhost:5000",
+			"type": "string"
+		}
+	]
+}

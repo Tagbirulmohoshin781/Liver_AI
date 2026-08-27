@@ -16,6 +16,7 @@ clinical_bp = Blueprint("clinical", __name__)
 
 
 @clinical_bp.route("/api/predict", methods=["POST"])
+@clinical_bp.route("/api/v1/predict", methods=["POST"])
 def api_predict():
     enabled = os.getenv("ENABLE_EXPERIMENTAL_CLINICAL_SCORE", "true").lower() == "true"
     if not enabled:

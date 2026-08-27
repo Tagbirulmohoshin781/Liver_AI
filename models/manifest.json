@@ -1,0 +1,36 @@
+{
+  "version": "1.0.0",
+  "updated_at": "2026-08-27T23:20:00Z",
+  "artifacts": [
+    {
+      "file": "lpd_scaler.pkl",
+      "sha256": "b93e88f299a1fcf475b42ce819063644190a6cfaea9bff7c159e660eb9cf5df0",
+      "size_bytes": 823,
+      "description": "StandardScaler for 10-biomarker LPD risk normalization"
+    },
+    {
+      "file": "lpd_imputer.pkl",
+      "sha256": "edd92ea3aa312d9d90401daf14b8575130a04ed40807b2eb6b0bfe5eb8952e5b",
+      "size_bytes": 943,
+      "description": "SimpleImputer for missing numeric biomarker feature values"
+    },
+    {
+      "file": "lpd_outlier_bounds.json",
+      "sha256": "73d61ff0fc62be891302ddd2df18fe49611d9d5f90aae73985702d7fd482234d",
+      "size_bytes": 576,
+      "description": "Clinical upper/lower outlier capping thresholds"
+    },
+    {
+      "file": "lpd_metadata.json",
+      "sha256": "c7a82b9368ce6bf8a4b5b5fe21b9fd918b1856f5af59555ebec9b5904c7a6e59",
+      "size_bytes": 627,
+      "description": "LPD dataset metadata and training parameters"
+    },
+    {
+      "file": "liver_vision/best_model.pth",
+      "sha256": "9bd6d1982e1ffad77194cb423c28587841e43d055600308b6d8ddd92931857da",
+      "size_bytes": 17641211,
+      "description": "PyTorch EfficientNet-B0 fine-tuned multi-label histology classifier"
+    }
+  ]
+}

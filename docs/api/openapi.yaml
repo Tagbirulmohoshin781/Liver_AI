@@ -1,48 +1,78 @@
-openapi: 3.0.3
+openapi: 3.1.0
 info:
-  title: LiverAI Medical Assistant API
-  description: Hardened API for AI-assisted liver disease education, RAG dialogue, and risk estimation.
-  version: 2.0.0
+  title: LiverAI Precision Diagnostics & Analytics API
+  description: >
+    Production-grade RESTful API for on-device and cloud-assisted liver disease risk calculation, 
+    histology slide image analysis, and RAG medical consultation.
+  version: 1.0.0
+  contact:
+    name: LiverAI Medical Engineering Team
+    email: support@liverai.health
+servers:
+  - url: http://localhost:5000
+    description: Local Development Environment
+  - url: https://liver-ai-backend.onrender.com
+    description: Production Render Environment
+
 paths:
   /healthz:
     get:
-      summary: Liveness probe
+      summary: Liveness Probe
+      description: Returns health status of the application server.
       responses:
         '200':
-          description: Service alive
+          description: Server is alive and responding.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: alive
+                  service:
+                    type: string
+                    example: liverai
+                  timestamp:
+                    type: number
+                    example: 1724784000.0
+
   /readyz:
     get:
-      summary: Readiness probe
+      summary: Readiness Probe
+      description: Evaluates backend database, vector store, and ML vision model readiness.
       responses:
         '200':
-          description: All dependencies ready
+          description: Backend systems fully operational.
         '503':
-          description: Dependencies initializing or degraded
-  /chat:
+          description: Service degraded or missing database connection.
+
+  /api/v1/predict:
     post:
-      summary: Send chat message
+      summary: LPD 10-Biomarker Risk Evaluation
+      description: Evaluates 10 clinical blood biomarkers to predict liver disease risk probability.
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              type: object
-              required: [message]
-              properties:
-                message:
-                  type: string
-                history:
-                  type: array
-                upload_id:
-                  type: string
-                doc_content:
-                  type: string
+              $ref: '#/components/schemas/ClinicalPredictionRequest'
       responses:
         '200':
-          description: AI response generated
+          description: Successful risk evaluation.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClinicalPredictionResponse'
+        '400':
+          description: Missing or invalid required biomarker values.
+        '403':
+          description: Experimental clinical score feature is disabled.
+
   /upload:
     post:
-      summary: Upload document or image
+      summary: Medical Image / Document Upload
+      description: Uploads a biopsy slide image or document file to generate a server-validated upload token.
       requestBody:
         required: true
         content:
@@ -55,10 +85,131 @@ paths:
                   format: binary
       responses:
         '200':
-          description: Upload processed and tokenized
-  /api/predict:
+          description: File successfully processed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UploadResponse'
+        '400':
+          description: Unsupported file format or missing file.
+
+  /chat:
     post:
-      summary: Calculate clinical risk score
+      summary: Medical Chat & RAG Query
+      description: Generates clinical response using local retriever knowledge engine and optional attached upload context.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - message
+              properties:
+                message:
+                  type: string
+                  maxLength: 4000
+                upload_id:
+                  type: string
+                doc_content:
+                  type: string
+                history:
+                  type: array
+                  items:
+                    type: object
       responses:
         '200':
-          description: Risk estimation returned
+          description: Structured medical assistant answer.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  response:
+                    type: string
+
+components:
+  schemas:
+    ClinicalPredictionRequest:
+      type: object
+      required:
+        - age
+        - gender
+        - total_bilirubin
+        - direct_bilirubin
+        - alkaline_phosphotase
+        - sgpt
+        - sgot
+        - total_proteins
+        - albumin
+        - ag_ratio
+      properties:
+        age:
+          type: integer
+          minimum: 1
+          maximum: 120
+          example: 45
+        gender:
+          type: string
+          enum: [Male, Female, 1, 0, male, female]
+          example: Male
+        total_bilirubin:
+          type: number
+          example: 0.9
+        direct_bilirubin:
+          type: number
+          example: 0.2
+        alkaline_phosphotase:
+          type: number
+          example: 95.0
+        sgpt:
+          type: number
+          example: 28.0
+        sgot:
+          type: number
+          example: 25.0
+        total_proteins:
+          type: number
+          example: 7.2
+        albumin:
+          type: number
+          example: 4.2
+        ag_ratio:
+          type: number
+          example: 1.4
+
+    ClinicalPredictionResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        result:
+          type: object
+          properties:
+            probability:
+              type: number
+              example: 0.15
+            risk_level:
+              type: string
+              enum: [Low, Moderate, High]
+              example: Low
+            factors:
+              type: array
+              items:
+                type: string
+
+    UploadResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        upload_id:
+          type: string
+          example: upl_f47ac10b58cc4372a5670e02b2c3d479
+        filename:
+          type: string
+          example: biopsy_slide_01.png
+        is_image:
+          type: boolean
+        predictions:
+          type: object

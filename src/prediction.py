@@ -110,7 +110,11 @@ def predict_liver_disease(features: dict) -> dict:
     # Build feature vectors with safe float casting
     try:
         X_num = np.array([[float(features[f]) for f in NUMERIC_FEATURES]])
-        gender_val = float(features["gender"])
+        raw_gender = str(features.get("gender", "Male")).strip().lower()
+        if raw_gender in {"1", "1.0", "male", "m"}:
+            gender_val = 1.0
+        else:
+            gender_val = 0.0
     except (ValueError, TypeError) as e:
         raise ValueError(f"Invalid numeric input for prediction features: {e}")
 
@@ -158,11 +162,15 @@ def predict_liver_disease(features: dict) -> dict:
     return {
         "status": "ok",
         "method": "experimental_heuristic_aasld",
+        "prediction": 1 if prob >= 0.40 else 0,
+        "probability": round(prob, 3),
         "score": round(prob, 3),
         "label": label,
         "risk_level": risk_level,
+        "confidence": int(round(prob * 100)),
+        "risk_factors": factors,
         "factors": factors,
-        "disclaimer": "This score is an experimental educational heuristic based on AASLD reference ranges. It is not a clinical diagnosis. Always consult a qualified medical professional.",
+        "disclaimer": "This score is an educational heuristic based on AASLD/EASL reference ranges. Always consult a qualified physician.",
         "is_diagnostic": False
     }
 

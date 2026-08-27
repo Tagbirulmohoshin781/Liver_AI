@@ -39,3 +39,10 @@ def service_worker():
     response = send_from_directory("static", "sw.js", mimetype="application/javascript")
     response.headers["Cache-Control"] = "no-cache"
     return response
+
+
+@main_bp.route("/favicon.ico")
+@main_bp.route("/favicon.svg")
+def favicon():
+    return send_from_directory("static", "favicon.svg", mimetype="image/svg+xml")
+

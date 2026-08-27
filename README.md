@@ -1,21 +1,138 @@
-﻿# LiverAI Medical Chatbot
+# LiverAI – Medical Assistant & Precision Diagnostic Intelligence
 
-An AI-powered liver disease detection and medical assistant chatbot built with Flask, LangChain, Google Gemini, and Pinecone. Supports multimodal medical image analysis (vision), chat history, and Firebase authentication.
+An enterprise-grade, cross-platform AI medical diagnostic system built with **Flask**, **LangChain**, **Google Gemini 2.5 Flash**, **Pinecone RAG**, and a **Flutter Mobile App**. Provides 10-biomarker clinical LPD risk prediction, ONNX microscopic biopsy histology vision classification, and real-time medical AI chat.
 
 ---
 
-## Table of Contents
+## 🏗️ System Architecture & Workflow
 
-- [Features](#features)
-- [Prerequisites](#prerequisites)
-- [API Keys Setup](#api-keys-setup)
-- [Windows Setup](#windows-setup)
-- [macOS Setup](#macos-setup)
-- [iOS / iPadOS Access](#ios--ipados-access)
-- [Environment Configuration](#environment-configuration)
-- [Running the App](#running-the-app)
-- [Project Structure](#project-structure)
-- [Troubleshooting](#troubleshooting)
+```mermaid
+flowchart TD
+    subgraph Clients["📱 Client Applications"]
+        WEB["🌐 Web Application (HTML5 / Vanilla CSS / JS)"]
+        APK["📱 Mobile Application (Flutter APK / ONNX Runtime)"]
+    end
+
+    subgraph REST_API["⚙️ Backend REST API (Flask / Gunicorn)"]
+        AUTH["`/api/login` & `/api/register` (Supabase / SQLite)"]
+        PRED["`/api/v1/predict` (LPD Clinical 10-Biomarker Risk Engine)"]
+        CHAT["`/chat` (Gemini 2.5 Flash RAG Pipeline)"]
+        VISION["`/api/vision/analyze` (Histology Classifier)"]
+    end
+
+    subgraph Data_Layer["💾 Data & Knowledge Engine"]
+        AASLD["AASLD / EASL Clinical Text Guidelines (131 Local Chunks)"]
+        PINECONE["Pinecone Vector Index (Zero-RAM Embeddings)"]
+        DB["Supabase PostgreSQL / SQLite Encrypted Storage"]
+    end
+
+    WEB --> AUTH
+    WEB --> PRED
+    WEB --> CHAT
+    WEB --> VISION
+
+    APK --> PRED
+    APK --> CHAT
+    APK -- "Offline Fallback" --> ONNX["Local ONNX Runtime / Clinical Engine"]
+
+    CHAT --> AASLD
+    CHAT --> PINECONE
+    AUTH --> DB
+```
+
+---
+
+## 🎨 Unified Design System & Tokens
+
+Both the **Web App** and **Mobile App (APK)** implement a synchronized high-tech design system:
+
+| Token Category | Value / Hex Code | Usage |
+| :--- | :--- | :--- |
+| **Primary Base** | `#07111E` / `#0B1120` | Medical Deep Navy Canvas |
+| **Surface Card** | `#0F172A` (85% Opacity Glass) | Frosted glass cards (`24px` radius, `1px` subtle outline) |
+| **Primary Accent** | `#2563EB` / `#1D4ED8` | Primary CTA buttons & active highlights |
+| **Cyan Accent** | `#00E5FF` / `#38BDF8` | Glowing title gradients, emblem highlights & badges |
+| **Safe / Low Risk** | `#10B981` (Emerald Green) | Normal lab biomarker status & low risk badges |
+| **Warning / Moderate**| `#F59E0B` (Amber Yellow) | Borderline lab values & moderate risk warnings |
+| **Danger / High Risk**| `#EF4444` (Coral Red) | Critical biomarker elevations & high risk alerts |
+
+---
+
+## 🔬 10 Clinical Biomarkers (LPD Dataset Engine)
+
+1. **Age**: Patient age in years
+2. **Gender**: Male (1) / Female (0)
+3. **Total Bilirubin**: Total serum bilirubin (mg/dL)
+4. **Direct Bilirubin**: Conjugated direct bilirubin (mg/dL)
+5. **Alkaline Phosphatase (Alkphos)**: ALP enzyme level (IU/L)
+6. **Alamine Aminotransferase (Sgpt / ALT)**: ALT liver enzyme level (IU/L)
+7. **Aspartate Aminotransferase (Sgot / AST)**: AST liver enzyme level (IU/L)
+8. **Total Proteins**: Total serum protein concentration (g/dL)
+9. **Albumin**: Serum albumin level (g/dL)
+10. **A/G Ratio**: Albumin-to-Globulin balance ratio
+
+---
+
+## 🔌 API Endpoints Specification
+
+### Clinical Risk Prediction: `POST /api/v1/predict`
+```json
+// Request Body
+{
+  "age": 45,
+  "gender": 1,
+  "total_bilirubin": 1.4,
+  "direct_bilirubin": 0.4,
+  "alkaline_phosphotase": 160,
+  "sgpt": 65,
+  "sgot": 48,
+  "total_proteins": 6.8,
+  "albumin": 3.2,
+  "ag_ratio": 0.9
+}
+```
+
+```json
+// Response Body (200 OK)
+{
+  "success": true,
+  "result": {
+    "status": "ok",
+    "prediction": 1,
+    "probability": 0.72,
+    "risk_level": "High",
+    "confidence": 72,
+    "risk_factors": [
+      "elevated total bilirubin",
+      "elevated direct bilirubin",
+      "elevated ALT (SGPT)",
+      "elevated AST (SGOT)",
+      "low albumin",
+      "abnormal A/G ratio"
+    ]
+  }
+}
+```
+
+---
+
+## 📱 Building the Release APK
+
+To build the standalone release APK for Android devices:
+
+```powershell
+# 1. Navigate to mobile project
+cd "Liver Disease Detection App"
+
+# 2. Verify static analysis (0 issues)
+dart analyze
+
+# 3. Compile production release APK
+flutter build apk --release
+```
+
+The output APK will be saved at:
+`Liver Disease Detection App/build/app/outputs/flutter-apk/app-release.apk`
 
 ---
 

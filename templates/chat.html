@@ -10,15 +10,27 @@
   <meta name="description"
     content="AI-powered liver disease medical assistant. Ask questions about liver health, diagnosis, and treatment." />
 
-  <!-- PWA Settings -->
+  <!-- PWA & Favicon Settings -->
   <link rel="manifest" href="/manifest.json" />
-  <meta name="theme-color" content="#10a37f" />
+  <meta name="theme-color" content="#0F172A" />
   <link rel="icon" type="image/svg+xml" href="/static/logo.svg" />
+  <link rel="alternate icon" type="image/svg+xml" href="/static/favicon.svg" />
   <link rel="apple-touch-icon" href="/static/logo.svg" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <meta name="apple-mobile-web-app-title" content="LiverAI" />
+
+  <!-- OpenGraph & Social Sharing Meta Tags -->
+  <meta property="og:title" content="LiverAI – Precision Diagnostics & Analytics" />
+  <meta property="og:description" content="AI-Powered Clinical Liver Disease Detection, Microscopic Biopsy Patch Classifier & RAG Hepatology Assistant." />
+  <meta property="og:image" content="/static/logo.svg" />
+  <meta property="og:url" content="https://liverai.health" />
+  <meta property="og:type" content="website" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="LiverAI – Precision Diagnostics & Analytics" />
+  <meta name="twitter:description" content="AI-Powered Clinical Liver Disease Detection, Microscopic Biopsy Patch Classifier & RAG Hepatology Assistant." />
+  <meta name="twitter:image" content="/static/logo.svg" />
 
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
@@ -84,14 +96,10 @@
           <!-- ─── 1. SIGN IN VIEW ─── -->
           <div class="auth-mode-view" id="auth-signin-view">
             <!-- Brand Logo & Header -->
-            <div class="auth-brand-header">
-              <div class="auth-logo-symbol" title="LiverAI Brand" style="display:flex; align-items:center; justify-content:center; width:44px; height:44px; background:rgba(255,255,255,0.95); border-radius:50%; box-shadow:0 4px 14px rgba(0,0,0,0.25);">
-                <div style="width:18px; height:18px; border-radius:50%; background:#000000;"></div>
-              </div>
-              <div class="auth-brand-text">
-                <h1 class="auth-brand-title" style="font-family:'Inter', sans-serif; font-weight:800; font-size:1.85rem; letter-spacing:-0.5px; color:#1D4ED8;">Liver<span style="color:#1E3A8A;">AI</span></h1>
-                <p class="auth-tagline" style="font-size:0.75rem; letter-spacing:0.5px; color:#94A3B8; margin-top:2px;">Your Journey to Liver Health</p>
-              </div>
+            <div class="auth-brand-header" style="display:flex; justify-content:center; align-items:center; margin-bottom:1.5rem;">
+              <a href="/" title="LiverAI Home Dashboard" style="display:inline-flex; align-items:center; text-decoration:none;">
+                <img src="/static/logo.svg" alt="LiverAI Precision Diagnostics Logo" class="auth-logo-svg" style="height:48px; max-width:280px; width:auto; filter: drop-shadow(0 0 12px rgba(2, 132, 199, 0.4)); transition: transform 0.2s ease;" />
+              </a>
             </div>
 
             <!-- Heading -->
@@ -169,11 +177,13 @@
                 Don't have an account? <a href="#" class="auth-action-link" onclick="toggleAuthMode('signup'); return false;">Sign Up</a>
               </p>
 
-              <!-- Quick Guest Access Option -->
+              <!-- Quick Instant Demo / Guest Access Option -->
               <div class="auth-guest-access">
-                <a href="#" onclick="showChat(); showToast('Using LiverAI in Guest Mode', 'info'); return false;">
-                  Explore in Guest Mode <i class="fa-solid fa-arrow-right-long"></i>
-                </a>
+                <button type="button" class="btn-guest-access" onclick="handleGuestLogin(); return false;">
+                  <i class="fa-solid fa-bolt-lightning" style="color:#38bdf8;"></i>
+                  <span>Instant Demo / Guest Access</span>
+                  <i class="fa-solid fa-arrow-right"></i>
+                </button>
               </div>
             </form>
           </div>
@@ -416,8 +426,9 @@
               <i class="fa-solid fa-bars"></i>
             </button>
             <div class="chat-model-label">
-              <div class="model-dot"></div>
-              <span id="topbar-label">LiverAI</span>
+              <a href="/" title="LiverAI Home Dashboard" style="display:inline-flex; align-items:center; text-decoration:none;">
+                <img src="/static/logo.svg" alt="LiverAI Logo" class="topbar-logo-img" style="height:36px; width:auto; filter: drop-shadow(0 0 10px rgba(2, 132, 199, 0.35)); transition: transform 0.2s ease;" />
+              </a>
             </div>
           </div>
           <div class="topbar-actions">
@@ -427,6 +438,10 @@
             <button class="topbar-btn" onclick="switchTab('history')" title="View Chat History">
               <i class="fa-solid fa-clock-rotate-left"></i>
             </button>
+            <div class="topbar-user-badge" id="topbar-user-badge" onclick="switchTab('profile')" style="display:none; align-items:center; gap:0.4rem; cursor:pointer; background:rgba(255,255,255,0.06); padding:4px 10px; border-radius:20px; border:1px solid rgba(255,255,255,0.12); margin-left:0.5rem;" title="View Profile">
+              <div class="topbar-avatar" id="topbar-avatar" style="width:22px; height:22px; border-radius:50%; background:#0284C7; color:#fff; font-size:11px; font-weight:700; display:flex; align-items:center; justify-content:center;">U</div>
+              <span class="topbar-username" id="topbar-username" style="font-size:0.78rem; font-weight:600; color:#F8FAFC;">User</span>
+            </div>
           </div>
         </div>
 

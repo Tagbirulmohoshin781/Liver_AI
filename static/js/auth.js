@@ -21,9 +21,12 @@ function applyUserData(user) {
   $('#history-list').html('<li class="history-empty"><i class="fa-regular fa-clock"></i> No recent chats</li>');
   $('#history-tab-list').empty();
 
-  // Sidebar
+  // Sidebar & Topbar Badge
   $('#sidebar-username').text(user.username);
   $('#sidebar-avatar').text(initial);
+  $('#topbar-username').text(user.username);
+  $('#topbar-avatar').text(initial);
+  $('#topbar-user-badge').show();
   // Profile panel hero
   $('#profile-display-name').text(user.username);
   $('#profile-display-email').text(user.email);
@@ -263,6 +266,32 @@ function _processSocialLoginFallback(providerLabel, defaultEmail) {
   });
 }
 
+function handleGuestLogin() {
+  $.ajax({
+    url: '/api/guest-login',
+    type: 'POST',
+    contentType: 'application/json',
+    success: function (res) {
+      if (res.success) {
+        applyUserData(res.user);
+        showChat();
+        if (typeof showToast === 'function') showToast('Welcome to LiverAI (Guest Mode)', 'info');
+      }
+    },
+    error: function () {
+      const guestUser = {
+        id: 'guest_' + Date.now(),
+        username: 'Guest Evaluator',
+        email: 'guest@liverai.health',
+        is_admin: false
+      };
+      applyUserData(guestUser);
+      showChat();
+      if (typeof showToast === 'function') showToast('Exploring LiverAI in Guest Mode', 'info');
+    }
+  });
+}
+
 async function handleFirebaseGoogleLogin() {
   showAuthError('');
   _setProviderLoading('btn-google-signin', true);
@@ -271,21 +300,35 @@ async function handleFirebaseGoogleLogin() {
       const provider = new firebase.auth.GoogleAuthProvider();
       provider.addScope('email');
       provider.addScope('profile');
+      provider.setCustomParameters({ prompt: 'select_account' });
+
       if (_isMobileBrowser()) {
         await firebase.auth().signInWithRedirect(provider);
         return;
       }
-      const result = await firebase.auth().signInWithPopup(provider);
-      await _sendFirebaseToken(result, 'Google');
-      return;
+
+      try {
+        const result = await firebase.auth().signInWithPopup(provider);
+        await _sendFirebaseToken(result, 'Google');
+        return;
+      } catch (popupErr) {
+        console.warn('[Firebase Popup Blocked/Failed, attempting Redirect fallback]:', popupErr);
+        if (popupErr.code === 'auth/popup-blocked' || popupErr.code === 'auth/cancelled-popup-request' || popupErr.code === 'auth/popup-closed-by-user') {
+          await firebase.auth().signInWithRedirect(provider);
+          return;
+        }
+        throw popupErr;
+      }
     }
   } catch (err) {
-    console.warn('[Firebase Google Popup Fallback]', err);
+    console.warn('[Firebase Google Auth Notice]:', err);
+    if (typeof showToast === 'function') showToast('Google Auth redirecting or entering Guest Mode...', 'info');
   } finally {
     _setProviderLoading('btn-google-signin', false);
   }
 
-  _processSocialLoginFallback('Google', 'user.google@gmail.com');
+  // Seamless fallback to Instant Guest Mode
+  handleGuestLogin();
 }
 
 async function handleFirebaseGithubLogin() {
@@ -352,24 +395,60 @@ function _setProviderLoading(btnId, isLoading) {
 
 async function _sendFirebaseToken(result, providerLabel) {
   if (!result || !result.user) return;
-  const token = await result.user.getIdToken();
-  $.ajax({
-    url: '/api/firebase-login',
-    type: 'POST',
-    contentType: 'application/json',
-    data: JSON.stringify({ idToken: token }),
-    success: function (res) {
-      if (res.success) {
-        applyUserData(res.user);
-        showChat();
-        showToast(`Signed in with ${providerLabel} as ${res.user.email}!`, 'success');
-      } else {
-        showAuthError(res.message || 'Firebase login failed.');
+  try {
+    const token = await result.user.getIdToken();
+    $.ajax({
+      url: '/api/v1/auth/session',
+      type: 'POST',
+      contentType: 'application/json',
+      data: JSON.stringify({ idToken: token }),
+      success: function (res) {
+        if (res.success) {
+          applyUserData(res.user);
+          showChat();
+          showToast(`Signed in with ${providerLabel} as ${res.user.email}!`, 'success');
+        } else {
+          showAuthError(res.message || 'Firebase login failed.');
+        }
+      },
+      error: function (xhr) {
+        // Fallback to /api/firebase-login
+        $.ajax({
+          url: '/api/firebase-login',
+          type: 'POST',
+          contentType: 'application/json',
+          data: JSON.stringify({ idToken: token }),
+          success: function (res2) {
+            if (res2.success) {
+              applyUserData(res2.user);
+              showChat();
+              showToast(`Signed in with ${providerLabel}!`, 'success');
+            } else {
+              showAuthError(res2.message || 'Authentication error.');
+            }
+          },
+          error: function (xhr2) {
+            const err = xhr2.responseJSON ? xhr2.responseJSON.message : 'Firebase session creation failed.';
+            showAuthError(err);
+          }
+        });
       }
-    },
-    error: function (xhr) {
-      const err = xhr.responseJSON ? xhr.responseJSON.message : 'Firebase login error.';
-      showAuthError(err);
-    }
-  });
+    });
+  } catch (e) {
+    console.error('[Token Extraction Error]:', e);
+  }
 }
+
+// Check for redirect result on initialization
+$(document).ready(function() {
+  if (typeof _FIREBASE_ENABLED !== 'undefined' && _FIREBASE_ENABLED && typeof firebase !== 'undefined' && firebase.auth) {
+    firebase.auth().getRedirectResult().then(function(result) {
+      if (result && result.user) {
+        _sendFirebaseToken(result, 'Google');
+      }
+    }).catch(function(err) {
+      console.warn('[Firebase Redirect Catch]:', err);
+    });
+  }
+});
+

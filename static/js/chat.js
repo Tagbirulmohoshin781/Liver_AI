@@ -557,9 +557,20 @@ function handleBiopsyUpload(file) {
         const bannerIconColor = hasPositive ? "#f87171" : "#34d399";
         const bannerIcon = hasPositive ? "fa-solid fa-triangle-exclamation" : "fa-solid fa-shield-halved";
 
+        const reportDateStr = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+
         let reportHtml = `
           <div style="background:var(--bg-secondary); border:1px solid var(--border); border-radius:18px; padding:1.5rem; display:flex; flex-direction:column; gap:1.25rem;">
             
+            <!-- Printable PDF Report Header with logo.svg -->
+            <div class="print-report-header" style="display:none;">
+              <img src="/static/logo.svg" alt="LiverAI Logo" />
+              <div class="print-report-meta">
+                <strong>Microscopic Histology Clinical Report</strong><br>
+                <span>File: ${escapeHtml(file.name)}</span> · <span>Date: ${reportDateStr}</span>
+              </div>
+            </div>
+
             <!-- Summary Banner -->
             <div style="background:${bannerBg}; border:1px solid ${bannerBorder}; border-radius:14px; padding:1rem 1.25rem; display:flex; align-items:center; gap:1rem;">
               <div style="font-size:1.5rem; color:${bannerIconColor}; flex-shrink:0;">
@@ -619,11 +630,14 @@ function handleBiopsyUpload(file) {
 
             <!-- Clinical Disclaimer & Action Bar -->
             <div style="border-top:1px solid var(--border); padding-top:1.1rem; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem;">
-              <p style="font-size:.74rem; color:var(--text-muted); line-height:1.4; margin:0; max-width:460px;">
+              <p style="font-size:.74rem; color:var(--text-muted); line-height:1.4; margin:0; max-width:420px;">
                 <i class="fa-solid fa-circle-info" style="margin-right:4px"></i>
                 AI-assisted histology grading based on patch feature extraction. Results should be verified by a board-certified pathologist.
               </p>
               <div class="biopsy-actions-bar">
+                <button type="button" class="btn-biopsy-action secondary" onclick="window.print()" title="Export PDF Diagnostic Summary">
+                  <i class="fa-solid fa-file-pdf"></i> Export PDF
+                </button>
                 <button type="button" class="btn-biopsy-action secondary" onclick="clearBiopsyUpload(event)">
                   <i class="fa-solid fa-rotate-left"></i> New Slide
                 </button>

@@ -495,10 +495,10 @@ function sendMessage() {
   const docContext = window.lastUploadedDocContent || null;
 
   $.ajax({
-    url: '/chat',
+    url: '/api/v1/chat',
     type: 'POST',
     contentType: 'application/json',
-    data: JSON.stringify({ message: msg, history: history, image_path: imageContext, doc_content: docContext }),
+    data: JSON.stringify({ message: msg, history: history, upload_id: imageContext, image_path: imageContext, doc_content: docContext }),
     success: function (res) {
       if (res && res.response) {
         const rendered = renderMarkdown(res.response);
@@ -515,9 +515,29 @@ function sendMessage() {
       scrollBottom();
     },
     error: function (xhr) {
-      const errMsg = xhr.responseJSON ? xhr.responseJSON.error || xhr.responseJSON.message : 'Server error. Please try again.';
-      $('#' + botMsgId + '-bubble').html('<span style="color:var(--danger)">⚠️ ' + escapeHtml(errMsg) + '</span>');
-      scrollBottom();
+      // Fallback attempt to /chat
+      $.ajax({
+        url: '/chat',
+        type: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify({ message: msg, history: history, upload_id: imageContext, image_path: imageContext, doc_content: docContext }),
+        success: function (res) {
+          if (res && res.response) {
+            const rendered = renderMarkdown(res.response);
+            $('#' + botMsgId + '-bubble').html(rendered);
+            _chatMemory.push({ role: 'assistant', content: res.response });
+            if (typeof loadDatabaseHistory === 'function') loadDatabaseHistory(true);
+          } else {
+            $('#' + botMsgId + '-bubble').html('<span style="color:var(--danger)">No response received. Please try again.</span>');
+          }
+          scrollBottom();
+        },
+        error: function (xhr2) {
+          const errMsg = xhr2.responseJSON ? xhr2.responseJSON.error || xhr2.responseJSON.message : 'Server error. Please try again.';
+          $('#' + botMsgId + '-bubble').html('<span style="color:var(--danger)">⚠️ ' + escapeHtml(errMsg) + '</span>');
+          scrollBottom();
+        }
+      });
     }
   });
 }

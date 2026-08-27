@@ -100,6 +100,7 @@ def extract_single_document_text(file_path, filename):
 
 
 @chat_bp.route("/chat", methods=["POST"])
+@chat_bp.route("/api/v1/chat", methods=["POST"])
 def chat_json():
     """JSON endpoint – called by the client sendMessage() function."""
     data = request.get_json(silent=True) or {}

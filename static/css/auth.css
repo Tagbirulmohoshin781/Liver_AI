@@ -507,13 +507,40 @@
   text-align: center;
   margin-top: 0.75rem;
   padding-top: 0.75rem;
-  border-top: 1px dashed rgba(255, 255, 255, 0.15);
+  display: flex;
+  justify-content: center;
+  margin-top: 1rem;
+}
+
+.btn-guest-access {
+  width: 100%;
+  padding: 10px 16px;
+  background: rgba(56, 189, 248, 0.1);
+  border: 1px solid rgba(56, 189, 248, 0.35);
+  border-radius: 10px;
+  color: #e0f2fe;
+  font-size: 0.86rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  transition: all 0.25s ease;
+  backdrop-filter: blur(8px);
+}
+
+.btn-guest-access:hover {
+  background: rgba(56, 189, 248, 0.2);
+  border-color: rgba(56, 189, 248, 0.6);
+  box-shadow: 0 4px 18px rgba(56, 189, 248, 0.25);
+  transform: translateY(-1px);
+  color: #ffffff;
 }
 
 .auth-guest-access a {
-  font-size: 0.8rem;
-  font-weight: 600;
-  color: rgba(125, 211, 252, 0.85);
+  color: #93c5fd;
+  font-size: 0.85rem;
   text-decoration: none;
   display: inline-flex;
   align-items: center;
