@@ -1,0 +1,260 @@
+NAFLD, NASH & FATTY LIVER DISEASE — Comprehensive Patient & Clinical Guide
+Sources: Global Liver Institute, American Liver Foundation, EASL Guidelines 2024
+Reference: https://globalliver.org/fatty-liver-resources/
+
+=============================================================
+SECTION 1: WHAT IS FATTY LIVER DISEASE?
+=============================================================
+
+Fatty liver disease occurs when excess fat builds up in the liver cells (hepatocytes). A liver with >5% of liver cells containing fat droplets is considered a "fatty liver" (steatosis). Fatty liver disease is now the most common liver condition worldwide, affecting an estimated 25-30% of the global population.
+
+TERMINOLOGY UPDATE (2023 CONSENSUS)
+The field adopted new terminology in 2023:
+- NAFLD (Non-Alcoholic Fatty Liver Disease) → Now called MASLD (Metabolic-Associated Steatotic Liver Disease)
+- NASH (Non-Alcoholic Steatohepatitis) → Now called MASH (Metabolic-Associated Steatohepatitis)
+- The new names better reflect the metabolic root cause
+- Old terms (NAFLD, NASH) are still widely used in clinical practice
+
+TYPES OF FATTY LIVER
+1. Metabolic-Associated Steatotic Liver Disease (MASLD / formerly NAFLD):
+   - Fat accumulation WITHOUT significant alcohol use
+   - Most common form; strongly linked to metabolic syndrome
+
+2. Metabolic-Associated Steatohepatitis (MASH / formerly NASH):
+   - Fat + liver cell inflammation + liver cell damage (ballooning)
+   - Can progress to fibrosis, cirrhosis, and liver cancer
+   - Approximately 20-25% of NAFLD patients develop NASH
+
+3. Alcoholic Steatosis:
+   - Fat accumulation DUE TO alcohol consumption (separate category)
+
+4. ALD-MASLD (Dual etiology):
+   - Both metabolic AND alcohol causes present
+
+=============================================================
+SECTION 2: RISK FACTORS & CAUSES
+=============================================================
+
+METABOLIC RISK FACTORS (Primary drivers)
+- Obesity: BMI >30 increases risk 3-5 fold; visceral/abdominal obesity most important
+- Type 2 Diabetes Mellitus: Insulin resistance drives fat accumulation in liver
+- High blood triglycerides (Hypertriglyceridemia)
+- Low HDL cholesterol
+- High blood pressure (Hypertension)
+- Metabolic Syndrome: Having 3 or more of the above factors greatly increases risk
+
+OTHER RISK FACTORS
+- Age: More common over 50; however increasing in children and adolescents
+- Polycystic ovary syndrome (PCOS)
+- Hypothyroidism
+- Obstructive sleep apnea
+- Rapid weight loss (paradoxically can worsen inflammation)
+- Certain medications: Corticosteroids, tamoxifen, amiodarone, methotrexate, valproic acid
+- Genetics: PNPLA3 gene variant (I148M) significantly increases NAFLD risk and severity
+
+CHILDREN & ADOLESCENTS
+NAFLD/MASLD is increasingly common in obese children:
+- Affects 7-10% of all children; up to 34-38% of obese children
+- Pediatric NAFLD has a different pattern: periportal fibrosis predominates
+- Can progress to cirrhosis in young adults if untreated
+
+=============================================================
+SECTION 3: SYMPTOMS & CLINICAL PRESENTATION
+=============================================================
+
+EARLY STAGES (Simple Steatosis / MASLD)
+- Usually NO symptoms (asymptomatic)
+- May have mild fatigue or vague right upper quadrant discomfort
+- Often discovered incidentally during routine blood tests or ultrasound
+
+ADVANCED STAGES (MASH / Fibrosis / Cirrhosis)
+- Fatigue (most common complaint)
+- Right upper quadrant discomfort or dull ache
+- Enlarged liver (hepatomegaly) on physical exam
+- Elevated liver enzymes on blood tests (ALT typically > AST)
+- As cirrhosis develops: Jaundice, ascites, variceal bleeding, encephalopathy
+
+KEY POINT: Most patients with NAFLD feel completely normal even with advanced disease.
+Regular blood tests and imaging are essential for early detection.
+
+=============================================================
+SECTION 4: DIAGNOSIS
+=============================================================
+
+BLOOD TESTS
+- ALT (Alanine aminotransferase): Mildly elevated; typically 1-4x upper limit of normal
+- AST: Usually lower than ALT (ALT > AST pattern, unlike alcoholic disease)
+- GGT: May be elevated, especially if there is metabolic syndrome
+- Fasting glucose and HbA1c: Assess for diabetes
+- Fasting lipid panel: Check triglycerides and HDL
+- Complete metabolic panel
+- Note: Up to 79% of NAFLD/NASH patients have NORMAL liver enzymes
+
+NON-INVASIVE FIBROSIS SCORES
+FIB-4 Index (Fibrosis-4):
+Formula: FIB-4 = (Age × AST) / (Platelets × √ALT)
+- FIB-4 <1.30: Low risk of advanced fibrosis (F0-F1)
+- FIB-4 1.30-2.67: Indeterminate — needs further testing
+- FIB-4 >2.67: High risk of advanced fibrosis (F3-F4)
+Recommended as first-line screening by AASLD and EASL
+
+NAFLD Fibrosis Score (NFS):
+Uses: Age, BMI, impaired fasting glucose, AST/ALT ratio, platelets, albumin
+- Low score (<-1.455): Rules out advanced fibrosis
+- High score (>0.676): Predicts advanced fibrosis
+
+ELF Test (Enhanced Liver Fibrosis):
+- Blood test measuring hyaluronic acid, PIIINP, TIMP-1
+- More accurate than FIB-4; used in specialist settings
+
+IMAGING
+Ultrasound Abdomen:
+- First-line imaging; shows echogenic (bright/hyperechoic) liver
+- Sensitivity ~85% for detecting steatosis >33%; misses mild steatosis
+- Cannot stage fibrosis reliably
+
+Controlled Attenuation Parameter (CAP):
+- Measures liver fat using FibroScan device
+- Scores: S0 (<5%), S1 (5-33%), S2 (33-66%), S3 (>66%) fat
+- More sensitive than ultrasound for fat quantification
+
+Transient Elastography (FibroScan):
+- Measures liver stiffness for fibrosis staging
+- Widely available; operator-dependent
+
+MRI-Proton Density Fat Fraction (MRI-PDFF):
+- Most accurate non-invasive method for quantifying liver fat
+- Gold standard for clinical trials
+
+LIVER BIOPSY
+- Gold standard for definitive diagnosis and staging of NASH
+- Required when non-invasive tests are indeterminate
+- Histological features of NASH: Steatosis + lobular inflammation + hepatocyte ballooning ± fibrosis
+- NAS (NAFLD Activity Score): 0-8; Score ≥5 = definitive NASH
+- METAVIR Fibrosis Stage: F0-F4
+
+=============================================================
+SECTION 5: TREATMENT & MANAGEMENT
+=============================================================
+
+LIFESTYLE MODIFICATION (First-line for all patients)
+Weight Loss:
+- Most effective treatment for NAFLD/NASH
+- 5-7% weight loss: Improves liver fat and inflammation
+- 7-10% weight loss: Improves fibrosis in most patients
+- >10% weight loss: Can reverse NASH in most patients
+- Weight loss should be gradual (0.5-1kg/week); very rapid weight loss can worsen NASH
+
+Exercise:
+- Both aerobic exercise and resistance training improve NAFLD
+- Target: 150-300 minutes moderate-intensity aerobic exercise per week
+- Reduces liver fat even without significant weight change
+
+Diet:
+Mediterranean Diet (most evidence):
+- Rich in olive oil, vegetables, fruits, legumes, nuts, fish
+- Low in red meat, processed foods, sugary drinks
+- Reduces liver fat and inflammation
+- Practical recommendations:
+  - Eliminate sugary beverages (sodas, fruit juices, energy drinks)
+  - Avoid high-fructose corn syrup products
+  - Reduce refined carbohydrates (white bread, white rice, pastries)
+  - Increase vegetables, fiber, whole grains
+  - Choose healthy fats (olive oil, avocado, nuts) over saturated/trans fats
+  - Limit red and processed meats
+  - Coffee consumption (2-3 cups/day) may be protective for liver
+
+Alcohol:
+- Complete abstinence recommended for all NASH/MASLD patients
+- Even moderate alcohol can worsen liver damage in NAFLD
+
+PHARMACOLOGICAL TREATMENT
+FDA-Approved (2024):
+Resmetirom (Rezdiffra):
+- First FDA-approved drug specifically for NASH with liver fibrosis (F2-F3)
+- Thyroid hormone receptor beta (THRβ) agonist
+- Reduces liver fat and inflammation; improves fibrosis
+- Dose: 80mg or 100mg orally once daily
+- Significant milestone: First approved treatment specifically targeting MASH/NASH
+
+Other treatments used in clinical practice (not specifically FDA-approved for NASH):
+- Vitamin E (800 IU/day): Benefits non-diabetic NASH patients; avoid in diabetes, prostate cancer risk
+- Pioglitazone (thiazolidinedione): Improves NASH histology, especially in diabetic patients
+- GLP-1 receptor agonists (semaglutide, liraglutide): Weight loss + liver fat reduction; promising data
+- SGLT-2 inhibitors (empagliflozin, dapagliflozin): Improve liver fat and metabolic parameters
+- Statins: Safe in NAFLD; protective against cardiovascular disease (not for liver fibrosis)
+
+BARIATRIC SURGERY
+- Most effective long-term treatment for obese NAFLD patients
+- Roux-en-Y gastric bypass and sleeve gastrectomy both improve NASH and fibrosis
+- Consider for BMI >35 with metabolic complications
+
+LIVER TRANSPLANT
+- For end-stage NASH cirrhosis or NASH-related HCC
+- NASH is now the second most common reason for liver transplant in the US
+- Recurrence of NAFLD in transplanted liver common unless metabolic syndrome controlled
+
+=============================================================
+SECTION 6: COMPLICATIONS OF UNTREATED NAFLD/NASH
+=============================================================
+
+- Liver fibrosis progression to cirrhosis: Occurs in 15-20% of NASH patients over 20 years
+- Hepatocellular Carcinoma (HCC): Can occur even without cirrhosis in NASH (unique to this etiology)
+- Cardiovascular disease: Leading cause of death in NAFLD patients (not liver-related)
+- Type 2 Diabetes: NAFLD independently increases diabetes risk
+- Chronic Kidney Disease: Associated with NAFLD, especially in diabetic patients
+- Portal hypertension complications if cirrhosis develops
+
+CARDIOVASCULAR RISK
+NAFLD patients have 2-3x increased cardiovascular risk independent of traditional metabolic risk factors.
+Annual cardiovascular risk assessment is essential for all NAFLD patients.
+
+=============================================================
+SECTION 7: NAFLD IN SPECIAL POPULATIONS
+=============================================================
+
+LEAN NAFLD
+- Occurs in people with normal BMI (<25)
+- More common in Asian populations (lower BMI threshold for diagnosis)
+- Often driven by genetics (PNPLA3 variant), insulin resistance despite normal weight
+- Can be more aggressive than obese NAFLD
+
+NAFLD IN TYPE 2 DIABETES
+- Prevalence of NAFLD in T2DM: 55-70%
+- Faster fibrosis progression
+- Higher risk of HCC
+- GLP-1 agonists and SGLT-2 inhibitors particularly beneficial
+
+NAFLD IN CHILDREN
+- Management: Lifestyle modification (diet and exercise) is cornerstone
+- No approved medications for pediatric NASH
+- Vitamin E may be considered
+- Monitor for comorbidities (diabetes, hypertension, dyslipidemia)
+
+=============================================================
+SECTION 8: MONITORING & FOLLOW-UP
+=============================================================
+
+For all NAFLD/MASLD patients:
+- Annual liver function tests (ALT, AST, GGT)
+- Annual FIB-4 calculation to monitor fibrosis risk
+- Annual metabolic panel, fasting glucose, HbA1c, lipid profile
+- Blood pressure monitoring
+- FibroScan or liver biopsy if FIB-4 indeterminate or high risk
+- Ultrasound + AFP every 6 months if cirrhosis present (HCC surveillance)
+- Cardiovascular risk assessment annually
+
+=============================================================
+SECTION 9: KEY MESSAGES FOR PATIENTS
+=============================================================
+
+1. Fatty liver disease is largely REVERSIBLE in early stages with lifestyle changes
+2. Weight loss of just 7-10% can dramatically improve liver health
+3. Exercise helps even without weight loss
+4. Mediterranean diet is the best evidence-based diet for liver health
+5. Avoid alcohol completely — even small amounts can worsen the condition
+6. Fatty liver usually has NO SYMPTOMS until advanced — don't wait for symptoms
+7. Regular monitoring is essential even if you feel fine
+8. Control diabetes, blood pressure, and cholesterol to protect your liver
+9. Coffee may be protective — moderate coffee consumption is acceptable
+10. Herbal supplements are NOT proven and many are hepatotoxic — inform your doctor

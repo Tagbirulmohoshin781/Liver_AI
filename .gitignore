@@ -40,3 +40,13 @@ uploads/
 *.db
 database.db
 .gemini/
+.env
+
+# Large Model Binaries, Archives & Intermediate Checkpoints (>50MB / Training State)
+notebooks/*.safetensors
+*.zip
+models/**/checkpoint-*/
+checkpoint-*/
+optimizer.pt
+scheduler.pt
+rng_state.pth

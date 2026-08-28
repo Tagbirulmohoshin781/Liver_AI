@@ -1,0 +1,367 @@
+VIRAL HEPATITIS — Complete Clinical Guide (Hepatitis A, B, C, D, E)
+Sources: WHO, CDC, AASLD, EASL Practice Guidelines
+Reference: https://www.aasld.org/practice-guidelines
+
+=============================================================
+SECTION 1: OVERVIEW OF VIRAL HEPATITIS
+=============================================================
+
+Viral hepatitis is inflammation of the liver caused by hepatitis viruses. There are five main types:
+- Hepatitis A (HAV): Fecal-oral transmission; acute, self-limiting
+- Hepatitis B (HBV): Blood/sexual transmission; can be acute or chronic
+- Hepatitis C (HCV): Blood transmission; usually chronic; curable with medications
+- Hepatitis D (HDV): Only in HBV-infected patients; blood transmission
+- Hepatitis E (HEV): Fecal-oral transmission; usually self-limiting; dangerous in pregnancy
+
+GLOBAL BURDEN
+- 296 million people live with chronic hepatitis B worldwide
+- 58 million people live with chronic hepatitis C worldwide
+- 1.1 million deaths annually from hepatitis B and C combined
+- Leading causes of liver cirrhosis and liver cancer globally
+
+=============================================================
+SECTION 2: HEPATITIS A (HAV)
+=============================================================
+
+TRANSMISSION
+- Fecal-oral route: Contaminated food, water, or close contact with infected person
+- Common in areas with poor sanitation
+- Shellfish (oysters, clams) from contaminated water
+- International travel to endemic regions (South/Central America, Africa, South/Southeast Asia)
+
+CLINICAL FEATURES
+Incubation period: 15-50 days (average 28 days)
+Acute illness symptoms:
+- Sudden onset of fever, fatigue, nausea, vomiting
+- Abdominal pain (right upper quadrant)
+- Jaundice (yellow skin and eyes) — appears 1-2 weeks after initial symptoms
+- Dark urine, pale/clay-colored stools
+- Pruritus (itching)
+
+Most infections are self-limiting; NO chronic form exists.
+In children under 6: Often asymptomatic (only 30% develop jaundice)
+In older adults: Typically more severe; risk of acute liver failure
+
+DIAGNOSIS
+- Anti-HAV IgM: Positive during acute infection
+- Anti-HAV IgG: Indicates past infection or vaccination (immunity)
+- Liver function tests: Elevated ALT/AST, bilirubin
+
+TREATMENT
+- Supportive care: Rest, adequate hydration, nutrition
+- Avoid alcohol, acetaminophen, hepatotoxic drugs
+- NO antiviral treatment needed
+- Most patients recover fully within 2-3 months
+- Rare cases (<1%): Acute liver failure — may need liver transplant
+
+PREVENTION
+- Hepatitis A vaccine: 2-dose series, highly effective (>94% efficacy)
+  - Schedule: 0, 6-12 months
+  - Recommended for all children aged 12-23 months
+  - Recommended for travelers to endemic areas
+- Good hand hygiene; safe food and water practices
+
+=============================================================
+SECTION 3: HEPATITIS B (HBV)
+=============================================================
+
+TRANSMISSION
+- Sexual contact with infected person (most common in adults)
+- Sharing needles/syringes (injection drug use)
+- Mother to baby during birth (perinatal transmission — most common worldwide)
+- Needlestick injuries in healthcare workers
+- Sharing personal items: razors, toothbrushes
+- NOT spread by: Hugging, coughing, sneezing, sharing food, breastfeeding
+
+HBV is 50-100x more infectious than HIV.
+
+CLINICAL PHASES
+Acute Hepatitis B (first 6 months):
+- Many asymptomatic (especially adults)
+- Symptomatic: Fatigue, nausea, jaundice, RUQ pain
+- 95% of immunocompetent adults clear the infection spontaneously
+- 5% develop chronic infection
+
+Chronic Hepatitis B (>6 months infection):
+HBeAg-positive (immune tolerant/active phase):
+- High HBV DNA levels, minimal liver damage initially
+- Common in perinatally infected patients
+
+HBeAg-negative (immune active/inactive phases):
+- May have fluctuating ALT, liver inflammation continuing
+- Pre-core mutants maintain viral replication
+
+SEROLOGICAL MARKERS
+| Marker | Meaning |
+|--------|---------|
+| HBsAg | Surface antigen — indicates active infection (acute or chronic) |
+| Anti-HBs | Surface antibody — indicates recovery or vaccination (immunity) |
+| HBcAb IgM | Core IgM — acute hepatitis B |
+| HBcAb IgG | Core IgG — past or chronic infection |
+| HBeAg | e-antigen — high viral replication, highly infectious |
+| Anti-HBe | e-antibody — lower replication |
+| HBV DNA | Viral load — quantifies replication level |
+| HBV genotype | A-I — affects treatment response and disease course |
+
+DIAGNOSIS
+- HBsAg positive for >6 months = Chronic HBV
+- HBV DNA levels: Indicate viral replication level
+  - High (>2000 IU/mL with liver damage): Treatment recommended
+- ALT: Elevated with active hepatocellular inflammation
+- Liver biopsy or FibroScan: Assess fibrosis stage
+- Screen for HCC: Ultrasound + AFP every 6 months (in cirrhosis or high-risk patients)
+
+TREATMENT
+Indications for treatment:
+- HBV DNA >2000 IU/mL + elevated ALT (>2x ULN) OR significant fibrosis (≥F2)
+- Any cirrhotic patient with detectable HBV DNA
+- Immunosuppressed patients receiving chemotherapy
+
+Antiviral Medications (Nucleoside/Nucleotide Analogues — NAs):
+Preferred first-line:
+- Tenofovir disoproxil fumarate (TDF/Viread): 300mg daily — most potent, no resistance
+- Tenofovir alafenamide (TAF/Vemlidy): 25mg daily — better renal/bone safety profile
+- Entecavir (Baraclude): 0.5mg daily (1mg in lamivudine-experienced) — excellent resistance barrier
+
+Interferon-based:
+- Pegylated interferon-alpha 2a (Pegasys): 48-week course; finite duration but side effects
+- Benefits: Finite duration, off-treatment immune control; Drawbacks: Significant side effects
+
+Treatment goals:
+- HBsAg loss (functional cure) — rare but possible
+- Sustained HBV DNA suppression — prevents cirrhosis and HCC
+- HBeAg seroconversion (HBeAg-positive patients)
+- Normalization of ALT
+- Regression of fibrosis
+
+Duration: Usually lifelong in HBeAg-negative patients; HBeAg-positive patients may stop after HBeAg seroconversion + 12 additional months
+
+COMPLICATIONS
+- Cirrhosis: 20-30% of chronic HBV develop cirrhosis over 25 years
+- Hepatocellular Carcinoma: Risk even without cirrhosis in HBV
+- Reactivation: Can occur with immunosuppression (chemotherapy, biologics)
+
+PREVENTION
+- HBV Vaccine: 3-dose series (0, 1, 6 months) — 90-95% effective
+  - Recommended for all infants (first dose within 24 hours of birth)
+  - Recommended for all unvaccinated adults
+- Post-exposure prophylaxis (PEP): HBV vaccine + HBIG within 24 hours of exposure
+- Hepatitis B immune globulin (HBIG): For newborns of HBsAg-positive mothers at birth
+
+=============================================================
+SECTION 4: HEPATITIS C (HCV)
+=============================================================
+
+TRANSMISSION
+- Primary route: Sharing needles, syringes, or drug paraphernalia (injection drug use)
+- Blood transfusions/organ transplants (before 1992 screening implementation)
+- Needlestick injuries in healthcare settings
+- Less efficiently: Sexual contact (higher risk with HIV coinfection, multiple partners)
+- Perinatal (mother to baby): ~5-6% risk; less common than HBV
+- NOT spread by: Casual contact, hugging, kissing, sharing food, breastfeeding
+
+CLINICAL FEATURES
+Incubation period: 2-12 weeks (average 6-7 weeks)
+
+Acute HCV (first 6 months):
+- 70-80% have NO symptoms (subclinical)
+- When symptomatic: Fatigue, nausea, jaundice (mild)
+- 25-30% clear the virus spontaneously
+
+Chronic HCV (>6 months after infection):
+- Develops in 70-75% of acutely infected patients
+- Most have few or no symptoms for decades ("silent epidemic")
+- Gradual liver damage over 20-30 years
+- 20-30% develop cirrhosis
+
+HCV GENOTYPES
+| Genotype | Geographic Prevalence |
+|----------|----------------------|
+| GT1 (1a, 1b) | North America, Europe — most common globally |
+| GT2 | Europe, North/West Africa |
+| GT3 | South Asia, Southeast Asia, Australia |
+| GT4 | Middle East, Central Africa, Egypt |
+| GT5 | South Africa |
+| GT6 | Southeast Asia |
+
+Genotype affects treatment selection but with newer DAAs, pan-genotypic options available.
+
+DIAGNOSIS
+- Anti-HCV antibody (ELISA): Screening test; becomes positive 8-12 weeks after infection
+- HCV RNA (PCR): Confirms active infection; quantifies viral load
+- HCV genotype: Determines specific treatment regimen
+- Liver fibrosis assessment: FibroScan, FIB-4, liver biopsy
+
+HCV TREATMENT — Direct-Acting Antivirals (DAAs)
+Revolutionary advance: HCV is now CURABLE in >95% of patients.
+
+Mechanism: DAAs target specific HCV proteins:
+- NS5B polymerase inhibitors: Sofosbuvir (Sovaldi) — backbone of most regimens
+- NS5A inhibitors: Ledipasvir, velpatasvir, pibrentasvir, elbasvir — potent antiviral activity
+- NS3/4A protease inhibitors: Glecaprevir, grazoprevir, simeprevir — can't use in decompensated cirrhosis
+
+Preferred Pan-Genotypic Regimens (work for all genotypes):
+1. Sofosbuvir/Velpatasvir (Epclusa):
+   - 400/100mg once daily × 12 weeks
+   - Pan-genotypic; SVR rates >95%
+   - Can add ribavirin for decompensated cirrhosis
+
+2. Glecaprevir/Pibrentasvir (Mavyret):
+   - 300/120mg once daily × 8 weeks (no cirrhosis or compensated cirrhosis)
+   - Pan-genotypic; SVR rates >97-99%
+   - NOT for decompensated cirrhosis
+
+3. Sofosbuvir/Ledipasvir (Harvoni): Genotype 1, 4, 5, 6 — 12 weeks
+
+SVR (Sustained Virological Response) = CURE:
+- HCV RNA undetectable 12 weeks after completing treatment
+- SVR12 = cure rate; prevents cirrhosis, reverses early fibrosis, dramatically reduces HCC risk
+
+WHO CAN BE TREATED?
+All patients with chronic HCV should be offered treatment regardless of:
+- Fibrosis stage
+- Age
+- Symptoms
+- Prior treatment history
+
+Special populations:
+- Decompensated cirrhosis: Sofosbuvir/velpatasvir ± ribavirin (avoid protease inhibitors)
+- CKD/dialysis: Glecaprevir/pibrentasvir (sofosbuvir dose adjustment needed)
+- HIV coinfection: Check drug interactions; same efficacy rates
+- After liver transplant: Effective; prevents graft re-infection
+
+HEPATITIS C AND LIVER CANCER
+- HCV is a leading cause of hepatocellular carcinoma (HCC)
+- Even after SVR (cure), cirrhotic patients need continued HCC surveillance
+- SVR reduces HCC risk by 70-80% but does not eliminate it in cirrhosis
+
+HEPATITIS C PREVENTION
+- No vaccine available (unlike Hepatitis A and B)
+- Prevention: Avoid sharing needles/drug equipment; use clean needles
+- Harm reduction programs: Needle exchange programs
+- Healthcare settings: Standard precautions, proper needle disposal
+- Pre-exposure prophylaxis: Being researched; no current standard recommendation
+
+=============================================================
+SECTION 5: HEPATITIS D (HDV) / DELTA HEPATITIS
+=============================================================
+
+KEY FACTS
+- Hepatitis D is a "satellite" virus — it CANNOT infect alone; REQUIRES HBV surface antigen (HBsAg)
+- Only HBV-infected individuals can get hepatitis D
+- Affects an estimated 15-20 million people with HBV worldwide
+- More severe disease than HBV alone
+
+TYPES OF INFECTION
+1. Coinfection: Simultaneous HBV + HDV infection
+   - Usually acute, self-limiting (clears with HBV)
+   - Risk of acute liver failure higher than HBV alone
+   - 95% of immunocompetent adults clear both viruses
+
+2. Superinfection: HDV infection in a person with existing chronic HBV
+   - More severe prognosis
+   - 70-90% develop chronic hepatitis D
+   - Rapidly accelerates liver disease — cirrhosis develops in 70% within 5-10 years
+
+DIAGNOSIS
+- Anti-HDV IgM: Acute HDV
+- Anti-HDV IgG: Past/chronic HDV
+- HDV RNA PCR: Confirms active replication
+
+TREATMENT
+- HDV is difficult to treat
+- Pegylated interferon-alpha: 48-72 weeks; only partially effective
+- Bulevirtide (Hepcludex): First approved drug for HDV in Europe (2020); Entry inhibitor
+  - 2mg subcutaneous injection daily; shows significant HDV RNA suppression
+
+PREVENTION
+- Prevention of HBV = prevention of HDV
+- HBV vaccination fully protects against HDV
+- Already HBV-infected: Avoid HDV exposure (safe sex, no shared needles)
+
+=============================================================
+SECTION 6: HEPATITIS E (HEV)
+=============================================================
+
+KEY FACTS
+- Fecal-oral transmission (like HAV) via contaminated water
+- Mainly affects developing countries with poor sanitation
+- 4 main genotypes: GT1/2 (humans only — developing countries); GT3/4 (zoonotic — pigs, deer)
+- GT3 increasingly recognized in developed countries (through undercooked pork)
+
+CLINICAL FEATURES
+Incubation: 2-10 weeks
+
+Usually self-limiting (like HAV):
+- Fever, malaise, jaundice, anorexia, nausea
+- Resolves in 4-6 weeks in most patients
+
+SPECIAL POPULATIONS
+Pregnant women (especially 3rd trimester):
+- Most severe disease; up to 25% mortality from acute liver failure
+- Highest risk for fulminant hepatic failure
+- Can cause fetal loss and neonatal death
+
+Immunocompromised patients (GT3/4):
+- Organ transplant recipients, HIV patients
+- Can develop CHRONIC hepatitis E (unique — not seen with GT1/2)
+- Requires antiviral treatment
+
+DIAGNOSIS
+- Anti-HEV IgM: Acute infection
+- HEV RNA PCR: In immunocompromised patients (antibody tests less reliable)
+
+TREATMENT
+- Immunocompetent patients: Supportive care; self-resolves
+- Chronic HEV (immunocompromised): Reduction of immunosuppression; Ribavirin (12-24 weeks)
+- Pegylated interferon-alpha: Used in some transplant patients
+
+PREVENTION
+- Clean water and sanitation
+- Avoid undercooked pork and game meats (GT3/4)
+- HEV vaccine (HEV 239/Hecolin): Licensed in China; not yet globally available
+- Pregnant women: Avoid travel to endemic areas; ensure safe drinking water
+
+=============================================================
+SECTION 7: HEPATITIS AND LIVER CANCER
+=============================================================
+
+HEPATOCELLULAR CARCINOMA (HCC) RISK BY ETIOLOGY
+- Chronic HBV without cirrhosis: Annual HCC risk ~0.1-0.4%
+- Chronic HBV with cirrhosis: Annual HCC risk ~2-4%
+- Chronic HCV with cirrhosis: Annual HCC risk ~2-4%
+- HBV + HCV coinfection: Highest risk, synergistic effect
+
+HCC SURVEILLANCE RECOMMENDATIONS (AASLD/EASL)
+All cirrhotic patients: Ultrasound + AFP every 6 months
+HBV-specific surveillance (even without cirrhosis):
+- Asian men >40 years old: Start surveillance
+- Asian women >50 years old: Start surveillance
+- Any HBV patient with family history of HCC
+
+TREATMENT IMPACT ON HCC RISK
+- HBV treatment (nucleotide analogues): Reduces HCC risk by 50-70% in cirrhosis
+- HCV cure (SVR): Reduces HCC risk by 70-80% (does NOT eliminate in cirrhosis)
+- HBV vaccine: Highly effective primary prevention; reduced HCC by 70% in Taiwan cohort
+
+=============================================================
+SECTION 8: HEPATITIS SEROLOGY QUICK REFERENCE
+=============================================================
+
+HEPATITIS B SEROLOGY INTERPRETATION
+| HBsAg | Anti-HBs | Anti-HBc | HBeAg | Interpretation |
+|-------|----------|----------|-------|----------------|
+| + | - | + (IgM) | + | Acute HBV |
+| + | - | + (IgG) | +/- | Chronic HBV |
+| - | + | + (IgG) | - | Past infection (immunity) |
+| - | + | - | - | Vaccinated (immunity) |
+| - | - | - | - | Susceptible (no immunity) |
+| - | - | + (IgG) | - | Window period OR past infection |
+
+HEPATITIS C SEROLOGY INTERPRETATION
+| Anti-HCV | HCV RNA | Interpretation |
+|----------|---------|----------------|
+| - | - | No HCV infection |
+| + | + | Active HCV infection |
+| + | - | Past HCV (resolved) OR false positive |
+| - | + | Acute HCV (window period, or immunosuppressed) |

@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:intl/intl.dart';
 import '../core/widgets/glass_container.dart';
 import '../models/chat_message.dart';
 import '../models/user_profile.dart';
 import '../models/biopsy_result.dart';
 import '../services/chat_service.dart';
+import '../widgets/formatted_ai_message_bubble.dart';
 
 class AiChatScreen extends StatefulWidget {
   final UserProfile profile;
@@ -39,11 +39,20 @@ class _AiChatScreenState extends State<AiChatScreen> {
   bool _isTyping = false;
   Map<String, dynamic>? _activeBiopsyData;
   String? _lastAttachedBiopsyId;
+  String _currentResponseStyle = 'easy';
+
+  final List<Map<String, dynamic>> _styleOptions = [
+    {'id': 'easy', 'label': '💡 Easy / Patient', 'desc': 'Concise & patient-friendly'},
+    {'id': 'bullet', 'label': '📋 Bullet Points', 'desc': 'Checklists & structured bullets'},
+    {'id': 'cards', 'label': '📊 Visual Cards', 'desc': 'Structured color-coded cards'},
+    {'id': 'detailed', 'label': '🩺 Deep Clinical', 'desc': 'Full 5-category medical analysis'},
+  ];
 
   @override
   void initState() {
     super.initState();
     _messages = List.from(widget.initialHistory);
+    _currentResponseStyle = _chatService.responseStyle;
 
     if (widget.activeBiopsy != null) {
       _lastAttachedBiopsyId = widget.activeBiopsy!.id;
@@ -59,6 +68,13 @@ class _AiChatScreenState extends State<AiChatScreen> {
         Future.microtask(() => _sendMessage('Interpret my histology biopsy scan findings (ID: ${widget.activeBiopsy!.id}).'));
       }
     }
+  }
+
+  void _onStyleChanged(String newStyle) {
+    setState(() {
+      _currentResponseStyle = newStyle;
+    });
+    _chatService.configure(responseStyle: newStyle);
   }
 
   @override
@@ -178,24 +194,65 @@ class _AiChatScreenState extends State<AiChatScreen> {
 
     return Column(
       children: [
-        // ── New Chat / Clear History Action ────────────────────
+        // ── Top Bar: New Chat & Format Style Switcher ───────────
         Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+          padding: const EdgeInsets.fromLTRB(14, 4, 14, 4),
           child: Row(
-            mainAxisAlignment: MainAxisAlignment.end,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
+              // Style Selector Pills Bar
+              Expanded(
+                child: SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: Row(
+                    children: _styleOptions.map((opt) {
+                      final isSelected = _currentResponseStyle == opt['id'];
+                      return GestureDetector(
+                        onTap: () => _onStyleChanged(opt['id'] as String),
+                        child: AnimatedContainer(
+                          duration: const Duration(milliseconds: 180),
+                          margin: const EdgeInsets.only(right: 6),
+                          padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 4.5),
+                          decoration: BoxDecoration(
+                            color: isSelected
+                                ? accent.withValues(alpha: isDark ? 0.25 : 0.18)
+                                : (isDark ? Colors.white.withValues(alpha: 0.05) : Colors.black.withValues(alpha: 0.04)),
+                            borderRadius: BorderRadius.circular(10),
+                            border: Border.all(
+                              color: isSelected ? accent : (isDark ? Colors.white12 : Colors.black12),
+                              width: 1,
+                            ),
+                          ),
+                          child: Text(
+                            opt['label'] as String,
+                            style: TextStyle(
+                              fontSize: 10.5,
+                              fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
+                              color: isSelected ? accent : (isDark ? Colors.white70 : Colors.black87),
+                            ),
+                          ),
+                        ),
+                      );
+                    }).toList(),
+                  ),
+                ),
+              ),
+              const SizedBox(width: 6),
               TextButton.icon(
                 onPressed: _clearChat,
-                icon: const Icon(Icons.add_comment_outlined, size: 14),
+                icon: const Icon(Icons.add_comment_outlined, size: 13),
                 label: const Text('New Chat', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w700)),
                 style: TextButton.styleFrom(
                   foregroundColor: accent,
-                  padding: const EdgeInsets.symmetric(horizontal: 10),
+                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  minimumSize: Size.zero,
+                  tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                 ),
               ),
             ],
           ),
         ),
+
 
         // ── Active Biopsy Context Bar ───────────────────────────
         if (_activeBiopsyData != null)
@@ -408,88 +465,18 @@ class _AiChatScreenState extends State<AiChatScreen> {
       );
     }
 
-    // AI Message Bubble
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 16),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Container(
-            width: 32,
-            height: 32,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              color: accent.withValues(alpha: 0.18),
-            ),
-            child: Icon(Icons.favorite, size: 16, color: accent),
-          ),
-          const SizedBox(width: 10),
-          Flexible(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                GlassContainer(
-                  borderRadius: 18,
-                  padding: const EdgeInsets.all(14),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      MarkdownBody(
-                        data: msg.text,
-                        styleSheet: MarkdownStyleSheet.fromTheme(Theme.of(context)).copyWith(
-                          p: TextStyle(
-                            fontSize: 13.5,
-                            height: 1.45,
-                            color: isDark ? Colors.white.withValues(alpha: 0.9) : Colors.black87,
-                          ),
-                          h3: TextStyle(
-                            fontSize: 15,
-                            fontWeight: FontWeight.w800,
-                            color: isDark ? Colors.white : Colors.black,
-                          ),
-                          h4: TextStyle(
-                            fontSize: 13.5,
-                            fontWeight: FontWeight.w700,
-                            color: accent,
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: 8),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            timeStr,
-                            style: TextStyle(fontSize: 10, color: isDark ? Colors.white38 : Colors.black38),
-                          ),
-                          InkWell(
-                            onTap: () => _copyToClipboard(msg.text),
-                            child: Row(
-                              children: [
-                                Icon(Icons.copy, size: 12, color: isDark ? Colors.white38 : Colors.black38),
-                                const SizedBox(width: 4),
-                                Text(
-                                  'Copy',
-                                  style: TextStyle(fontSize: 10, color: isDark ? Colors.white38 : Colors.black38),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
+    // AI Message Bubble (Multi-Format Formatted Bubble)
+    return FormattedAiMessageBubble(
+      message: msg,
+      accent: accent,
+      isDark: isDark,
+      timeStr: timeStr,
+      onCopy: _copyToClipboard,
     );
   }
 
   Widget _buildTypingIndicator(Color accent, bool isDark) {
+
     return Padding(
       padding: const EdgeInsets.only(bottom: 16),
       child: Row(

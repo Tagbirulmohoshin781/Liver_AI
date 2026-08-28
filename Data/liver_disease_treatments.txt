@@ -1,0 +1,443 @@
+LIVER DISEASE TREATMENTS & AASLD CLINICAL GUIDELINES
+Sources: AASLD Practice Guidelines, EASL Clinical Practice Guidelines, UpToDate
+Reference: https://www.aasld.org/practice-guidelines
+
+=============================================================
+SECTION 1: OVERVIEW OF LIVER DISEASE MANAGEMENT PRINCIPLES
+=============================================================
+
+Management of liver disease follows these core principles:
+1. Treat the underlying cause (etiology-specific therapy)
+2. Prevent progression to cirrhosis
+3. Monitor for and manage complications of cirrhosis
+4. Prevent hepatocellular carcinoma (HCC)
+5. Assess candidacy for liver transplant in advanced disease
+6. Patient education and lifestyle modification
+
+A multidisciplinary team approach is essential:
+- Hepatologist/Gastroenterologist: Core specialist
+- Primary care physician: Routine monitoring
+- Dietitian/Nutritionist: Dietary management
+- Pharmacist: Medication reconciliation (avoid hepatotoxic drugs)
+- Social worker: Alcohol cessation support, transplant coordination
+- Interventional radiologist: TIPS procedure
+- Transplant surgeon: For advanced disease
+
+=============================================================
+SECTION 2: MANAGEMENT OF PORTAL HYPERTENSION
+=============================================================
+
+DEFINITION
+Portal hypertension = portal venous pressure >5-6 mmHg above IVC pressure.
+Clinically significant portal hypertension (CSPH) = hepatic venous pressure gradient (HVPG) ≥10 mmHg.
+Clinical complications begin at HVPG ≥12 mmHg.
+
+ESOPHAGEAL & GASTRIC VARICES
+
+Screening and Surveillance:
+- All newly diagnosed cirrhotic patients: Upper endoscopy (EGD)
+- No varices found: Repeat EGD every 2-3 years (compensated cirrhosis)
+- Small varices (<5mm): Repeat EGD every 1-2 years
+- Large varices (>5mm): Treat prophylactically
+
+Primary Prophylaxis (Preventing First Bleed):
+Option 1 — Non-selective beta-blockers (NSBBs):
+- Propranolol: 20-40mg twice daily (titrate to reduce heart rate 25%)
+- Nadolol: 40-80mg once daily
+- Carvedilol: 6.25-12.5mg once daily (most evidence; also reduces CSPH)
+- Goal: Reduce heart rate by 25% OR to 55-60 bpm
+
+Option 2 — Endoscopic variceal ligation (EVL):
+- Performed every 2-4 weeks until varices obliterated
+- Preferred when beta-blockers contraindicated or not tolerated
+- Equally effective as NSBBs for large varices
+
+Combination (NSBBs + EVL): Recommended for secondary prophylaxis (after first bleed)
+
+Acute Variceal Bleeding (Emergency Management):
+1. ABC: Airway, IV access, blood type and cross-match
+2. Fluid resuscitation: Target Hb 7-8 g/dL (restrictive transfusion strategy)
+3. Vasoactive drugs (start immediately, before endoscopy):
+   - Terlipressin: 2mg IV every 4 hours (most evidence; reduces mortality)
+   - Octreotide: 50mcg bolus, then 50mcg/hour infusion
+   - Somatostatin: 250mcg bolus, then 250mcg/hour
+4. Prophylactic antibiotics (mandatory):
+   - Ceftriaxone: 1g IV daily × 7 days (preferred)
+   - OR Norfloxacin: 400mg twice daily × 7 days
+5. Endoscopy within 12 hours:
+   - Endoscopic variceal ligation (EVL): Treatment of choice
+   - Injection sclerotherapy: Alternative if EVL not possible
+6. Rescue therapy for refractory bleeding:
+   - TIPS (Transjugular Intrahepatic Portosystemic Shunt)
+   - Balloon tamponade (Sengstaken-Blakemore tube): Temporary bridge to TIPS
+
+Secondary Prophylaxis (Preventing Rebleed):
+- Combination of NSBBs + EVL (superior to either alone)
+- TIPS: For refractory varices or failure of pharmacological/endoscopic therapy
+- Long-term NSBBs indefinitely
+
+TIPS (Transjugular Intrahepatic Portosystemic Shunt)
+- Interventional radiology procedure creating a shunt between portal and hepatic veins
+- Rapidly decompresses portal pressure
+- Indications:
+  - Refractory variceal bleeding
+  - Refractory ascites
+  - Hepatic hydrothorax
+  - Hepatorenal syndrome (as bridge to transplant)
+- Complications:
+  - Hepatic encephalopathy (major concern — occurs in 25-35%)
+  - Shunt stenosis/occlusion (use PTFE-covered stents to reduce)
+  - Worsening liver failure
+- Contraindications: Severe hepatic encephalopathy, severe right heart failure, rapid progressive liver failure
+
+=============================================================
+SECTION 3: MANAGEMENT OF ASCITES
+=============================================================
+
+DEFINITION & GRADING
+Ascites = fluid accumulation in the peritoneal cavity.
+- Grade 1: Mild ascites detectable only by ultrasound
+- Grade 2: Moderate ascites; abdomen distended
+- Grade 3: Tense ascites; severely distended abdomen
+
+FIRST-LINE TREATMENT
+1. Sodium restriction: <2g/day (88 mmol/day) — crucial
+2. Diuretics:
+   - Spironolactone (aldosterone antagonist): Start 100mg/day, max 400mg/day
+   - Furosemide (loop diuretic): Start 40mg/day, max 160mg/day
+   - Ratio: 100mg spironolactone : 40mg furosemide (to maintain normokalemia)
+   - Monitor: Electrolytes, renal function (creatinine), body weight (lose max 0.5kg/day without edema, 1kg/day with edema)
+3. Avoid NSAIDs (worsen renal function, reduce diuretic efficacy)
+4. Avoid ACE inhibitors/ARBs (risk of renal failure in cirrhosis)
+
+THERAPEUTIC PARACENTESIS
+Indications:
+- Tense (Grade 3) ascites
+- Diuretic-refractory ascites
+- Respiratory distress from tense ascites
+
+Procedure:
+- Remove ascitic fluid via needle/catheter in left iliac fossa
+- Large volume paracentesis (LVP): Remove >5L per session
+
+Albumin infusion (mandatory with LVP):
+- 8g IV albumin per liter of ascitic fluid removed >5L
+- Prevents post-paracentesis circulatory dysfunction (PPCD)
+- Reduces risk of renal failure, hepatorenal syndrome, and death
+
+REFRACTORY ASCITES
+Definition: Ascites not responding to maximum diuretics (spironolactone 400mg + furosemide 160mg) or diuretic intolerance.
+Occurs in 5-10% of cirrhotic ascites patients.
+
+Management:
+1. Repeated large volume paracentesis + albumin (every 2-4 weeks)
+2. TIPS: Reduces need for paracentesis; improves survival in selected patients
+3. Liver transplant evaluation: Priority listing
+
+SPONTANEOUS BACTERIAL PERITONITIS (SBP)
+Diagnosis:
+- Ascitic fluid PMN >250 cells/μL (neutrophil count)
+- Culture often positive (E. coli, Klebsiella, Streptococcus)
+
+Treatment:
+- IV cefotaxime 2g every 8 hours × 5 days (or until PMN <250)
+- IV albumin 1.5 g/kg on day 1, then 1g/kg on day 3 (prevents renal failure, improves survival)
+- Response check: Repeat paracentesis at 48 hours
+
+Primary SBP Prophylaxis (high-risk patients):
+- Norfloxacin 400mg daily (in patients with ascitic protein <1.5g/dL + renal impairment OR Child-Pugh ≥9 + bilirubin ≥3)
+Secondary SBP Prophylaxis (after first episode):
+- Norfloxacin 400mg daily indefinitely OR until ascites resolved
+
+HEPATIC HYDROTHORAX
+- Pleural effusion (usually right-sided) from passage of ascites through diaphragmatic defects
+- Management: Sodium restriction, diuretics; therapeutic thoracentesis; TIPS; avoid chest tube (high complication risk)
+
+=============================================================
+SECTION 4: MANAGEMENT OF HEPATIC ENCEPHALOPATHY (HE)
+=============================================================
+
+PATHOPHYSIOLOGY
+Accumulation of toxins (primarily ammonia) due to liver failure and portosystemic shunting → cerebral dysfunction.
+Ammonia levels do NOT perfectly correlate with HE grade.
+
+GRADING (West Haven Criteria)
+- Grade 0 (Covert HE): Subclinical; only detectable with neuropsychological testing
+- Grade 1: Mild confusion, altered sleep, shortened attention span
+- Grade 2: Lethargy, disorientation (especially time), asterixis (flapping tremor)
+- Grade 3: Somnolence, gross disorientation, bizarre behavior, responsive to stimuli
+- Grade 4: Coma, unresponsive
+
+PRECIPITATING FACTORS (Must identify and treat)
+- GI bleeding (most common acute precipitant)
+- Infection (SBP, UTI, pneumonia)
+- Constipation
+- Dehydration/electrolyte imbalance (hyponatremia, hypokalemia, hypomagnesemia)
+- Sedating medications (benzodiazepines, opioids, sleeping pills)
+- Metabolic alkalosis
+- Excessive dietary protein (rare with modern understanding)
+- TIPS procedure (can precipitate chronic HE)
+- Acute kidney injury/azotemia
+
+ACUTE HE TREATMENT
+1. Identify and treat precipitating cause (most important step)
+2. Lactulose (first-line):
+   - Oral: 15-30mL 2-4 times/day, titrate to 2-3 soft stools per day
+   - Mechanism: Reduces intestinal pH → converts NH3 to NH4+ (non-absorbable) + cathartic effect
+   - Enema: 300mL lactulose in 700mL water if unable to take orally
+3. Rifaximin (adjunct or second-line):
+   - 550mg orally twice daily
+   - Non-absorbable antibiotic that reduces ammonia-producing gut bacteria
+   - Superior to neomycin; minimal systemic side effects
+
+SECONDARY PREVENTION (Preventing recurrence)
+- Rifaximin 550mg twice daily + Lactulose: Most effective combination
+- Reduces risk of overt HE recurrence by ~58%
+- Continue indefinitely (high recurrence without treatment)
+
+NUTRITION IN HEPATIC ENCEPHALOPATHY
+- Adequate protein: 1.2-1.5g/kg/day (do NOT restrict protein — causes muscle wasting)
+- Branched-chain amino acids (BCAAs): May benefit in refractory HE
+- Small frequent meals; nighttime late snack to prevent fasting catabolism
+- Zinc supplementation: 220mg zinc sulfate twice daily (zinc deficiency common in cirrhosis)
+
+=============================================================
+SECTION 5: MANAGEMENT OF HEPATORENAL SYNDROME (HRS)
+=============================================================
+
+DEFINITION
+Functional acute kidney injury (AKI) in advanced cirrhosis caused by severe renal vasoconstriction.
+- HRS-AKI (formerly HRS-1): Rapid (<48 hours) rise in creatinine; most severe; high mortality
+- HRS-CKD (formerly HRS-2): Gradual progression; often associated with refractory ascites
+
+DIAGNOSTIC CRITERIA (ICA-AKI 2019 Criteria)
+- Cirrhosis with ascites
+- Rise in serum creatinine >0.3 mg/dL within 48 hours OR 50% from baseline within 7 days
+- No improvement after 48 hours of diuretic withdrawal + albumin challenge (1g/kg/day for 2 days)
+- Absence of shock
+- No current or recent nephrotoxic drug use
+- No macroscopic signs of structural kidney injury
+
+TREATMENT
+First-line (if terlipressin available):
+- Terlipressin: 1mg IV every 4-6 hours (titrate up to 2mg every 4 hours if no response)
+- IV Albumin: 1g/kg on day 1, then 20-40g/day
+- Goal: Creatinine reduction to <1.5 mg/dL (complete HRS reversal)
+- Duration: Until reversal or maximum 14 days
+
+Where terlipressin unavailable:
+- Norepinephrine: 0.5-3mg/hour IV (ICU setting) + albumin
+- Midodrine (7.5-12.5mg three times daily) + Octreotide (100-200mcg subcutaneously three times daily) + Albumin: Less effective but outpatient option
+
+Renal Replacement Therapy (Dialysis):
+- Supportive bridge to liver transplant; does not treat underlying cause
+
+Liver Transplant:
+- Definitive treatment for HRS
+- Renal function improves after transplant in most patients
+- Simultaneous liver-kidney transplant (SLK) if renal dysfunction persists
+
+=============================================================
+SECTION 6: HEPATOCELLULAR CARCINOMA (HCC) MANAGEMENT
+=============================================================
+
+STAGING — Barcelona Clinic Liver Cancer (BCLC) System
+| Stage | Description | Treatment |
+|-------|-------------|-----------|
+| BCLC 0 (Very early) | Single ≤2cm, PS 0, Child-Pugh A | Resection, ablation |
+| BCLC A (Early) | Single ≤5cm or 2-3 ≤3cm, PS 0, Child-Pugh A-B | Resection, ablation, transplant |
+| BCLC B (Intermediate) | Multi-nodular, PS 0, Child-Pugh A-B | TACE (Transarterial Chemoembolization) |
+| BCLC C (Advanced) | Portal invasion, extrahepatic spread, PS 1-2 | Systemic therapy |
+| BCLC D (End-stage) | Any PS 3-4, Child-Pugh C | Best supportive care |
+
+CURATIVE TREATMENTS
+Surgical Resection:
+- Gold standard for early-stage HCC in non-cirrhotic liver
+- 5-year survival: 40-70%
+- Requires adequate liver reserve (Child-Pugh A, future liver remnant ≥20%)
+
+Liver Transplant:
+- Milan Criteria: Single lesion ≤5cm OR 2-3 lesions each ≤3cm, no vascular invasion, no extrahepatic disease
+- 5-year survival: 65-70%
+- Eliminates HCC + treats underlying cirrhosis
+
+Local Ablation:
+- Radiofrequency ablation (RFA): Thermal ablation; best for ≤3cm tumors
+- Microwave ablation (MWA): Faster heating; effective for larger tumors
+- Percutaneous ethanol injection (PEI): Older technique; for small lesions
+
+PALLIATIVE TREATMENTS
+Transarterial Chemoembolization (TACE):
+- Delivers chemotherapy (doxorubicin, cisplatin) + embolic agent directly to tumor via hepatic artery
+- Standard TACE: Conventional; Drug-eluting bead TACE (DEB-TACE): Newer, reduced systemic toxicity
+- Indicated for intermediate-stage (BCLC B) HCC
+
+Transarterial Radioembolization (TARE/Y-90):
+- Yttrium-90 microspheres delivered via hepatic artery
+- Delivers internal radiation to tumor
+- Useful for portal vein invasion where TACE not suitable
+
+SYSTEMIC THERAPY (Advanced HCC — BCLC C)
+First-line:
+- Atezolizumab + Bevacizumab (Tecentriq + Avastin): Preferred first-line; immunotherapy + anti-VEGF
+- Durvalumab + Tremelimumab: Alternative first-line immunotherapy combination
+- Sorafenib (Nexavar): Tyrosine kinase inhibitor; first systemic approval for HCC (2007)
+- Lenvatinib (Lenvima): Non-inferior to sorafenib; alternative first-line
+
+Second-line (after sorafenib failure):
+- Regorafenib, Cabozantinib, Ramucirumab (AFP ≥400 ng/mL)
+
+HCC SURVEILLANCE
+- Ultrasound abdomen + serum AFP: Every 6 months for all cirrhotic patients
+- High-risk non-cirrhotic HBV: Annual or biannual ultrasound
+- Any liver nodule >1cm on ultrasound: Proceed to triphasic CT or MRI for characterization
+
+=============================================================
+SECTION 7: NUTRITION IN LIVER DISEASE
+=============================================================
+
+MALNUTRITION & SARCOPENIA
+- Malnutrition affects 50-90% of patients with cirrhosis
+- Sarcopenia (muscle wasting): Independent predictor of morbidity and mortality
+- Leads to worse outcomes: Higher infection risk, worse hepatic encephalopathy, worse post-transplant survival
+
+NUTRITIONAL REQUIREMENTS IN CIRRHOSIS
+Energy: 35-40 kcal/kg/day (increased need due to hypermetabolic state)
+Protein: 1.2-1.5g/kg/day (do NOT restrict unless absolutely necessary)
+Sodium: <2g/day (88 mmol/day) to control ascites
+Fluid restriction: Only if severe hyponatremia (Na <125 mmol/L)
+
+SPECIFIC DIETARY ADVICE
+- Do NOT restrict protein to treat hepatic encephalopathy (outdated practice)
+- Small, frequent meals (4-6 per day) including late-night snack
+- Late-night carbohydrate snack (50g) — reduces overnight fasting catabolism
+- Branched-chain amino acids (BCAA) supplementation: May improve HE and nutritional status
+- Zinc: Often deficient in cirrhosis; supplement 220mg zinc sulfate twice daily
+- Vitamin D: Common deficiency; supplement if deficient
+- Fat-soluble vitamins (A, D, E, K): May need supplementation in cholestatic disease
+- Avoid raw shellfish (Vibrio vulnificus risk); ensure proper food hygiene
+
+DIET FOR NAFLD/MASLD
+- Mediterranean diet: Best evidence-based diet for liver health
+- Fructose restriction: Avoid high-fructose corn syrup, sugary beverages
+- Coffee: 2-3 cups/day may be hepatoprotective
+- Alcohol: Complete abstinence
+
+=============================================================
+SECTION 8: LIVER TRANSPLANT
+=============================================================
+
+INDICATIONS
+- Decompensated cirrhosis (Child-Pugh C or MELD ≥15)
+- Acute liver failure
+- HCC within Milan criteria
+- Metabolic liver diseases (Wilson disease, A1AT deficiency, glycogen storage diseases)
+- Polycystic liver disease
+- Primary sclerosing cholangitis
+
+MELD SCORE AND TRANSPLANT PRIORITY
+- Organs are allocated primarily by MELD score (severity of disease)
+- MELD-Na (includes sodium): More accurate predictor of 90-day mortality
+- Exception points: Awarded for HCC and other conditions not well captured by MELD
+
+TYPES OF LIVER TRANSPLANT
+1. Deceased donor transplant (DDLT): Most common; brain-dead or cardiac-dead donors
+2. Living donor transplant (LDLT): Right lobe from living donor; growing availability
+3. Split liver transplant: One donor liver split between two recipients (usually adult + child)
+
+CONTRAINDICATIONS (Absolute)
+- Active extrahepatic malignancy
+- Uncontrolled sepsis outside hepatobiliary system
+- Severe irreversible cardiopulmonary disease
+- Active substance abuse (usually required 6-month sobriety)
+- Hepatocellular carcinoma outside Milan criteria (without downstaging)
+
+OUTCOMES
+- 1-year survival: ~85-90%
+- 5-year survival: ~70-75%
+- 10-year survival: ~60-65%
+- Recurrence of disease in transplanted liver: Common for HCV (now prevented with DAAs), NAFLD (recurs if metabolic risk not controlled), autoimmune hepatitis (immunosuppression protects), alcoholic cirrhosis (requires abstinence)
+
+POST-TRANSPLANT CARE
+- Lifelong immunosuppression (tacrolimus-based regimens)
+- Regular monitoring: LFTs, tacrolimus levels, kidney function
+- Infection prophylaxis (bacterial, fungal, viral — especially CMV)
+- Screening for post-transplant malignancy (skin cancer, lymphoma)
+- Management of metabolic complications (hypertension, diabetes, hyperlipidemia, obesity)
+
+=============================================================
+SECTION 9: MEDICATIONS TO AVOID IN LIVER DISEASE
+=============================================================
+
+HEPATOTOXIC MEDICATIONS (Dose-dependent)
+- Acetaminophen/Paracetamol: Safe at reduced doses (<2g/day in mild liver disease; AVOID in moderate-severe); MOST COMMON cause of acute liver failure in the US/UK
+- NSAIDs (ibuprofen, naproxen): Avoid — worsen renal function, promote GI bleeding
+- Aspirin: Avoid (platelet inhibition + GI bleeding risk)
+
+DRUGS CONTRAINDICATED IN LIVER DISEASE
+- Methotrexate: Hepatotoxic; avoid in significant liver disease
+- Isoniazid: Hepatotoxic; monitor closely
+- Amiodarone: Phospholipidosis, hepatitis, cirrhosis
+- Nitrofurantoin: Chronic use causes liver fibrosis
+- Valproic acid: Hepatotoxic especially in children
+- Phenytoin: Drug-induced liver injury
+- Halothane (anesthetic): Avoid
+
+DOSE ADJUSTMENT REQUIRED
+- Many drugs require dose reduction in liver disease
+- Child-Pugh score used to guide dosing
+- Sedatives, opioids, anxiolytics: Greatly increased sensitivity; use with extreme caution
+- Statins: Generally safe in liver disease; monitor LFTs
+
+HERBAL SUPPLEMENTS (Often hepatotoxic)
+- Kava kava: Severe liver toxicity reported
+- Pennyroyal oil: Acute liver failure
+- Germander: Hepatitis and liver failure
+- Comfrey: Hepatic veno-occlusive disease
+- Green tea extract (high-dose): Liver damage reported
+- Pyrrolizidine alkaloids: Sinusoidal obstruction syndrome
+
+SAFE ALTERNATIVES FOR PAIN
+- Acetaminophen ≤2g/day: Safest analgesic in mild-moderate liver disease
+- Tramadol: Use with caution (reduced dose)
+- Consider non-pharmacological pain management
+
+=============================================================
+SECTION 10: LIVER DISEASE SCREENING & PREVENTION GUIDELINES
+=============================================================
+
+WHO SHOULD BE SCREENED FOR LIVER DISEASE?
+High-risk populations:
+- Heavy alcohol users: ALT, AST, GGT; FIB-4 annually
+- Obese patients (BMI >30): ALT, FIB-4; ultrasound if elevated
+- Type 2 diabetes patients: Annual ALT, FIB-4
+- Patients on hepatotoxic medications: Regular LFTs per drug guidelines
+- HIV-positive patients: Annual hepatitis B and C testing; LFTs
+- IV drug users: Annual hepatitis B and C testing
+- Blood transfusion before 1992: One-time HCV screening
+- First-generation immigrants from HBV-endemic areas: HBsAg screening
+
+VACCINATION RECOMMENDATIONS
+Hepatitis A vaccine:
+- All children at 12-23 months (2 doses)
+- All adults ≥18 without prior immunity wanting protection
+- All liver disease patients (including all chronic liver disease)
+- Travelers to endemic regions
+- MSM, IV drug users
+
+Hepatitis B vaccine:
+- All infants (at birth, then 2-month series)
+- All adults through age 59 not previously vaccinated
+- Adults ≥60: Based on risk factors and preference
+- All liver disease patients not previously vaccinated
+- Healthcare workers, dialysis patients, IV drug users, MSM, sexual partners of HBsAg+
+
+KEY PREVENTION MESSAGES
+- Limit alcohol: <14 units/week for men, <7 units/week for women (ideally abstain if liver disease)
+- Maintain healthy weight and exercise regularly
+- Avoid sharing needles or personal hygiene items
+- Use condoms (reduce hepatitis B and C sexual transmission)
+- Get vaccinated against hepatitis A and B
+- Inform your doctor of ALL medications, supplements, and herbal remedies
+- Avoid self-medication with hepatotoxic drugs
+- Control blood sugar, blood pressure, and cholesterol

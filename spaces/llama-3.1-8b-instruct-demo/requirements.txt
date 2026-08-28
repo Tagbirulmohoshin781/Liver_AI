@@ -1,0 +1,2 @@
+# Requirements for Meta Llama 3.1 8B Instruct Studio
+# Platform managed: gradio, huggingface_hub

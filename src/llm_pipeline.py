@@ -405,6 +405,7 @@ def decompose_clinical_query(user_query: str) -> List[str]:
 
 
 def classify_clinical_intent(query: str) -> str:
+
     """
     Exact-Match & Semantic Clinical Query Classifier.
     Maps user input to high-fidelity AASLD/EASL clinical knowledge domains:
@@ -424,6 +425,7 @@ def classify_clinical_intent(query: str) -> str:
     """
     if not query:
         return "general"
+
 
     q = query.lower().strip()
 

@@ -204,6 +204,8 @@ class ChatService {
           'message': userMessage,
           'history': chatHistoryPayload,
           'doc_content': biopsyData != null ? json.encode(biopsyData) : null,
+          'response_style': _responseStyle,
+          'style': _responseStyle,
         }),
       ).timeout(const Duration(seconds: 15));
 

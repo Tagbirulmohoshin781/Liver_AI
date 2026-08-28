@@ -48,4 +48,58 @@ class ChatMessage {
       'biopsyData': biopsyData,
     };
   }
+
+  /// Parses markdown headers (e.g., ### 🩺 Clinical Overview, ### 🔬 Biomarker, etc.) into structured sections.
+  Map<String, String> get structuredSections {
+    final sections = <String, String>{};
+    final lines = text.split('\n');
+    String currentHeader = '';
+    final currentContent = StringBuffer();
+
+    for (final line in lines) {
+      final trimmed = line.trim();
+      if (trimmed.startsWith('### ') || trimmed.startsWith('## ')) {
+        if (currentHeader.isNotEmpty) {
+          sections[currentHeader] = currentContent.toString().trim();
+          currentContent.clear();
+        }
+        currentHeader = trimmed.replaceFirst(RegExp(r'^#{2,3}\s*'), '');
+      } else {
+        if (currentHeader.isNotEmpty) {
+          currentContent.writeln(line);
+        } else {
+          // Content before first header
+          if (trimmed.isNotEmpty) {
+            currentHeader = 'Overview';
+            currentContent.writeln(line);
+          }
+        }
+      }
+    }
+
+    if (currentHeader.isNotEmpty) {
+      sections[currentHeader] = currentContent.toString().trim();
+    }
+
+    return sections;
+  }
+
+  bool get hasMultipleSections => structuredSections.length >= 2;
+
+  /// Extracts key bullet takeaways for quick skimming.
+  List<String> get bulletPoints {
+    final bullets = <String>[];
+    final lines = text.split('\n');
+    for (final line in lines) {
+      final trimmed = line.trim();
+      if (trimmed.startsWith('- ') || trimmed.startsWith('* ') || RegExp(r'^\d+\.\s').hasMatch(trimmed)) {
+        final clean = trimmed.replaceFirst(RegExp(r'^[-*]\s+|\d+\.\s+'), '').replaceAll('**', '');
+        if (clean.isNotEmpty && clean.length > 5 && !clean.toLowerCase().contains('disclaimer')) {
+          bullets.add(clean);
+        }
+      }
+    }
+    return bullets;
+  }
 }
+
