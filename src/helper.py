@@ -127,15 +127,64 @@ DOCUMENT_REGISTRY = {
         "evidence_level": "Level 2A",
         "keywords": ["histology", "biopsy", "scan", "patch", "fibrosis", "f0", "f1", "f2", "f3", "f4", "ballooning", "steatosis grade", "microscopic"]
     },
-    "README.dataset.txt": {
-        "source_id": "LPD_CLINICAL_POPULATION",
-        "title": "Liver Patient Population Dataset Features, Demographics & Biomarker Correlates",
+    "cleveland_clinic_liver_disease.txt": {
+        "source_id": "CLEVELAND_CLINIC_LIVER_DISEASE",
+        "title": "Cleveland Clinic Liver Disease Diagnosis, Symptoms, Causes & Treatments",
         "clinical_domain": "general",
-        "authority": "Clinical Epidemiological Data Registry",
+        "authority": "Cleveland Clinic Health Library",
+        "evidence_level": "Level 1B",
+        "keywords": ["cleveland clinic", "liver disease", "causes", "types", "diagnosis", "red flags", "jaundice", "ascites", "treatment"]
+    },
+    "mayo_clinic_liver_problems.txt": {
+        "source_id": "MAYO_CLINIC_LIVER_PROBLEMS",
+        "title": "Mayo Clinic Liver Disease Symptoms, Causes & Clinical Complications",
+        "clinical_domain": "symptoms",
+        "authority": "Mayo Clinic Gastroenterology & Hepatology",
+        "evidence_level": "Level 1B",
+        "keywords": ["mayo clinic", "liver problems", "symptoms", "causes", "complications", "edema", "pruritus", "fatigue", "scarring", "fibrosis"]
+    },
+    "medlineplus_liver_diseases.txt": {
+        "source_id": "MEDLINEPLUS_NIH_LIVER_DISEASES",
+        "title": "MedlinePlus NIH Liver Diseases Health Reference & Laboratory Diagnostics",
+        "clinical_domain": "biomarkers",
+        "authority": "MedlinePlus, National Library of Medicine, NIH",
+        "evidence_level": "Level 1A",
+        "keywords": ["medlineplus", "nih", "liver diseases", "alt", "ast", "bilirubin", "alp", "albumin", "prevention", "vaccination"]
+    },
+    "nhs_liver_disease.txt": {
+        "source_id": "NHS_UK_LIVER_DISEASE",
+        "title": "NHS UK Liver Disease Clinical Guidance, Emergency Warning Signs & Treatment",
+        "clinical_domain": "symptoms",
+        "authority": "National Health Service UK",
+        "evidence_level": "Level 1A",
+        "keywords": ["nhs", "uk", "liver disease", "emergency", "red flags", "999", "vomiting blood", "melena", "ascites", "encephalopathy", "exercise", "weight loss"]
+    },
+    "niddk_liver_disease.txt": {
+        "source_id": "NIDDK_NIH_LIVER_DISEASE",
+        "title": "NIDDK NIH Steatotic Liver Disease (MASLD/MASH), Cirrhosis & Histology",
+        "clinical_domain": "fatty_liver",
+        "authority": "National Institute of Diabetes and Digestive and Kidney Diseases, NIH",
+        "evidence_level": "Level 1A",
+        "keywords": ["niddk", "nih", "masld", "mash", "nafld", "nash", "steatosis", "ballooning", "nas score", "kleiner", "fibrosis stage", "regeneration"]
+    },
+    "british_liver_trust.txt": {
+        "source_id": "BRITISH_LIVER_TRUST_GUIDELINES",
+        "title": "British Liver Trust — Liver Health, Nutrition, Alcohol & Lifestyle Guidance",
+        "clinical_domain": "nutrition",
+        "authority": "British Liver Trust",
+        "evidence_level": "Level 2A",
+        "keywords": ["british liver trust", "liver health", "diet", "nutrition", "coffee", "filtered black coffee", "alcohol policy", "abstinence", "sugar", "fructose"]
+    },
+    "wikipedia_liver_disease_clinical.txt": {
+        "source_id": "WIKIPEDIA_CLINICAL_CORPUS",
+        "title": "Wikipedia Medical Corpus — Liver Disease Pathophysiology & Classification",
+        "clinical_domain": "general",
+        "authority": "Clinical Wiki Medical Archive",
         "evidence_level": "Level 2B",
-        "keywords": ["patient", "demographics", "age", "gender", "bilirubin", "alkphos", "sgot", "sgpt", "proteins"]
+        "keywords": ["wikipedia", "pathophysiology", "classification", "cytochrome p450", "dili", "autoimmune hepatitis", "budd-chiari", "portal vein"]
     }
 }
+
 
 
 def load_txt_files(data: str) -> List[Document]:
@@ -378,7 +427,7 @@ def clean_pdf_text(text: str) -> str:
         return text
 
     # Remove divider lines made of repeated symbols (====, ----, ####, ****, etc.)
-    text = re.sub(r'^[=\-#_*~]{5,}\s*$', '', text, flags=re.MULTILINE)
+    text = re.sub(r'^[=\\-#_*~]{5,}\s*$', '', text, flags=re.MULTILINE)
 
     # Remove lines like "SECTION 2: ETIOLOGY (CAUSES OF LIVER DISEASE)"
     text = re.sub(r'^\s*SECTION\s+\d+\s*[:\.].*$', '', text, flags=re.MULTILINE | re.IGNORECASE)
