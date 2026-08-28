@@ -376,8 +376,4 @@ system_prompt = (
     "[SYSTEM_CLINICAL_KNOWLEDGE_BASE]\n"
     "{context}\n"
     "[/SYSTEM_CLINICAL_KNOWLEDGE_BASE]"
-<<<<<<< HEAD
 )
-=======
-)
->>>>>>> 8e606c44793ecd1179d75811ebb091eed7e98576
