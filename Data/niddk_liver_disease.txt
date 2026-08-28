@@ -1,0 +1,18 @@
+TITLE: NIDDK NIH — National Institute of Diabetes and Digestive and Kidney Diseases
+SOURCE: https://www.niddk.nih.gov/health-information/liver-disease
+AUTHORITY: National Institutes of Health (NIH) / NIDDK (Evidence Level 1A)
+CLINICAL DOMAIN: Steatotic Liver Disease (MASLD/MASH), Cirrhosis, Biomarkers
+
+PATHOPHYSIOLOGY OF METABOLIC LIVER DISEASE (MASLD/MASH):
+Metabolic dysfunction-associated steatotic liver disease (MASLD) involves excess fat accumulation in the liver associated with at least one cardiometabolic risk factor (overweight/obesity, type 2 diabetes, hypertension, hypertriglyceridemia, low HDL).
+MASH (steatohepatitis) is the progressive form characterized by hepatocyte ballooning, lobular inflammation, and fibrosis.
+
+HISTOLOGICAL STAGING & KLEINER NAS SCORE:
+- Steatosis Grade (0–3): 0 (<5%), 1 (5–33%), 2 (33–66%), 3 (>66%).
+- Lobular Inflammation (0–3): 0 (none), 1 (<2 foci/20x), 2 (2–4 foci/20x), 3 (>4 foci/20x).
+- Hepatocyte Ballooning (0–2): 0 (none), 1 (few ballooned cells), 2 (many cells/prominent ballooning).
+- NAS Score = Steatosis + Inflammation + Ballooning (Score >= 5 indicates definitive MASH/NASH).
+- Fibrosis Stage: F0 (none), F1 (perisinusoidal/periportal), F2 (perisinusoidal and periportal), F3 (bridging fibrosis), F4 (cirrhosis).
+
+REGENERATION & 4-WEEK PROTOCOL:
+A 30-day caloric deficit (500–750 kcal/day), elimination of refined fructose, incorporation of unsweetened black coffee (2-3 cups/day), and structured resistance + aerobic exercise stimulates mitochondrial fatty acid oxidation and significantly lowers ALT/AST within 4 weeks.

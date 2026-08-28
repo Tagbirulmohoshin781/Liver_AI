@@ -1,0 +1,21 @@
+TITLE: NHS UK — Liver Disease Guidelines, Warning Signs & Treatment
+SOURCE: https://www.nhs.uk/conditions/liver-disease/
+AUTHORITY: National Health Service UK (Evidence Level 1A)
+CLINICAL DOMAIN: Clinical Triage, Red Flags, Primary Care Management
+
+NHS CLINICAL TRIAGE:
+Liver disease can be silent in early stages. Many people only discover they have liver disease during routine blood tests.
+
+EMERGENCY WARNING SIGNS (RED FLAGS):
+Seek immediate emergency medical attention (A&E / 999) if experiencing:
+- Yellowing of the whites of your eyes or skin (jaundice).
+- Vomiting blood or passing black, tarry, smelly stools (melena from bleeding varices).
+- Swelling in your tummy area (ascites) that develops rapidly.
+- Confusion, extreme drowsiness, slurred speech, or personality changes (hepatic encephalopathy).
+- Severe abdominal pain in the right upper quadrant.
+
+TREATMENT AND REGIMEN:
+- Stopping alcohol completely.
+- Weight loss: Losing 10% of body weight can reduce liver fat and reverse early inflammation.
+- Regular exercise: 150 minutes of moderate-intensity exercise weekly.
+- Healthy diet: High in vegetables, whole grains, and healthy fats, avoiding sugary drinks and refined carbs.

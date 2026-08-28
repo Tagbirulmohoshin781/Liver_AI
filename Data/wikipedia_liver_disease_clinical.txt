@@ -1,0 +1,14 @@
+TITLE: Wikipedia Clinical Corpus — Liver Disease Pathophysiology & Classification
+SOURCE: https://en.wikipedia.org/wiki/Liver_disease
+AUTHORITY: Clinical Wiki Medical Archive (Evidence Level 2B)
+CLINICAL DOMAIN: Pathophysiology, Differential Diagnosis, Hepatotoxicity
+
+HEPATIC FUNCTION & CELLULAR MECHANICS:
+The liver performs carbohydrate metabolism (glycogenesis, glycogenolysis, gluconeogenesis), protein synthesis (albumin, coagulation factors I, II, V, VII, IX, X, protein C, protein S, antithrombin), lipid metabolism (lipogenesis, cholesterol synthesis), and drug/xenobiotic detoxification via Phase I (Cytochrome P450) and Phase II (glucuronidation, sulfation, glutathione conjugation) enzymes.
+
+ETIOLOGICAL CLASSIFICATION:
+- Toxic / Drug-Induced Liver Injury (DILI): Acetaminophen toxicity (NAPQI intermediate), alcohol, herbal compounds.
+- Metabolic / Endocrine: MASLD/MASH, metabolic syndrome, diabetic hepatopathy.
+- Infectious: Viral hepatitis (A through E), cytomegalovirus, Epstein-Barr virus.
+- Autoimmune: Autoimmune hepatitis (Type 1 ANA/SMA+, Type 2 Anti-LKM-1+), PBC (Anti-Mitochondrial Antibodies+), PSC (p-ANCA+).
+- Vascular: Budd-Chiari syndrome, portal vein thrombosis, sinusoidal obstruction syndrome.
