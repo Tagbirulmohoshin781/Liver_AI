@@ -19,6 +19,7 @@ import threading
 import warnings
 import urllib.request
 import urllib.error
+from typing import List, Dict, Any, Optional
 
 warnings.filterwarnings("ignore", category=FutureWarning)
 warnings.filterwarnings("ignore", category=DeprecationWarning)
@@ -304,8 +305,105 @@ def init_rag_pipeline():
 
 
 # =============================================================================
-# Helper: Query-Aware Clinical Intent Classifier & AASLD/EASL Engine
+# Helper: Query-Aware Clinical Intent Classifier & Multi-Hop Query Decomposition
 # =============================================================================
+def analyze_and_decompose_query(user_query: str) -> dict:
+    """
+    Deconstructs user inquiries, performs multi-variable entity extraction,
+    and returns decomposed sub-queries for multi-hop clinical literature retrieval.
+    """
+    if not user_query:
+        return {
+            "intent": "general",
+            "entities": {},
+            "subqueries": ["general liver disease pathophysiology and management"],
+            "target_authority": "AASLD / EASL / NHS UK"
+        }
+
+    q = user_query.lower().strip()
+    intent = classify_clinical_intent(user_query)
+
+    entities = {
+        "symptoms": [s for s in ["jaundice", "fatigue", "pain", "ascites", "swelling", "edema", "pruritus", "itching", "dark urine", "pale stool", "ruq"] if s in q],
+        "enzymes_biomarkers": [e for e in ["alt", "ast", "sgpt", "sgot", "alp", "bilirubin", "albumin", "fib-4", "platelet", "inr", "de ritis", "ratio", "hba1c"] if e in q],
+        "conditions": [c for c in ["masld", "nafld", "mash", "nash", "steatosis", "fatty liver", "hepatitis", "cirrhosis", "fibrosis", "bridging fibrosis", "portal hypertension"] if c in q],
+        "toxicity": [t for t in ["alcohol", "vodka", "beer", "wine", "ethanol", "acetaldehyde", "peg", "pegs", "drink"] if t in q],
+        "timeline": [tm for tm in ["1 month", "one month", "30 day", "30-day", "4 week", "four week", "4-week", "timeline", "protocol", "step-by-step", "action plan", "routine", "guideline"] if tm in q],
+        "lifestyle": [l for l in ["diet", "food", "nutrition", "coffee", "exercise", "mediterranean", "sugar", "fructose", "weight loss"] if l in q],
+    }
+
+    if intent == "timeline_plan":
+        subqueries = [
+            "30 day 4-week step-by-step liver regeneration protocol",
+            "mitochondrial beta-oxidation and intrahepatic lipid clearance",
+            "lifestyle dietary exercise guidelines for steatohepatitis reversal"
+        ]
+        target_authority = "AASLD / EASL / NIDDK NIH"
+    elif intent == "alcohol_toxicity":
+        subqueries = [
+            "AASLD alcohol toxicity zero tolerance threshold liver disease",
+            "ethanol metabolism ADH CYP2E1 acetaldehyde hepatocyte damage",
+            "alcoholic liver disease abstinence nutritional replenishment"
+        ]
+        target_authority = "AASLD / British Liver Trust"
+    elif intent == "scan_bridging_fibrosis":
+        subqueries = [
+            "Stage F3 bridging fibrosis histological interpretation METAVIR",
+            "hypertriglyceridemia and hepatic stellate cell activation",
+            "Kleiner NAS score hepatocyte ballooning steatosis grade"
+        ]
+        target_authority = "Computational Pathology / AASLD"
+    elif intent == "masld_diabetes_progression":
+        subqueries = [
+            "MASLD NAFLD progression in type 2 diabetes mellitus elevated HbA1c",
+            "hepatic insulin resistance SREBP-1c de novo lipogenesis",
+            "FIB-4 non-invasive fibrosis risk stratification in diabetes"
+        ]
+        target_authority = "AASLD / EASL / NIDDK NIH"
+    elif intent == "differential_alcoholic_masld":
+        subqueries = [
+            "differential diagnosis alcohol related liver disease vs MASLD",
+            "De Ritis AST ALT ratio greater than 2 in alcoholic hepatitis",
+            "histopathology Mallory-Denk bodies vs macrovesicular steatosis"
+        ]
+        target_authority = "AASLD / Cleveland Clinic"
+    elif intent == "symptoms":
+        subqueries = [
+            "liver disease warning signs emergency triage red flags",
+            "jaundice ascites hepatic encephalopathy varices symptoms",
+            "Cleveland Clinic Mayo Clinic NHS emergency liver symptoms"
+        ]
+        target_authority = "Cleveland Clinic / Mayo Clinic / NHS UK"
+    elif intent == "biomarkers":
+        subqueries = [
+            "liver function test normal reference ranges ALT AST ALP Bilirubin",
+            "De Ritis ratio and FIB-4 non-invasive score interpretation",
+            "MedlinePlus NIH laboratory diagnostics liver enzymes"
+        ]
+        target_authority = "MedlinePlus NIH / AASLD"
+    else:
+        subqueries = [
+            f"{user_query} pathophysiology clinical diagnosis",
+            f"{user_query} evidence-based management and nutrition protocol",
+            "hepatic function biomarkers and clinical guidelines"
+        ]
+        target_authority = "AASLD / EASL / Mayo Clinic / NHS UK"
+
+    return {
+        "intent": intent,
+        "entities": entities,
+        "subqueries": subqueries,
+        "target_authority": target_authority
+    }
+
+
+def decompose_clinical_query(user_query: str) -> List[str]:
+    """
+    Decomposes complex clinical queries into multi-hop retrieval sub-queries.
+    """
+    return analyze_and_decompose_query(user_query).get("subqueries", [user_query])
+
+
 def classify_clinical_intent(query: str) -> str:
     """
     Exact-Match & Semantic Clinical Query Classifier.
