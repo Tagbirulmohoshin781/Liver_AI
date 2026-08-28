@@ -1,0 +1,26 @@
+TITLE: Mayo Clinic — Liver Disease Symptoms, Causes & Complications
+SOURCE: https://www.mayoclinic.org/diseases-conditions/liver-problems/symptoms-causes/syc-20374502
+AUTHORITY: Mayo Clinic Division of Gastroenterology and Hepatology (Evidence Level 1B)
+CLINICAL DOMAIN: Liver Problems, Fibrosis Progression, Clinical Complications
+
+CLINICAL OVERVIEW:
+Liver disease doesn't always cause noticeable signs and symptoms. When symptoms occur, they reflect impaired synthetic function, portal hypertension, or biliary obstruction.
+
+KEY SIGNS AND SYMPTOMS:
+- Skin and eyes that appear yellowish (jaundice).
+- Abdominal pain and swelling, particularly in the right upper quadrant.
+- Swelling in the legs and ankles (peripheral edema).
+- Itchy skin (pruritus due to bile salt deposition).
+- Dark urine color and pale stool color.
+- Chronic fatigue, nausea or vomiting, loss of appetite.
+- Tendency to bruise easily (coagulopathy from impaired clotting factor synthesis).
+
+CAUSES & RISK FACTORS:
+- Infection: Parasites and viruses causing Hepatitis A, B, and C.
+- Immune system abnormality: Autoimmune hepatitis, PBC, PSC.
+- Genetics: Abnormal genes inherited from parents leading to iron or copper accumulation.
+- Cancer and growths: Liver cancer, bile duct cancer, liver adenoma.
+- Toxic & Metabolic: Heavy alcohol use, obesity, Type 2 diabetes, high cholesterol, exposure to industrial toxins.
+
+COMPLICATIONS:
+Untreated chronic liver inflammation leads to progressive fibrosis (scarring), bridging fibrosis, cirrhosis, portal hypertension, esophageal varices hemorrhage, and liver failure.

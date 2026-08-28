@@ -1,0 +1,23 @@
+TITLE: Cleveland Clinic — Liver Disease Diagnosis, Symptoms, Causes & Treatments
+SOURCE: https://my.clevelandclinic.org/health/diseases/17179-liver-disease
+AUTHORITY: Cleveland Clinic Health Library (Evidence Level 1B)
+CLINICAL DOMAIN: General Liver Disease, Etiology, Diagnostic Workup
+
+OVERVIEW:
+Liver disease is any condition that damages the liver and prevents it from functioning properly. The liver performs over 500 vital metabolic functions including bile production, blood clotting factor synthesis, cholesterol metabolism, toxin filtration, and glycogen storage.
+
+TYPES OF LIVER DISEASE:
+1. Metabolic Dysfunction-Associated Steatotic Liver Disease (MASLD / NAFLD): Fat accumulation in hepatocytes without alcohol.
+2. Hepatitis: Inflammation caused by viruses (Hepatitis A, B, C, D, E) or autoimmune attacks.
+3. Alcohol-Associated Liver Disease (ARLD): Alcoholic hepatitis, fatty liver, and alcoholic cirrhosis from chronic ethanol toxicity.
+4. Inherited / Genetic: Hemochromatosis (iron overload), Wilson disease (copper accumulation), Alpha-1 antitrypsin deficiency.
+5. Cholestatic & Biliary: Primary Biliary Cholangitis (PBC), Primary Sclerosing Cholangitis (PSC).
+
+SYMPTOMS & RED FLAGS:
+- Early: Fatigue, nausea, loss of appetite, mild right upper quadrant discomfort.
+- Advanced / Emergency Red Flags: Jaundice (yellowing of skin and eyes), dark tea-colored urine, pale/clay-colored stools, abdominal swelling (ascites), swelling in legs and ankles (edema), easy bruising, itchy skin (pruritus), mental confusion (hepatic encephalopathy).
+
+DIAGNOSIS & MANAGEMENT:
+- Comprehensive Liver Function Tests (ALT, AST, ALP, Total Bilirubin, Albumin, Total Protein, INR).
+- Imaging: Ultrasound, CT scan, MRI, Transient Elastography (FibroScan) to assess liver stiffness and steatosis.
+- Management: Weight management (7-10% weight loss for MASLD), absolute alcohol abstinence, low-sodium diet (<2g/day) for ascites, antiviral therapies for viral hepatitis, and liver transplantation evaluation for end-stage liver disease.

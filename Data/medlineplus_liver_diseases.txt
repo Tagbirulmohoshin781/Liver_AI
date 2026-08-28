@@ -1,0 +1,21 @@
+TITLE: MedlinePlus NIH — Liver Diseases Summary & Health Topics
+SOURCE: https://medlineplus.gov/liverdiseases.html
+AUTHORITY: MedlinePlus, National Library of Medicine, NIH (Evidence Level 1A)
+CLINICAL DOMAIN: Public Health, Liver Diagnostics, Patient Guidelines
+
+SUMMARY:
+The liver is your body's largest internal organ. It helps your body digest food, store energy, and remove poisons. There are many kinds of liver diseases, including diseases caused by viruses, drugs, poisons, alcohol, or metabolic excess.
+
+LABORATORY DIAGNOSIS:
+- ALT (Alanine Aminotransferase): 7 to 56 IU/L. Primary marker of hepatocyte cell damage.
+- AST (Aspartate Aminotransferase): 10 to 40 IU/L. Elevated in hepatocellular injury and cardiac/muscle stress.
+- AST/ALT De Ritis Ratio: <1.0 suggests non-alcoholic/metabolic etiology; >2.0 indicates alcoholic injury.
+- Alkaline Phosphatase (ALP): 44 to 147 IU/L. Elevated in biliary obstruction.
+- Total Bilirubin: 0.2 to 1.2 mg/dL. Elevated in hemolysis, biliary obstruction, or parenchymal failure.
+- Albumin: 3.5 to 5.0 g/dL. Decreased in chronic cirrhosis.
+
+PREVENTION AND LIFESTYLE PROTOCOLS:
+- Maintain a healthy weight through balanced Mediterranean nutrition.
+- Complete cessation of alcohol consumption.
+- Vaccinate against Hepatitis A and Hepatitis B.
+- Take medications only as directed and avoid excessive acetaminophen/paracetamol.
