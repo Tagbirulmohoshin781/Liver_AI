@@ -427,7 +427,7 @@ def clean_pdf_text(text: str) -> str:
         return text
 
     # Remove divider lines made of repeated symbols (====, ----, ####, ****, etc.)
-    text = re.sub(r'^[=\\-#_*~]{5,}\s*$', '', text, flags=re.MULTILINE)
+    text = re.sub(r'^[=\\#_*~\-]{5,}\s*$', '', text, flags=re.MULTILINE)
 
     # Remove lines like "SECTION 2: ETIOLOGY (CAUSES OF LIVER DISEASE)"
     text = re.sub(r'^\s*SECTION\s+\d+\s*[:\.].*$', '', text, flags=re.MULTILINE | re.IGNORECASE)
