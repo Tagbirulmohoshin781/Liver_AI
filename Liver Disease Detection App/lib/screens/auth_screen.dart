@@ -141,154 +141,156 @@ class _AuthScreenState extends State<AuthScreen> {
             top: 20,
             bottom: MediaQuery.of(context).viewInsets.bottom + 24,
           ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Center(
-                child: Container(
-                  width: 36,
-                  height: 4,
-                  decoration: BoxDecoration(
-                    color: Colors.grey.shade300,
-                    borderRadius: BorderRadius.circular(2),
-                  ),
-                ),
-              ),
-              const SizedBox(height: 18),
-              Row(
-                children: [
-                  Container(
-                    width: 38,
-                    height: 38,
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Center(
+                  child: Container(
+                    width: 36,
+                    height: 4,
                     decoration: BoxDecoration(
-                      color: const Color(0xFFF1F5F9),
-                      shape: BoxShape.circle,
-                      border: Border.all(color: const Color(0xFFE2E8F0)),
-                    ),
-                    child: const Center(
-                      child: Text(
-                        'G',
-                        style: TextStyle(
-                          fontSize: 22,
-                          fontWeight: FontWeight.w900,
-                          color: Color(0xFFEA4335),
-                        ),
-                      ),
+                      color: Colors.grey.shade300,
+                      borderRadius: BorderRadius.circular(2),
                     ),
                   ),
-                  const SizedBox(width: 12),
-                  const Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'Sign in with Google',
-                        style: TextStyle(
-                          fontSize: 17,
-                          fontWeight: FontWeight.w700,
-                          color: Color(0xFF111827),
-                        ),
-                      ),
-                      Text(
-                        'Choose an account to continue to LiverAI',
-                        style: TextStyle(
-                          fontSize: 12.5,
-                          color: Color(0xFF6B7280),
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-              const SizedBox(height: 20),
-              const Divider(color: Color(0xFFE5E7EB)),
-              const SizedBox(height: 12),
-
-              // Account Option 1: Dipto Google Account
-              _googleAccountTile(
-                name: 'Tagbirul Mohoshin',
-                email: 'tagbirul.google@gmail.com',
-                onTap: () async {
-                  Navigator.pop(context);
-                  setState(() => _isLoading = true);
-                  final res = await _authService.signInWithGoogleAccount(
-                    email: 'tagbirul.google@gmail.com',
-                    displayName: 'Tagbirul Mohoshin',
-                    role: _selectedRole,
-                  );
-                  if (res['success'] == true && res['user'] != null) {
-                    widget.onAuthenticated(res['user'] as UserProfile);
-                  }
-                },
-              ),
-              const SizedBox(height: 10),
-
-              // Account Option 2: Demo Patient Account
-              _googleAccountTile(
-                name: 'Google Patient Account',
-                email: 'patient.google@liverai.health',
-                onTap: () async {
-                  Navigator.pop(context);
-                  setState(() => _isLoading = true);
-                  final res = await _authService.signInWithGoogleAccount(
-                    email: 'patient.google@liverai.health',
-                    displayName: 'Google Patient Account',
-                    role: _selectedRole,
-                  );
-                  if (res['success'] == true && res['user'] != null) {
-                    widget.onAuthenticated(res['user'] as UserProfile);
-                  }
-                },
-              ),
-              const SizedBox(height: 16),
-              const Text(
-                'Or use another Google email:',
-                style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: Color(0xFF4B5563)),
-              ),
-              const SizedBox(height: 8),
-              TextField(
-                controller: googleEmailCtrl,
-                style: const TextStyle(fontSize: 14, color: Color(0xFF111827), fontWeight: FontWeight.w600),
-                decoration: InputDecoration(
-                  hintText: 'yourname@gmail.com',
-                  isDense: true,
-                  contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
-                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(8), borderSide: const BorderSide(color: Color(0xFFE5E7EB))),
-                  enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(8), borderSide: const BorderSide(color: Color(0xFFE5E7EB))),
-                  focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(8), borderSide: const BorderSide(color: Color(0xFF2563EB))),
                 ),
-              ),
-              const SizedBox(height: 16),
+                const SizedBox(height: 18),
+                Row(
+                  children: [
+                    Container(
+                      width: 38,
+                      height: 38,
+                      decoration: BoxDecoration(
+                        color: const Color(0xFFF1F5F9),
+                        shape: BoxShape.circle,
+                        border: Border.all(color: const Color(0xFFE2E8F0)),
+                      ),
+                      child: const Center(
+                        child: Text(
+                          'G',
+                          style: TextStyle(
+                            fontSize: 22,
+                            fontWeight: FontWeight.w900,
+                            color: Color(0xFFEA4335),
+                          ),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    const Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Sign in with Google',
+                          style: TextStyle(
+                            fontSize: 17,
+                            fontWeight: FontWeight.w700,
+                            color: Color(0xFF111827),
+                          ),
+                        ),
+                        Text(
+                          'Choose an account to continue to LiverAI',
+                          style: TextStyle(
+                            fontSize: 12.5,
+                            color: Color(0xFF6B7280),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 20),
+                const Divider(color: Color(0xFFE5E7EB)),
+                const SizedBox(height: 12),
 
-              SizedBox(
-                width: double.infinity,
-                height: 46,
-                child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF2563EB),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                  ),
-                  onPressed: () async {
-                    final email = googleEmailCtrl.text.trim();
-                    final name = googleNameCtrl.text.trim();
+                // Account Option 1: Dipto Google Account
+                _googleAccountTile(
+                  name: 'Tagbirul Mohoshin',
+                  email: 'tagbirul.google@gmail.com',
+                  onTap: () async {
                     Navigator.pop(context);
                     setState(() => _isLoading = true);
                     final res = await _authService.signInWithGoogleAccount(
-                      email: email.isNotEmpty ? email : 'user.google@gmail.com',
-                      displayName: name.isNotEmpty ? name : 'Google User',
+                      email: 'tagbirul.google@gmail.com',
+                      displayName: 'Tagbirul Mohoshin',
                       role: _selectedRole,
                     );
                     if (res['success'] == true && res['user'] != null) {
                       widget.onAuthenticated(res['user'] as UserProfile);
                     }
                   },
-                  child: const Text(
-                    'Continue with Google Account',
-                    style: TextStyle(fontSize: 14.5, fontWeight: FontWeight.w600, color: Colors.white),
+                ),
+                const SizedBox(height: 10),
+
+                // Account Option 2: Demo Patient Account
+                _googleAccountTile(
+                  name: 'Google Patient Account',
+                  email: 'patient.google@liverai.health',
+                  onTap: () async {
+                    Navigator.pop(context);
+                    setState(() => _isLoading = true);
+                    final res = await _authService.signInWithGoogleAccount(
+                      email: 'patient.google@liverai.health',
+                      displayName: 'Google Patient Account',
+                      role: _selectedRole,
+                    );
+                    if (res['success'] == true && res['user'] != null) {
+                      widget.onAuthenticated(res['user'] as UserProfile);
+                    }
+                  },
+                ),
+                const SizedBox(height: 16),
+                const Text(
+                  'Or use another Google email:',
+                  style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: Color(0xFF4B5563)),
+                ),
+                const SizedBox(height: 8),
+                TextField(
+                  controller: googleEmailCtrl,
+                  style: const TextStyle(fontSize: 14, color: Color(0xFF111827), fontWeight: FontWeight.w600),
+                  decoration: InputDecoration(
+                    hintText: 'yourname@gmail.com',
+                    isDense: true,
+                    contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(8), borderSide: const BorderSide(color: Color(0xFFE5E7EB))),
+                    enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(8), borderSide: const BorderSide(color: Color(0xFFE5E7EB))),
+                    focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(8), borderSide: const BorderSide(color: Color(0xFF2563EB))),
                   ),
                 ),
-              ),
-            ],
+                const SizedBox(height: 16),
+
+                SizedBox(
+                  width: double.infinity,
+                  height: 46,
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color(0xFF2563EB),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                    ),
+                    onPressed: () async {
+                      final email = googleEmailCtrl.text.trim();
+                      final name = googleNameCtrl.text.trim();
+                      Navigator.pop(context);
+                      setState(() => _isLoading = true);
+                      final res = await _authService.signInWithGoogleAccount(
+                        email: email.isNotEmpty ? email : 'user.google@gmail.com',
+                        displayName: name.isNotEmpty ? name : 'Google User',
+                        role: _selectedRole,
+                      );
+                      if (res['success'] == true && res['user'] != null) {
+                        widget.onAuthenticated(res['user'] as UserProfile);
+                      }
+                    },
+                    child: const Text(
+                      'Continue with Google Account',
+                      style: TextStyle(fontSize: 14.5, fontWeight: FontWeight.w600, color: Colors.white),
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ),
         );
       },
@@ -331,24 +333,6 @@ class _AuthScreenState extends State<AuthScreen> {
         ),
       ),
     );
-  }
-
-  Future<void> _handleSocialAuth(String provider) async {
-    setState(() => _isLoading = true);
-    if (provider == 'Facebook') {
-      final res = await _authService.signInWithFacebookNative(role: _selectedRole);
-      if (res['success'] == true && res['user'] != null) {
-        widget.onAuthenticated(res['user'] as UserProfile);
-        return;
-      }
-    } else if (provider == 'GitHub') {
-      final res = await _authService.signInWithGithubNative(role: _selectedRole);
-      if (res['success'] == true && res['user'] != null) {
-        widget.onAuthenticated(res['user'] as UserProfile);
-        return;
-      }
-    }
-    setState(() => _isLoading = false);
   }
 
   @override

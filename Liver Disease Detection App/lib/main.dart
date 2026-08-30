@@ -318,9 +318,11 @@ class _MainNavigationShellState extends State<MainNavigationShell> {
 
     final safeIndex = _currentIndex < screens.length ? _currentIndex : 0;
     final settingsIndex = isAdmin ? 7 : 6;
+    final isKeyboardOpen = MediaQuery.of(context).viewInsets.bottom > 0;
 
     return Scaffold(
       extendBody: true,
+      resizeToAvoidBottomInset: true,
       body: Stack(
         children: [
           // ── Atmospheric Background Ambiance ─────────────────────────────
@@ -368,7 +370,7 @@ class _MainNavigationShellState extends State<MainNavigationShell> {
               children: [
                 // Top App Bar
                 Padding(
-                  padding: const EdgeInsets.fromLTRB(16, 10, 16, 6),
+                  padding: const EdgeInsets.fromLTRB(16, 8, 16, 6),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -479,7 +481,7 @@ class _MainNavigationShellState extends State<MainNavigationShell> {
                                               builder: (context) {
                                                 final screenWidth = MediaQuery.of(context).size.width;
                                                 return Text(
-                                                  screenWidth < 380 ? 'ONNX READY' : 'OFFLINE ONNX READY',
+                                                  screenWidth < 380 ? 'ONNX' : 'OFFLINE ONNX',
                                                   style: const TextStyle(
                                                     fontSize: 7.5,
                                                     fontWeight: FontWeight.w800,
@@ -515,11 +517,17 @@ class _MainNavigationShellState extends State<MainNavigationShell> {
                         children: [
                           IconButton(
                             icon: const Icon(Icons.tune, size: 20),
+                            padding: const EdgeInsets.all(6),
+                            constraints: const BoxConstraints(minWidth: 34, minHeight: 34),
+                            visualDensity: VisualDensity.compact,
                             onPressed: () => setState(() => _currentIndex = settingsIndex),
                             tooltip: 'Settings & AI Tuning',
                           ),
                           IconButton(
                             icon: const Icon(Icons.logout, size: 18, color: Color(0xFFF87171)),
+                            padding: const EdgeInsets.all(6),
+                            constraints: const BoxConstraints(minWidth: 34, minHeight: 34),
+                            visualDensity: VisualDensity.compact,
                             onPressed: widget.onLogout,
                             tooltip: 'Sign Out',
                           ),
@@ -537,38 +545,39 @@ class _MainNavigationShellState extends State<MainNavigationShell> {
             ),
           ),
 
-          // ── Floating Glass Bottom Navigation Bar (Zero Overflow on Any Screen) ─────────────
-          Positioned(
-            bottom: 18,
-            left: 14,
-            right: 14,
-            child: GlassContainer(
-              borderRadius: 28,
-              blurSigma: widget.glassTheme.blurSigma,
-              isGlow: isDark,
-              glowColor: accent.withValues(alpha: 0.3),
-              padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 8),
-              borderGradient: LinearGradient(
-                colors: [
-                  Colors.white.withValues(alpha: isDark ? 0.25 : 0.40),
-                  accent.withValues(alpha: 0.30),
-                  Colors.white.withValues(alpha: isDark ? 0.08 : 0.15),
-                ],
-              ),
-              child: Row(
-                children: [
-                  _navItem(0, Icons.dashboard_outlined, Icons.dashboard, 'Home', accent),
-                  _navItem(1, Icons.biotech_outlined, Icons.biotech, 'Biopsy', accent),
-                  _navItem(2, Icons.science_outlined, Icons.science, 'Clinical', accent),
-                  _navItem(3, Icons.chat_bubble_outline, Icons.chat_bubble, 'Chat', accent),
-                  _navItem(4, Icons.history_outlined, Icons.history, 'History', accent),
-                  _navItem(5, Icons.person_outline, Icons.person, 'Profile', accent),
-                  if (isAdmin)
-                    _navItem(6, Icons.admin_panel_settings_outlined, Icons.admin_panel_settings, 'Admin', const Color(0xFF8B5CF6)),
-                ],
+          // ── Floating Glass Bottom Navigation Bar (Hidden when keyboard active to prevent overlap) ─────────────
+          if (!isKeyboardOpen)
+            Positioned(
+              bottom: 16,
+              left: 12,
+              right: 12,
+              child: GlassContainer(
+                borderRadius: 26,
+                blurSigma: widget.glassTheme.blurSigma,
+                isGlow: isDark,
+                glowColor: accent.withValues(alpha: 0.3),
+                padding: const EdgeInsets.symmetric(horizontal: 2, vertical: 6),
+                borderGradient: LinearGradient(
+                  colors: [
+                    Colors.white.withValues(alpha: isDark ? 0.25 : 0.40),
+                    accent.withValues(alpha: 0.30),
+                    Colors.white.withValues(alpha: isDark ? 0.08 : 0.15),
+                  ],
+                ),
+                child: Row(
+                  children: [
+                    _navItem(0, Icons.dashboard_outlined, Icons.dashboard, 'Home', accent),
+                    _navItem(1, Icons.biotech_outlined, Icons.biotech, 'Biopsy', accent),
+                    _navItem(2, Icons.science_outlined, Icons.science, 'Clinical', accent),
+                    _navItem(3, Icons.chat_bubble_outline, Icons.chat_bubble, 'Chat', accent),
+                    _navItem(4, Icons.history_outlined, Icons.history, 'History', accent),
+                    _navItem(5, Icons.person_outline, Icons.person, 'Profile', accent),
+                    if (isAdmin)
+                      _navItem(6, Icons.admin_panel_settings_outlined, Icons.admin_panel_settings, 'Admin', const Color(0xFF8B5CF6)),
+                  ],
+                ),
               ),
             ),
-          ),
         ],
       ),
     );
@@ -587,7 +596,7 @@ class _MainNavigationShellState extends State<MainNavigationShell> {
           padding: const EdgeInsets.symmetric(horizontal: 1, vertical: 4),
           decoration: BoxDecoration(
             color: isSelected ? accent.withValues(alpha: 0.15) : Colors.transparent,
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: BorderRadius.circular(10),
           ),
           child: Column(
             mainAxisSize: MainAxisSize.min,
@@ -595,7 +604,7 @@ class _MainNavigationShellState extends State<MainNavigationShell> {
               Icon(
                 isSelected ? filledIcon : outlineIcon,
                 color: isSelected ? accent : (isDark ? Colors.white54 : Colors.black45),
-                size: 19,
+                size: 18,
               ),
               const SizedBox(height: 2),
               FittedBox(
@@ -604,7 +613,7 @@ class _MainNavigationShellState extends State<MainNavigationShell> {
                   label,
                   maxLines: 1,
                   style: TextStyle(
-                    fontSize: 9.5,
+                    fontSize: 9.0,
                     fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
                     color: isSelected ? accent : (isDark ? Colors.white54 : Colors.black45),
                   ),

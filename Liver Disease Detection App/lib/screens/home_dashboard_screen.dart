@@ -274,13 +274,17 @@ class HomeDashboardScreen extends StatelessWidget {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  const Row(
-                    children: [
-                      _FeaturePill(label: 'Admin Exclusive', color: Color(0xFF8B5CF6)),
-                      SizedBox(width: 8),
-                      _FeaturePill(label: 'Telemetry', color: Color(0xFF38BDF8)),
-                    ],
+                  const Expanded(
+                    child: Wrap(
+                      spacing: 6,
+                      runSpacing: 4,
+                      children: [
+                        _FeaturePill(label: 'Admin Exclusive', color: Color(0xFF8B5CF6)),
+                        _FeaturePill(label: 'Telemetry', color: Color(0xFF38BDF8)),
+                      ],
+                    ),
                   ),
+                  const SizedBox(width: 8),
                   Icon(Icons.arrow_forward_ios, size: 14, color: isDark ? Colors.white38 : Colors.black38),
                 ],
               ),
@@ -297,13 +301,17 @@ class HomeDashboardScreen extends StatelessWidget {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Row(
-                  children: [
-                    const _FeaturePill(label: 'Offline ONNX', color: Color(0xFF8B5CF6)),
-                    const SizedBox(width: 8),
-                    _FeaturePill(label: '4 Classes', color: accent),
-                  ],
+                Expanded(
+                  child: Wrap(
+                    spacing: 6,
+                    runSpacing: 4,
+                    children: [
+                      const _FeaturePill(label: 'Offline ONNX', color: Color(0xFF8B5CF6)),
+                      _FeaturePill(label: '4 Classes', color: accent),
+                    ],
+                  ),
                 ),
+                const SizedBox(width: 8),
                 Icon(Icons.arrow_forward_ios, size: 14, color: isDark ? Colors.white38 : Colors.black38),
               ],
             ),
@@ -320,13 +328,17 @@ class HomeDashboardScreen extends StatelessWidget {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                const Row(
-                  children: [
-                    _FeaturePill(label: '10 Biomarkers', color: Color(0xFF38BDF8)),
-                    SizedBox(width: 8),
-                    _FeaturePill(label: 'Instant Risk %', color: Color(0xFFF59E0B)),
-                  ],
+                const Expanded(
+                  child: Wrap(
+                    spacing: 6,
+                    runSpacing: 4,
+                    children: [
+                      _FeaturePill(label: '10 Biomarkers', color: Color(0xFF38BDF8)),
+                      _FeaturePill(label: 'Instant Risk %', color: Color(0xFFF59E0B)),
+                    ],
+                  ),
                 ),
+                const SizedBox(width: 8),
                 Icon(Icons.arrow_forward_ios, size: 14, color: isDark ? Colors.white38 : Colors.black38),
               ],
             ),
@@ -343,13 +355,17 @@ class HomeDashboardScreen extends StatelessWidget {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Row(
-                  children: [
-                    _FeaturePill(label: 'AASLD Guidelines', color: accent),
-                    const SizedBox(width: 8),
-                    const _FeaturePill(label: 'Dual Offline/Online', color: Color(0xFF34D399)),
-                  ],
+                Expanded(
+                  child: Wrap(
+                    spacing: 6,
+                    runSpacing: 4,
+                    children: [
+                      _FeaturePill(label: 'AASLD Guidelines', color: accent),
+                      const _FeaturePill(label: 'Dual Offline/Online', color: Color(0xFF34D399)),
+                    ],
+                  ),
                 ),
+                const SizedBox(width: 8),
                 Icon(Icons.arrow_forward_ios, size: 14, color: isDark ? Colors.white38 : Colors.black38),
               ],
             ),

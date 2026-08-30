@@ -180,10 +180,14 @@ class _HistoryRecordsScreenState extends State<HistoryRecordsScreen>
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text(
-                        m.name,
-                        style: TextStyle(fontSize: 12, color: isDark ? Colors.white70 : Colors.black87),
+                      Expanded(
+                        child: Text(
+                          m.name,
+                          style: TextStyle(fontSize: 12, color: isDark ? Colors.white70 : Colors.black87),
+                          overflow: TextOverflow.ellipsis,
+                        ),
                       ),
+                      const SizedBox(width: 8),
                       Text(
                         '${m.isPositive ? "DETECTED" : "NORMAL"} (${m.probability.toStringAsFixed(1)}%)',
                         style: TextStyle(
@@ -231,19 +235,23 @@ class _HistoryRecordsScreenState extends State<HistoryRecordsScreen>
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'Patient: ${rec.age}y / ${rec.gender}',
-                        style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w700),
-                      ),
-                      const SizedBox(height: 2),
-                      Text(
-                        timeStr,
-                        style: TextStyle(fontSize: 11, color: isDark ? Colors.white54 : Colors.black45),
-                      ),
-                    ],
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Patient: ${rec.age}y / ${rec.gender}',
+                          style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w700),
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                        const SizedBox(height: 2),
+                        Text(
+                          timeStr,
+                          style: TextStyle(fontSize: 11, color: isDark ? Colors.white54 : Colors.black45),
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ],
+                    ),
                   ),
                   IconButton(
                     icon: const Icon(Icons.delete_outline, size: 18, color: Color(0xFFF87171)),

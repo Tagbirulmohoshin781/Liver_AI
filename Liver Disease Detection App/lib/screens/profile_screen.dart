@@ -140,11 +140,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       Text(
                         _nameController.text,
                         style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w800),
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 1,
                       ),
                       const SizedBox(height: 2),
                       Text(
                         _emailController.text,
                         style: TextStyle(fontSize: 12, color: isDark ? Colors.white60 : Colors.black54),
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 1,
                       ),
                       const SizedBox(height: 6),
                       Container(
@@ -191,6 +195,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 ),
                 const SizedBox(height: 12),
 
+                // Age & Gender Row
                 Row(
                   children: [
                     Expanded(
@@ -200,7 +205,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         keyboardType: TextInputType.number,
                       ),
                     ),
-                    const SizedBox(width: 12),
+                    const SizedBox(width: 14),
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -223,27 +228,27 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         ],
                       ),
                     ),
-                    const SizedBox(width: 12),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text('Blood Group', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: isDark ? Colors.white70 : Colors.black87)),
-                          const SizedBox(height: 6),
-                          GlassContainer(
-                            borderRadius: 14,
-                            padding: const EdgeInsets.symmetric(horizontal: 12),
-                            child: DropdownButtonHideUnderline(
-                              child: DropdownButton<String>(
-                                value: _bloodGroup,
-                                isExpanded: true,
-                                dropdownColor: isDark ? const Color(0xFF1B2433) : Colors.white,
-                                items: ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'].map((b) => DropdownMenuItem(value: b, child: Text(b, style: const TextStyle(fontSize: 13)))).toList(),
-                                onChanged: (v) => setState(() => _bloodGroup = v ?? 'O+'),
-                              ),
-                            ),
-                          ),
-                        ],
+                  ],
+                ),
+                const SizedBox(height: 12),
+
+                // Blood Group Selection
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text('Blood Group', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: isDark ? Colors.white70 : Colors.black87)),
+                    const SizedBox(height: 6),
+                    GlassContainer(
+                      borderRadius: 14,
+                      padding: const EdgeInsets.symmetric(horizontal: 12),
+                      child: DropdownButtonHideUnderline(
+                        child: DropdownButton<String>(
+                          value: _bloodGroup,
+                          isExpanded: true,
+                          dropdownColor: isDark ? const Color(0xFF1B2433) : Colors.white,
+                          items: ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'].map((b) => DropdownMenuItem(value: b, child: Text(b, style: const TextStyle(fontSize: 13)))).toList(),
+                          onChanged: (v) => setState(() => _bloodGroup = v ?? 'O+'),
+                        ),
                       ),
                     ),
                   ],

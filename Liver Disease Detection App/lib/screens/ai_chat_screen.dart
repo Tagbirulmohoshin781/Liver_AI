@@ -192,6 +192,7 @@ class _AiChatScreenState extends State<AiChatScreen> {
     final theme = Theme.of(context);
     final accent = theme.primaryColor;
     final isDark = theme.brightness == Brightness.dark;
+    final isKeyboardOpen = MediaQuery.of(context).viewInsets.bottom > 0;
 
     final lastMsg = _messages.isNotEmpty ? _messages.last : null;
     final currentSuggestions = (lastMsg != null && !lastMsg.isUser && lastMsg.suggestions != null)
@@ -263,8 +264,13 @@ class _AiChatScreenState extends State<AiChatScreen> {
         // ── Active Biopsy Context Bar ───────────────────────────
         if (_activeBiopsyData != null)
           Container(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-            color: const Color(0xFF8B5CF6).withValues(alpha: 0.15),
+            margin: const EdgeInsets.symmetric(horizontal: 14, vertical: 4),
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+            decoration: BoxDecoration(
+              color: const Color(0xFF8B5CF6).withValues(alpha: 0.15),
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(color: const Color(0xFF8B5CF6).withValues(alpha: 0.3)),
+            ),
             child: Row(
               children: [
                 const Icon(Icons.biotech, size: 16, color: Color(0xFF8B5CF6)),
@@ -291,7 +297,7 @@ class _AiChatScreenState extends State<AiChatScreen> {
         Expanded(
           child: ListView.builder(
             controller: _scrollController,
-            padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
+            padding: const EdgeInsets.fromLTRB(16, 12, 16, 8),
             itemCount: _messages.length + (_isTyping ? 1 : 0),
             itemBuilder: (context, index) {
               if (index == _messages.length && _isTyping) {
@@ -338,10 +344,16 @@ class _AiChatScreenState extends State<AiChatScreen> {
               },
             ),
           ),
-        const SizedBox(height: 6),
+        const SizedBox(height: 4),
 
+        // ── Bottom Chat Input Field ───────────────────────────
         Container(
-          padding: EdgeInsets.fromLTRB(14, 4, 14, MediaQuery.of(context).padding.bottom + 100),
+          padding: EdgeInsets.fromLTRB(
+            14,
+            4,
+            14,
+            isKeyboardOpen ? 8 : (MediaQuery.of(context).padding.bottom + 80),
+          ),
           child: GlassContainer(
             borderRadius: 24,
             padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),

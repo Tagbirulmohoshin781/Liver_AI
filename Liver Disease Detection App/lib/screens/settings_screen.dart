@@ -186,7 +186,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   physics: const NeverScrollableScrollPhysics(),
                   crossAxisSpacing: 8,
                   mainAxisSpacing: 8,
-                  childAspectRatio: 1.6,
+                  childAspectRatio: 1.42,
                   children: AppColors.themePresets.values.map((preset) {
                     final isSelected = theme.themePresetId == preset.id;
                     return GestureDetector(
