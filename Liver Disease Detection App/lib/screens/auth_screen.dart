@@ -721,31 +721,13 @@ class _AuthScreenState extends State<AuthScreen> {
                             ),
                             const SizedBox(height: 20),
 
-                            // ── Social Sign-In Buttons Row (Zero Overflow Layout) ────────────────
-                            Row(
-                              children: [
-                                _socialBtn(
-                                  label: 'Google',
-                                  isGoogle: true,
-                                  icon: Icons.g_mobiledata_rounded,
-                                  color: const Color(0xFFEA4335),
-                                  onTap: _handleGoogleSignIn,
-                                ),
-                                const SizedBox(width: 6),
-                                _socialBtn(
-                                  label: 'Facebook',
-                                  icon: Icons.facebook_rounded,
-                                  color: const Color(0xFF1877F2),
-                                  onTap: () => _handleSocialAuth('Facebook'),
-                                ),
-                                const SizedBox(width: 6),
-                                _socialBtn(
-                                  label: 'GitHub',
-                                  icon: Icons.code_rounded,
-                                  color: const Color(0xFF1F2937),
-                                  onTap: () => _handleSocialAuth('GitHub'),
-                                ),
-                              ],
+                            // ── Social Sign-In Button (Google SSO) ────────────────
+                            _socialBtn(
+                              label: 'Continue with Google',
+                              isGoogle: true,
+                              icon: Icons.g_mobiledata_rounded,
+                              color: const Color(0xFFEA4335),
+                              onTap: _handleGoogleSignIn,
                             ),
                             const SizedBox(height: 26),
 
@@ -889,12 +871,13 @@ class _AuthScreenState extends State<AuthScreen> {
     required VoidCallback onTap,
     bool isGoogle = false,
   }) {
-    return Expanded(
+    return SizedBox(
+      width: double.infinity,
       child: InkWell(
         onTap: onTap,
         borderRadius: BorderRadius.circular(10),
         child: Container(
-          padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 2),
+          padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
           decoration: BoxDecoration(
             color: const Color(0xFFF1F5F9), // Matching web white pill button
             borderRadius: BorderRadius.circular(10),
@@ -904,32 +887,27 @@ class _AuthScreenState extends State<AuthScreen> {
             children: [
               if (isGoogle)
                 Container(
-                  width: 15,
-                  height: 15,
+                  width: 18,
+                  height: 18,
                   alignment: Alignment.center,
                   child: const Text(
                     'G',
                     style: TextStyle(
-                      fontSize: 14,
+                      fontSize: 16,
                       fontWeight: FontWeight.w900,
                       color: Color(0xFFEA4335),
                     ),
                   ),
                 )
               else
-                Icon(icon, size: 16, color: color),
-              const SizedBox(width: 4),
-              Flexible(
-                child: FittedBox(
-                  fit: BoxFit.scaleDown,
-                  child: Text(
-                    label,
-                    style: const TextStyle(
-                      fontSize: 12,
-                      fontWeight: FontWeight.w700,
-                      color: Color(0xFF1E293B),
-                    ),
-                  ),
+                Icon(icon, size: 18, color: color),
+              const SizedBox(width: 8),
+              Text(
+                label,
+                style: const TextStyle(
+                  fontSize: 13.5,
+                  fontWeight: FontWeight.w700,
+                  color: Color(0xFF1E293B),
                 ),
               ),
             ],

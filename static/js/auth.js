@@ -195,9 +195,7 @@ function _showSocialAccountModal(providerLabel, defaultEmail, callback) {
     modal = $('#social-auth-modal');
   }
 
-  const iconHtml = providerLabel === 'Google' ? '<span style="color:#ea4335; font-weight:900;">G</span>' :
-                   providerLabel === 'Facebook' ? '<i class="fa-brands fa-facebook" style="color:#1877f2;"></i>' :
-                   '<i class="fa-brands fa-github" style="color:#fff;"></i>';
+  const iconHtml = '<span style="color:#ea4335; font-weight:900;">G</span>';
 
   $('#social-modal-icon').html(iconHtml);
   $('#social-modal-title').text(`Sign In with ${providerLabel}`);

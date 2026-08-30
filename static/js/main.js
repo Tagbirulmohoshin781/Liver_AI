@@ -248,7 +248,7 @@ function togglePw(inputId, btn) {
 
 
 function handleSocialComingSoon(provider) {
-  showToast(`${provider} sign-in coming soon! Please use Google, GitHub, Facebook, or Email.`, 'info');
+  showToast(`${provider} sign-in coming soon! Please use Google or Email.`, 'info');
 }
 
 // Sidebar Drawer

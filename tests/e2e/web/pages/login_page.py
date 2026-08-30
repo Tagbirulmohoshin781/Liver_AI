@@ -33,8 +33,6 @@ class LoginPage(BasePage):
     # Quick Access Locators
     GUEST_BTN_CLASS = "btn-guest-access"
     GOOGLE_BTN_ID = "btn-google-signin"
-    FACEBOOK_BTN_ID = "btn-facebook-signin"
-    GITHUB_BTN_ID = "btn-github-signin"
     FORGOT_MODAL_ID = "forgot-modal"
 
     def navigate(self):
@@ -71,8 +69,8 @@ class LoginPage(BasePage):
         return {"status": "ok", "email": email}
 
     def verify_social_buttons_present(self):
-        """Verifies Google, Facebook, and GitHub SSO triggers exist."""
+        """Verifies Google SSO trigger exists."""
         return (
             self.find_element_by_id(self.GOOGLE_BTN_ID) is not None or
-            len(self.find_elements_by_class("btn-social-item")) >= 3
+            len(self.find_elements_by_class("btn-social-item")) >= 1
         )
