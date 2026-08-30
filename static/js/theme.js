@@ -461,4 +461,9 @@ if (document.readyState === 'loading') {
   loadSettings();
 }
 
-
+// Immediate theme bootstrap to prevent flash of wrong theme
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', loadSettings);
+} else {
+  loadSettings();
+}

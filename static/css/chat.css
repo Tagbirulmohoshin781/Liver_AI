@@ -173,6 +173,7 @@
   .messages-area {
     padding: 1rem 0.75rem 1.5rem;
   }
+
   .msg-group {
     max-width: 100%;
     gap: 1.25rem;
@@ -314,11 +315,7 @@
   color: var(--text-primary);
   border-color: var(--accent);
   transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
-}
-
-.suggestion-chip:hover i {
-  transform: scale(1.15);
+  box-shadow: 0 6px 20px rgba(0, 240, 255, 0.15);
 }
 
 .suggestion-chip:hover i {
@@ -720,6 +717,7 @@
   .input-area {
     padding: 0.5rem 0.75rem 1rem;
   }
+
   .input-box {
     max-width: 100%;
     padding: 0.65rem 0.85rem;
@@ -748,10 +746,14 @@
 }
 
 @keyframes typingBounce {
-  0%, 60%, 100% {
+
+  0%,
+  60%,
+  100% {
     transform: translateY(0);
     opacity: 0.4;
   }
+
   30% {
     transform: translateY(-6px);
     opacity: 1;
