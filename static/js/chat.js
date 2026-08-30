@@ -311,7 +311,7 @@ function notifyUploadInChat(filename, message, docContent) {
             <div style="background:var(--bg-primary); border:1px solid var(--border); padding:10px 12px; border-radius:10px; font-size:.8rem; color:var(--text-secondary); line-height:1.45; font-style:italic; margin-bottom:12px;">
               "${escapeHtml(snippet)}"
             </div>
-          ` : ''}
+          ` : ''}\
           <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; border-top:1px solid var(--border); padding-top:10px;">
             <span style="font-size:.74rem; color:var(--text-muted)">
               <i class="fa-solid fa-circle-check" style="color:var(--accent); margin-right:3px"></i> Document context is active for questions
@@ -671,4 +671,3 @@ function handleBiopsyUpload(file) {
 }
 
 window.handleBiopsyUpload = handleBiopsyUpload;
-
