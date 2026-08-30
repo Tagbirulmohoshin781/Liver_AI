@@ -1470,12 +1470,11 @@
   border: 1px solid var(--border);
   padding: .4rem .6rem;
   text-align: left;
+  color: var(--text-primary);
 }
 
 .markdown-body th {
   background: var(--bg-hover);
+  color: var(--accent, #34D399);
   font-weight: 700;
 }
-
-
-
