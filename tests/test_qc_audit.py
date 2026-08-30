@@ -8,6 +8,7 @@ Comprehensive QC audit test suite for LiverAI:
 - Dual endpoint contracts (/api/v1/chat, /chat, /api/v1/predict).
 - Health and readiness probes (/healthz, /readyz).
 - Auth & Guest mode sessions (/api/guest-login, /api/v1/auth/session).
+- Tabular biomarker structures & non-invasive score benchmarks (De Ritis, FIB-4, APRI).
 """
 
 import os
@@ -18,7 +19,7 @@ import unittest
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from app import create_app
-from src.prompt import system_prompt, CLINICAL_DISCLAIMER
+from src.prompt import system_prompt, CLINICAL_DISCLAIMER, CLINICAL_GUIDES, FALLBACK_EN
 from src.llm_pipeline import generate_rag_answer, build_local_fallback_answer
 
 FORBIDDEN_LEGACY_STRINGS = [
@@ -99,6 +100,30 @@ class TestQCAuditSuite(unittest.TestCase):
             self.assertIn(section, resp)
         for forbidden in FORBIDDEN_LEGACY_STRINGS:
             self.assertNotIn(forbidden, resp)
+
+    def test_biomarker_table_and_ratio_structures(self):
+        """Verify that biomarker guides incorporate markdown tables and key clinical ratios."""
+        biomarker_guide = CLINICAL_GUIDES["biomarkers"]
+        self.assertIn("| Biomarker / Non-Invasive Score |", biomarker_guide)
+        self.assertIn("De Ritis Ratio", biomarker_guide)
+        self.assertIn("FIB-4 Score", biomarker_guide)
+        self.assertIn("APRI Index", biomarker_guide)
+        self.assertIn("ALT (SGPT)", biomarker_guide)
+        self.assertIn("AST (SGOT)", biomarker_guide)
+
+        # Also verify fallback response includes structured markdown table
+        resp = build_local_fallback_answer("Explain ALT AST LFT biomarkers")
+        self.assertIn("|", resp)
+        self.assertIn("De Ritis", resp)
+
+    def test_system_prompt_tabular_directives(self):
+        """Verify that the system prompt strictly directs tabular biomarker presentation."""
+        self.assertIn("De Ritis ratio (AST:ALT)", system_prompt)
+        self.assertIn("FIB-4 score", system_prompt)
+        self.assertIn("APRI index", system_prompt)
+        self.assertIn("structured Markdown table", system_prompt)
+        for section in REQUIRED_5_SECTIONS:
+            self.assertIn(section, system_prompt)
 
     def test_rag_generation_fatty_liver(self):
         """Test RAG answer generation on MASLD/NAFLD query."""
