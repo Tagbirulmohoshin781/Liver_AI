@@ -571,6 +571,3 @@ window.sendSuggestion = sendSuggestion;
 window.sendMessage = sendMessage;
 window.copyMsg = copyMsg;
 window.clearChat = clearChat;
-
-
-
