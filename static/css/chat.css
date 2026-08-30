@@ -8,7 +8,7 @@
   flex-direction: column;
   overflow: hidden;
   position: relative;
-  background: var(--bg-canvas);
+  background: var(--bg-primary);
   color: var(--text-primary);
 }
 
@@ -19,7 +19,7 @@
   justify-content: space-between;
   padding: 0.75rem 1.5rem;
   border-bottom: 1px solid var(--border);
-  background: rgba(8, 17, 30, 0.85);
+  background: var(--bg-sidebar);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
   position: sticky;
@@ -49,7 +49,7 @@
 
 .btn-hamburger {
   display: none;
-  background: rgba(255, 255, 255, 0.05);
+  background: var(--bg-hover);
   border: 1px solid var(--border);
   color: var(--text-secondary);
   cursor: pointer;
@@ -60,9 +60,9 @@
 }
 
 .btn-hamburger:hover {
-  color: #00F0FF;
+  color: var(--accent);
   background: var(--bg-hover);
-  border-color: rgba(0, 240, 255, 0.3);
+  border-color: var(--accent);
 }
 
 @media (max-width: 768px) {
@@ -106,7 +106,7 @@
 }
 
 .topbar-btn {
-  background: rgba(255, 255, 255, 0.04);
+  background: var(--bg-input);
   border: 1px solid var(--border);
   color: var(--text-secondary);
   padding: 0.45rem 0.85rem;
@@ -124,7 +124,7 @@
 .topbar-btn:hover {
   background: var(--bg-hover);
   color: var(--text-primary);
-  border-color: rgba(0, 240, 255, 0.3);
+  border-color: var(--accent);
   transform: translateY(-1px);
 }
 
@@ -200,9 +200,9 @@
   padding: 2.75rem 2.25rem;
   border-radius: var(--radius-xl);
   overflow: hidden;
-  background: rgba(13, 27, 46, 0.7);
-  border: 1px solid rgba(0, 240, 255, 0.25);
-  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
 }
@@ -211,8 +211,7 @@
   content: '';
   position: absolute;
   inset: 0;
-  background: radial-gradient(circle at top right, rgba(0, 240, 255, 0.12) 0%, transparent 60%),
-              radial-gradient(circle at bottom left, rgba(2, 132, 199, 0.15) 0%, transparent 60%);
+  background: radial-gradient(circle at top right, var(--accent-glow) 0%, transparent 60%);
   pointer-events: none;
 }
 
@@ -243,10 +242,7 @@
   font-size: 2.2rem;
   font-weight: 800;
   letter-spacing: -0.02em;
-  background: linear-gradient(135deg, #FFFFFF 0%, #00F0FF 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  color: var(--text-primary);
   margin-bottom: 0.6rem;
 }
 
@@ -271,9 +267,9 @@
   border-radius: var(--radius-pill);
   font-size: 0.78rem;
   font-weight: 600;
-  background: rgba(2, 132, 199, 0.15);
-  border: 1px solid rgba(0, 240, 255, 0.25);
-  color: #38BDF8;
+  background: var(--bg-hover);
+  border: 1px solid var(--border);
+  color: var(--accent);
   display: inline-flex;
   align-items: center;
   gap: 0.4rem;
@@ -288,12 +284,12 @@
 }
 
 .suggestion-chip {
-  background: rgba(13, 27, 46, 0.65);
+  background: var(--bg-secondary);
   border: 1px solid var(--border);
   padding: 0.9rem 1.15rem;
   border-radius: var(--radius-md);
   font-size: 0.86rem;
-  color: var(--text-secondary);
+  color: var(--text-primary);
   cursor: pointer;
   transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
   text-align: left;
@@ -306,7 +302,7 @@
 }
 
 .suggestion-chip i {
-  color: #00F0FF;
+  color: var(--accent);
   font-size: 0.95rem;
   margin-top: 0.15rem;
   flex-shrink: 0;
@@ -314,11 +310,15 @@
 }
 
 .suggestion-chip:hover {
-  background: rgba(22, 42, 70, 0.85);
-  color: #F8FAFC;
-  border-color: rgba(0, 240, 255, 0.4);
+  background: var(--bg-hover);
+  color: var(--text-primary);
+  border-color: var(--accent);
   transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(0, 240, 255, 0.15);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+}
+
+.suggestion-chip:hover i {
+  transform: scale(1.15);
 }
 
 .suggestion-chip:hover i {
@@ -577,8 +577,8 @@
 
 .quick-chip {
   flex-shrink: 0;
-  background: rgba(13, 27, 46, 0.6);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
   color: var(--text-secondary);
   padding: 0.45rem 0.85rem;
   border-radius: var(--radius-pill);
@@ -595,14 +595,14 @@
 }
 
 .quick-chip i {
-  color: #00F0FF;
+  color: var(--accent);
   font-size: 0.75rem;
 }
 
 .quick-chip:hover {
-  background: rgba(22, 42, 70, 0.8);
-  color: #F8FAFC;
-  border-color: rgba(0, 240, 255, 0.4);
+  background: var(--bg-hover);
+  color: var(--text-primary);
+  border-color: var(--accent);
   transform: translateY(-1px);
 }
 
@@ -614,7 +614,7 @@
   align-items: center;
   gap: 0.6rem;
   flex-shrink: 0;
-  background: var(--bg-canvas);
+  background: var(--bg-primary);
   position: relative;
   z-index: 10;
 }
@@ -622,7 +622,7 @@
 .input-box {
   width: 100%;
   max-width: min(1040px, 92vw);
-  background: rgba(13, 27, 46, 0.85);
+  background: var(--bg-secondary);
   border: 1px solid var(--border);
   border-radius: var(--radius-md);
   display: flex;
@@ -631,13 +631,13 @@
   padding: 0.75rem 1.15rem;
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.35);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
   transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
 .input-box:focus-within {
-  border-color: rgba(0, 240, 255, 0.5);
-  box-shadow: 0 8px 32px rgba(0, 240, 255, 0.15), 0 0 0 1px rgba(0, 240, 255, 0.3);
+  border-color: var(--accent);
+  box-shadow: 0 8px 32px var(--accent-glow), 0 0 0 1px var(--accent);
 }
 
 #chat-input {
@@ -674,8 +674,8 @@
 }
 
 .btn-attach:hover {
-  color: #00F0FF;
-  background: rgba(0, 240, 255, 0.12);
+  color: var(--accent);
+  background: var(--bg-hover);
 }
 
 .btn-send {
