@@ -137,6 +137,8 @@ function clearAllHistory() {
       if (res.success) {
         localStorage.removeItem(HISTORY_KEY);
         _chatMemory = [];
+        window.lastUploadedImagePath = null;
+        window.lastUploadedDocContent = null;
         $('#msg-group').empty().hide();
         $('#welcome-screen').show();
         $('#history-list').html('<li class="history-empty"><i class="fa-regular fa-clock"></i> No recent chats</li>');
@@ -481,6 +483,7 @@ function clearBiopsyUpload(e) {
   $('#biopsy-drop-zone').show();
   $('#biopsy-status').empty().hide();
   $('#biopsy-report-view').empty().hide();
+  window.lastUploadedImagePath = null;
 }
 window.clearBiopsyUpload = clearBiopsyUpload;
 

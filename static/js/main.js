@@ -315,6 +315,8 @@ function scrollBottom() {
 
 function clearChat() {
   _chatMemory = [];
+  window.lastUploadedImagePath = null;
+  window.lastUploadedDocContent = null;
   $('#msg-group').empty().hide();
   $('#welcome-screen').show();
 }
@@ -493,6 +495,10 @@ function sendMessage() {
   const history = _chatMemory.slice(-12);
   const imageContext = window.lastUploadedImagePath || null;
   const docContext = window.lastUploadedDocContent || null;
+
+  // Consume single-use attachment contexts so follow-up chat messages are standard text questions
+  window.lastUploadedImagePath = null;
+  window.lastUploadedDocContent = null;
 
   $.ajax({
     url: '/api/v1/chat',
