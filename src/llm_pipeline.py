@@ -7,7 +7,7 @@ Key Capabilities:
   - Direct REST HTTP Clients for Google Gemini, Groq, OpenRouter, and DeepSeek (zero SDK import dependencies).
   - Multimodal Vision support (direct base64 payload to Gemini Vision REST API + PyTorch local classifier).
   - Background RAG initialization for fast application startup and minimal memory footprint.
-  - Deterministic AASLD 2023 & EASL Clinical Intelligence Engine ensuring 100% adherence to the 5-section format.
+  - Deterministic AASLD & EASL Clinical Intelligence Engine ensuring 100% adherence to the 5-section format.
   - Complete elimination of legacy fallback warning disclaimers.
 """
 
@@ -97,7 +97,7 @@ def decompose_clinical_query(query: str) -> list:
     Decomposes multi-variable medical inquiries into targeted diagnostic sub-queries:
       1. Cellular Pathophysiology & Metabolic Etiology (Insulin resistance, de novo lipogenesis, ROS).
       2. Biomarker & Histological Staging (ALT, AST, De Ritis ratio, FIB-4, Fibrosis F0-F4).
-      3. Guideline-Directed Management & Nutritional Protocols (AASLD 2023, EASL, Mediterranean diet).
+      3. Guideline-Directed Management & Nutritional Protocols (AASLD, EASL, Mediterranean diet).
     """
     if not query:
         return []
@@ -110,7 +110,7 @@ def decompose_clinical_query(query: str) -> list:
         sub_queries.extend([
             "MASLD pathophysiology insulin resistance de novo lipogenesis SREBP-1c",
             "elevated ALT HbA1c progression to MASH bridging fibrosis FIB-4",
-            "AASLD 2023 lifestyle Mediterranean diet glycemic optimization GLP-1"
+            "AASLD lifestyle Mediterranean diet glycemic optimization GLP-1"
         ])
 
     # Differential Diagnosis (Alcoholic vs MASLD / AST:ALT ratios)
@@ -134,7 +134,7 @@ def decompose_clinical_query(query: str) -> list:
         sub_queries.extend([
             "hepatic mitochondrial beta-oxidation 4-week regeneration protocol",
             "serum ALT AST normalization timeline Mediterranean dietary changes",
-            "AASLD 2023 lifestyle 7-10% weight loss coffee polyphenols exercise"
+            "AASLD lifestyle 7-10% weight loss coffee polyphenols exercise"
         ])
 
     # Alcohol Toxicity
@@ -508,7 +508,7 @@ def classify_clinical_intent(query: str) -> str:
 
 def build_local_fallback_answer(user_msg: str, docs=None) -> str:
     """
-    Generate a pure, structured 5-part clinical answer grounded in AASLD 2023 / EASL guidelines.
+    Generate a pure, structured 5-part clinical answer grounded in AASLD / EASL guidelines.
     Guaranteed to NEVER output fallback disclaimers or raw unformatted text dumps.
     """
     intent = classify_clinical_intent(user_msg)

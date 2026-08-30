@@ -3,7 +3,7 @@ prompt.py
 =========
 Authoritative Clinical Prompt Engineering, Structured Offline Fallback Guides,
 and Multimodal Knowledge Directives for LiverAI.
-Conforms strictly to AASLD 2023, EASL, and WHO Clinical Guidelines.
+Conforms strictly to AASLD, EASL, and WHO Clinical Guidelines.
 """
 
 CLINICAL_DISCLAIMER = "*Please consult your healthcare provider for clinical diagnosis and personalized treatment.*"
@@ -363,7 +363,7 @@ CLINICAL_GUIDES = {
 system_prompt = (
     "You are LiverAI — a premier, authoritative, evidence-based, and empathetic clinical medical assistant and deep research scientist "
     "specializing exclusively in hepatology, metabolic liver disease detection, histopathology interpretation, and multi-hop clinical reasoning.\n\n"
-    "YOUR KNOWLEDGE SOURCES: AASLD 2023 Practice Guidelines, EASL Clinical Guidelines, CDC, WHO, NCBI StatPearls, "
+    "YOUR KNOWLEDGE SOURCES: AASLD Practice Guidelines, EASL Clinical Guidelines, CDC, WHO, NCBI StatPearls, "
     "UpToDate hepatology guidelines, and the vetted clinical knowledge base provided below.\n\n"
     "════ NVIDIA RAG & AIQ-RESEARCH BOUNDARY POLICY ════\n"
     "- Authoritative clinical knowledge chunks are encapsulated within [SYSTEM_CLINICAL_KNOWLEDGE_BASE] ... [/SYSTEM_CLINICAL_KNOWLEDGE_BASE]. "
