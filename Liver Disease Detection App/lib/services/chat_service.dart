@@ -370,8 +370,10 @@ class ChatService {
 
     // Intent: Histology Biopsy
     if (intent == 'histology_biopsy' || intent == 'scan_biopsy') {
+      final scanMatch = RegExp(r'scan_[0-9a-zA-Z_]+').firstMatch(userMessage)?.group(0);
+      final scanPrefix = scanMatch != null ? 'Scan ID: $scanMatch · ' : '';
       return '''### 🩺 Clinical Overview & Assessment
-AI-assisted deep learning histological analysis on microscopic liver biopsy specimens evaluates core cellular pathomorphologies: micro/macrovesicular steatosis, hepatocyte ballooning necrosis, lobular lymphocytic infiltrates, and extracellular matrix collagen deposition (fibrosis staging).
+${scanPrefix}AI-assisted deep learning histological analysis on microscopic liver biopsy specimens evaluates core cellular pathomorphologies: micro/macrovesicular steatosis, hepatocyte ballooning necrosis, lobular lymphocytic infiltrates, and extracellular matrix collagen deposition (Tissue Fibrosis Stage F0–F4).
 
 ### 🔬 Biomarker / Histological Analysis
 | Morphological Feature | Histological Characteristics | Clinical Relevance |
@@ -379,7 +381,7 @@ AI-assisted deep learning histological analysis on microscopic liver biopsy spec
 | **Steatosis (Fat Accumulation)** | Clear intracytoplasmic lipid vacuoles displacing nucleus | Staged 0–3; quantified as percentage of hepatic parenchyma involved. |
 | **Hepatocellular Ballooning** | Swollen, rarefied hepatocytes with intermediate filament loss | Hallmark of active cytoskeletal collapse and steatohepatitis (MASH). |
 | **Lobular Inflammation** | Mononuclear inflammatory cell clusters in parenchyma | Quantifies ongoing immunological damage and cytokine release. |
-| **Fibrosis Staging (F0–F4)** | Collagen bands stained with Trichrome/Sirius Red | F0: None, F1: Periportal, F2: Portal with rare septa, F3: Bridging, F4: Cirrhosis. |
+| **Tissue Fibrosis Stage (F0–F4)** | Collagen bands stained with Trichrome/Sirius Red | F0: None, F1: Periportal, F2: Portal with rare septa, F3: Bridging, F4: Cirrhosis. |
 
 ### ⚠️ Risk Stratification & Red Flags
 > **Histopathology Triage:** The presence of both hepatocyte ballooning and stage F2+ bridging fibrosis confirms active MASH/NASH and elevated progression risk, necessitating active therapeutic management.
@@ -457,14 +459,14 @@ Under authoritative AASLD and EASL clinical hepatology guidelines, there is NO s
     // Intent: Early Warning Signs & Symptoms (100% match with Web Server)
     if (intent == 'symptoms') {
       return '''### 🩺 Clinical Overview & Assessment
-Early-stage liver disease is frequently silent ('the silent epidemic') because the liver possesses high functional reserve and lacks pain-sensing somatic nerve fibers in the parenchymal tissue (sensory innervation is restricted to Glisson's capsule). Recognizing early constitutional indicators versus late decompensation signs is critical for timely clinical triage.
+Early Warning Signs of liver disease are frequently silent ('the silent epidemic') because the liver possesses high functional reserve and lacks pain-sensing somatic nerve fibers in the parenchymal tissue (sensory innervation is restricted to Glisson's capsule). Recognizing early constitutional indicators versus late decompensation signs like Jaundice is critical for timely clinical triage.
 
 ### 🔬 Biomarker / Histological Analysis
 | Symptom Category | Manifestations | Pathophysiological Mechanism |
 | :--- | :--- | :--- |
 | **Early / Constitutional** | Chronic fatigue, postprandial malaise, mild RUQ fullness | Cytokine release, impaired metabolic clearance, hepatomegaly stretching Glisson's capsule |
 | **Cutaneous & Vascular** | Spider angiomas, palmar erythema, easy bruising | Impaired hepatic estrogen metabolism, reduced clotting factor synthesis, thrombocytopenia |
-| **Cholestatic & Excretory** | Scleral icterus, jaundice, pruritus, dark urine, acholic stools | Bilirubin > 2.5 mg/dL, bile salt deposition in dermis, conjugated bilirubinuria, lack of stercobilin |
+| **Cholestatic & Excretory** | Scleral icterus, Jaundice, pruritus, dark urine, acholic stools | Bilirubin > 2.5 mg/dL, bile salt deposition in dermis, conjugated bilirubinuria, lack of stercobilin |
 | **Portal Hypertension** | Ascites, peripheral edema, caput medusae | Splanchnic vasodilation, sinusoidal resistance, hypoalbuminemia, fluid retention |
 
 ### ⚠️ Risk Stratification & Red Flags
@@ -482,7 +484,7 @@ Early-stage liver disease is frequently silent ('the silent epidemic') because t
     // Intent: Fatty Liver / MASLD / MASH
     if (intent == 'fatty_liver') {
       return '''### 🩺 Clinical Overview & Assessment
-Metabolic Dysfunction-Associated Steatotic Liver Disease (MASLD, formerly NAFLD) is characterized by macrovesicular triglyceride accumulation in > 5% of hepatocytes in the absence of excessive alcohol intake. The spectrum spans from simple steatosis to Metabolic Dysfunction-Associated Steatohepatitis (MASH/NASH), which features progressive lobular inflammation, ballooning degeneration, and fibrosis.
+Metabolic Dysfunction-Associated Steatotic Liver Disease (MASLD, formerly NAFLD / Fatty Liver Disease) is characterized by macrovesicular triglyceride accumulation and Steatosis in > 5% of hepatocytes in the absence of excessive alcohol intake. The spectrum spans from simple steatosis to Metabolic Dysfunction-Associated Steatohepatitis (MASH/NASH), which features progressive lobular inflammation, ballooning degeneration, and fibrosis.
 
 ### 🔬 Biomarker / Histological Analysis
 | Parameter / Metric | Diagnostic Criterion | Clinical Interpretation |
