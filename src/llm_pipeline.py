@@ -852,9 +852,11 @@ def generate_rag_answer(
             f"{_VISION_SYSTEM_PROMPT}\n\n"
             f"Context from Knowledge Base:\n{context_str}"
             f"{histology_ctx}{history_ctx}\n\n"
-            f"User Question: {user_msg}\n\n"
-            "Please analyze the uploaded medical image carefully and provide a clear, "
-            "structured diagnostic interpretation in the 5-section format."
+            f"User Specific Question: {user_msg}\n\n"
+            "Clinical Directives:\n"
+            "1. Answer the user's specific question directly with high clinical precision in the 5-section format.\n"
+            "2. If the user asks to evaluate, classify, or interpret the attached image or slide, provide a full diagnostic analysis.\n"
+            "3. If the user is asking a broader health question (diet, symptoms, medications, blood tests), answer that question thoroughly while using the image findings only as secondary background."
         )
 
         gemini_vision_ans = generate_gemini_rest_answer(

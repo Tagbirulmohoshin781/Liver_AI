@@ -287,7 +287,10 @@ class _MainNavigationShellState extends State<MainNavigationShell> {
         activeBiopsy: _activeBiopsyForChat,
         onHistoryUpdated: _onChatUpdated,
         onNavigateToBiopsy: () => setState(() => _currentIndex = 1),
-        onNewChat: () => setState(() => _chatHistory = []),
+        onNewChat: () => setState(() {
+          _chatHistory = [];
+          _activeBiopsyForChat = null;
+        }),
       ),
       HistoryRecordsScreen(
         biopsyHistory: _biopsyHistory,

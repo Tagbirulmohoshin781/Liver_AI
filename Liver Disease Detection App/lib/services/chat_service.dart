@@ -363,9 +363,10 @@ class ChatService {
     UserProfile? profile,
     Map<String, dynamic>? biopsyData,
   }) {
-    final intent = (biopsyData != null && biopsyData.isNotEmpty)
-        ? 'histology_biopsy'
-        : classifyClinicalIntent(userMessage);
+    String intent = classifyClinicalIntent(userMessage);
+    if (intent == 'general' && biopsyData != null && biopsyData.isNotEmpty) {
+      intent = 'histology_biopsy';
+    }
 
     // Intent: Histology Biopsy
     if (intent == 'histology_biopsy' || intent == 'scan_biopsy') {

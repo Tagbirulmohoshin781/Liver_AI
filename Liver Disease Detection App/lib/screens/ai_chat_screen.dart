@@ -118,12 +118,16 @@ class _AiChatScreenState extends State<AiChatScreen> {
     final cleanText = text.trim();
     if (cleanText.isEmpty) return;
 
+    // Single-use biopsy context consumption: capture and reset so follow-up queries are regular questions
+    final biopsyToSend = _activeBiopsyData;
+    _activeBiopsyData = null;
+
     final userMsg = ChatMessage(
       id: 'msg_${DateTime.now().millisecondsSinceEpoch}',
       text: cleanText,
       isUser: true,
       timestamp: DateTime.now(),
-      biopsyData: _activeBiopsyData,
+      biopsyData: biopsyToSend,
     );
 
     setState(() {
@@ -138,7 +142,7 @@ class _AiChatScreenState extends State<AiChatScreen> {
         userMessage: cleanText,
         history: _messages,
         profile: widget.profile,
-        biopsyData: _activeBiopsyData,
+        biopsyData: biopsyToSend,
       );
 
       setState(() {
@@ -177,6 +181,8 @@ class _AiChatScreenState extends State<AiChatScreen> {
   void _clearChat() {
     setState(() {
       _messages = [];
+      _activeBiopsyData = null;
+      _lastAttachedBiopsyId = null;
     });
     widget.onNewChat();
   }
