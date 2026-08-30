@@ -1,3 +1,5 @@
+import 'package:flutter/foundation.dart';
+
 class ChatMessage {
   final String id;
   final String text;
@@ -49,6 +51,13 @@ class ChatMessage {
     };
   }
 
+  /// Regex to match markdown headers (## or ###), tolerating leading emojis, Unicode symbols, and trailing markdown characters
+  static final RegExp sectionHeaderRegex = RegExp(
+    r'^#{2,3}\s*(?:[\u{1F300}-\u{1F9FF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}]\s*)?(.*?)$',
+    multiLine: true,
+    unicode: true,
+  );
+
   /// Parses markdown headers (e.g., ### 🩺 Clinical Overview, ### 🔬 Biomarker, etc.) into structured sections.
   Map<String, String> get structuredSections {
     final sections = <String, String>{};
@@ -59,18 +68,23 @@ class ChatMessage {
     for (final line in lines) {
       final trimmed = line.trim();
       if (trimmed.startsWith('### ') || trimmed.startsWith('## ')) {
+        final match = sectionHeaderRegex.firstMatch(trimmed);
         if (currentHeader.isNotEmpty) {
           sections[currentHeader] = currentContent.toString().trim();
           currentContent.clear();
         }
-        currentHeader = trimmed.replaceFirst(RegExp(r'^#{2,3}\s*'), '');
+        if (match != null && (match.group(1)?.trim().isNotEmpty ?? false)) {
+          currentHeader = match.group(1)!.trim();
+        } else {
+          currentHeader = trimmed.replaceFirst(RegExp(r'^#{2,3}\s*'), '');
+        }
       } else {
         if (currentHeader.isNotEmpty) {
           currentContent.writeln(line);
         } else {
           // Content before first header
           if (trimmed.isNotEmpty) {
-            currentHeader = 'Overview';
+            currentHeader = 'Clinical Overview';
             currentContent.writeln(line);
           }
         }
@@ -102,4 +116,3 @@ class ChatMessage {
     return bullets;
   }
 }
-
