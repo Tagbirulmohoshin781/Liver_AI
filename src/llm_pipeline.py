@@ -21,6 +21,12 @@ import urllib.request
 import urllib.error
 from typing import List, Dict, Any, Optional
 
+try:
+    from dotenv import load_dotenv
+    load_dotenv()
+except ImportError:
+    pass
+
 warnings.filterwarnings("ignore", category=FutureWarning)
 warnings.filterwarnings("ignore", category=DeprecationWarning)
 
@@ -46,20 +52,35 @@ from .helper import (
 from .prompt import system_prompt, CLINICAL_GUIDES, CLINICAL_DISCLAIMER, FALLBACK_EN
 
 # ── Config from environment ───────────────────────────────────────────────────
+def get_google_api_key() -> str:
+    return (
+        os.getenv("GOOGLE_API", "") or os.getenv("GOOGLE_API_KEY", "") or
+        os.getenv("GOOGLE_AI_API_KEY", "") or os.getenv("GEMINI_API_KEY", "")
+    ).strip()
+
+def get_groq_api_key() -> str:
+    return os.getenv("GROQ_API_KEY", "").strip()
+
+def get_openai_api_key() -> str:
+    return (
+        os.getenv("OPENAI_API_KEY", "") or os.getenv("LLM_API_KEY", "") or os.getenv("OPENAI_API", "")
+    ).strip()
+
+def get_openrouter_api_key() -> str:
+    return os.getenv("OPENROUTER_API_KEY", "").strip()
+
+def get_deepseek_api_key() -> str:
+    return os.getenv("DEEPSEEK_API_KEY", "").strip()
+
 PINECONE_API_KEY = (
     os.getenv("PINECONE_API_KEY", "") or os.getenv("PINECONE_API_KEY_ALT", "")
 ).strip()
-GOOGLE_API_KEY = (
-    os.getenv("GOOGLE_API", "") or os.getenv("GOOGLE_API_KEY", "") or
-    os.getenv("GOOGLE_AI_API_KEY", "")
-).strip()
-DEEPSEEK_API_KEY = os.getenv("DEEPSEEK_API_KEY", "").strip()
+GOOGLE_API_KEY = get_google_api_key()
+DEEPSEEK_API_KEY = get_deepseek_api_key()
 DEEPSEEK_MODEL = os.getenv("DEEPSEEK_MODEL", "deepseek-chat").strip()
-GROQ_API_KEY = os.getenv("GROQ_API_KEY", "").strip()
-OPENROUTER_API_KEY = os.getenv("OPENROUTER_API_KEY", "").strip()
-OPENAI_API_KEY = (
-    os.getenv("OPENAI_API_KEY", "") or os.getenv("LLM_API_KEY", "") or os.getenv("OPENAI_API", "")
-).strip()
+GROQ_API_KEY = get_groq_api_key()
+OPENROUTER_API_KEY = get_openrouter_api_key()
+OPENAI_API_KEY = get_openai_api_key()
 OPENAI_MODEL = os.getenv("OPENAI_MODEL", "openrouter/auto").strip()
 
 INDEX_NAME = "chatbot-store"
@@ -514,31 +535,49 @@ def build_local_fallback_answer(user_msg: str, docs=None) -> str:
     intent = classify_clinical_intent(user_msg)
 
     if intent == "masld_diabetes_progression":
-        return CLINICAL_GUIDES.get("masld_diabetes_progression", CLINICAL_GUIDES["fatty_liver"])
+        base_ans = CLINICAL_GUIDES.get("masld_diabetes_progression", CLINICAL_GUIDES["fatty_liver"])
     elif intent == "differential_alcoholic_masld":
-        return CLINICAL_GUIDES.get("differential_alcoholic_masld", CLINICAL_GUIDES["alcohol_toxicity"])
+        base_ans = CLINICAL_GUIDES.get("differential_alcoholic_masld", CLINICAL_GUIDES["alcohol_toxicity"])
     elif intent == "scan_bridging_fibrosis":
-        return CLINICAL_GUIDES.get("scan_bridging_fibrosis", CLINICAL_GUIDES["scan_biopsy"])
+        base_ans = CLINICAL_GUIDES.get("scan_bridging_fibrosis", CLINICAL_GUIDES["scan_biopsy"])
     elif intent == "histology_biopsy":
-        return CLINICAL_GUIDES.get("scan_biopsy", CLINICAL_GUIDES["biopsy"])
+        base_ans = CLINICAL_GUIDES.get("scan_biopsy", CLINICAL_GUIDES["biopsy"])
     elif intent == "timeline_plan":
-        return CLINICAL_GUIDES.get("timeline_plan", CLINICAL_GUIDES["nutrition"])
+        base_ans = CLINICAL_GUIDES.get("timeline_plan", CLINICAL_GUIDES["nutrition"])
     elif intent == "alcohol_toxicity":
-        return CLINICAL_GUIDES.get("alcohol_toxicity", CLINICAL_GUIDES["biomarkers"])
+        base_ans = CLINICAL_GUIDES.get("alcohol_toxicity", CLINICAL_GUIDES["biomarkers"])
     elif intent == "symptoms":
-        return CLINICAL_GUIDES.get("symptoms", CLINICAL_GUIDES["biomarkers"])
+        base_ans = CLINICAL_GUIDES.get("symptoms", CLINICAL_GUIDES["biomarkers"])
     elif intent == "biomarkers":
-        return CLINICAL_GUIDES["biomarkers"]
+        base_ans = CLINICAL_GUIDES["biomarkers"]
     elif intent == "fatty_liver":
-        return CLINICAL_GUIDES["fatty_liver"]
+        base_ans = CLINICAL_GUIDES["fatty_liver"]
     elif intent == "hepatitis":
-        return CLINICAL_GUIDES["hepatitis"]
+        base_ans = CLINICAL_GUIDES["hepatitis"]
     elif intent == "cirrhosis":
-        return CLINICAL_GUIDES["cirrhosis"]
+        base_ans = CLINICAL_GUIDES["cirrhosis"]
     elif intent == "nutrition":
-        return CLINICAL_GUIDES["nutrition"]
+        base_ans = CLINICAL_GUIDES["nutrition"]
+    else:
+        base_ans = FALLBACK_EN
 
-    return FALLBACK_EN
+    # If domain docs are available, augment the clinical overview with relevant retrieved findings
+    if docs:
+        snippets = []
+        for d in docs:
+            txt = getattr(d, "page_content", "") or (d if isinstance(d, str) else "")
+            if txt and len(txt.strip()) > 20:
+                snippets.append(txt.strip()[:280])
+        if snippets:
+            custom_context = "\n".join(f"- {s}" for s in snippets[:2])
+            overview_marker = "### 🩺 Clinical Overview & Assessment"
+            if overview_marker in base_ans:
+                base_ans = base_ans.replace(
+                    overview_marker,
+                    f"{overview_marker}\n*Clinical Assessment for: \"{user_msg.strip()}\"*\n{custom_context}\n"
+                )
+
+    return base_ans
 
 
 # =============================================================================
@@ -553,10 +592,17 @@ def generate_gemini_rest_answer(
     Direct REST HTTP caller for Google Gemini API.
     Avoids broken SDK imports by issuing standard HTTP POST requests.
     """
-    if not GOOGLE_API_KEY or not GOOGLE_API_KEY.startswith("AIza"):
+    gkey = get_google_api_key()
+    if not gkey:
         return ""
 
-    models_to_try = ["gemini-2.0-flash", "gemini-1.5-flash", "gemini-1.5-pro"]
+    models_to_try = [
+        "gemini-flash-lite-latest",
+        "gemini-3-flash-preview",
+        "gemini-3.1-flash-lite-preview",
+        "gemini-flash-latest",
+        "gemini-2.5-flash",
+    ]
     
     parts = [{"text": prompt_text}]
 
@@ -590,10 +636,10 @@ def generate_gemini_rest_answer(
     headers = {"Content-Type": "application/json"}
 
     for model in models_to_try:
-        url = f"https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent?key={GOOGLE_API_KEY}"
+        url = f"https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent?key={gkey}"
         try:
             req = urllib.request.Request(url, data=data, headers=headers, method="POST")
-            with urllib.request.urlopen(req, timeout=25) as resp:
+            with urllib.request.urlopen(req, timeout=10) as resp:
                 if resp.status == 200:
                     res_json = json.loads(resp.read().decode("utf-8"))
                     candidates = res_json.get("candidates", [])
@@ -602,7 +648,7 @@ def generate_gemini_rest_answer(
                         if parts_resp:
                             ans = parts_resp[0].get("text", "").strip()
                             if ans:
-                                print(f"[Gemini REST] Generated answer via '{model}' ({len(ans)} chars) ✓")
+                                print(f"[Gemini REST] Generated answer via '{model}' ({len(ans)} chars)")
                                 return ans
         except urllib.error.HTTPError as http_err:
             print(f"[Gemini REST Warning] Model '{model}' HTTP error {http_err.code}")
@@ -676,7 +722,7 @@ def generate_openai_answer(system_prompt_str: str, user_input_str: str, temperat
                 }
                 data = json.dumps(payload).encode("utf-8")
                 req = urllib.request.Request(ep["url"], data=data, headers=ep["headers"], method="POST")
-                with urllib.request.urlopen(req, timeout=25) as resp:
+                with urllib.request.urlopen(req, timeout=5) as resp:
                     if resp.status == 200:
                         res_data = json.loads(resp.read().decode("utf-8"))
                         choice = res_data.get("choices", [{}])[0]
@@ -848,7 +894,16 @@ def generate_rag_answer(
     full_system_prompt = system_prompt.replace("{context}", context_str)
     full_prompt = full_system_prompt + "\n\n" + augmented_input
 
-    # 1. Try Groq / OpenRouter API
+    # 1. Try Google Gemini REST API (Text Mode) - Primary active provider
+    if get_google_api_key():
+        gemini_text_ans = generate_gemini_rest_answer(
+            prompt_text=full_prompt,
+            temperature=temperature
+        )
+        if gemini_text_ans and len(gemini_text_ans.strip()) > 30:
+            return gemini_text_ans
+
+    # 2. Try Groq / OpenRouter / OpenAI API
     if GROQ_API_KEY or OPENROUTER_API_KEY or OPENAI_API_KEY:
         oa_ans = generate_openai_answer(
             system_prompt_str=full_system_prompt,
@@ -857,15 +912,6 @@ def generate_rag_answer(
         )
         if oa_ans and len(oa_ans.strip()) > 30:
             return oa_ans
-
-    # 2. Try Google Gemini REST API (Text Mode)
-    if GOOGLE_API_KEY and GOOGLE_API_KEY.startswith("AIza"):
-        gemini_text_ans = generate_gemini_rest_answer(
-            prompt_text=full_prompt,
-            temperature=temperature
-        )
-        if gemini_text_ans and len(gemini_text_ans.strip()) > 30:
-            return gemini_text_ans
 
     # 3. Try DeepSeek API
     if DEEPSEEK_API_KEY:
