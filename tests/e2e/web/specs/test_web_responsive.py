@@ -41,3 +41,11 @@ class TestWebResponsiveAndSecurity:
         assert res.headers.get("X-Content-Type-Options") == "nosniff"
         assert res.headers.get("X-Frame-Options") == "SAMEORIGIN"
         assert res.headers.get("Referrer-Policy") == "strict-origin-when-cross-origin"
+
+    def test_spa_route_aliases_render_successfully(self, client):
+        """ROUTING-01: Regression test ensuring direct navigation to SPA URLs returns 200 OK."""
+        routes = ["/", "/login", "/chat", "/predict", "/settings", "/profile"]
+        for r in routes:
+            res = client.get(r)
+            assert res.status_code == 200, f"Route {r} failed with status {res.status_code}"
+            assert b"<!DOCTYPE html>" in res.data or b"<html" in res.data

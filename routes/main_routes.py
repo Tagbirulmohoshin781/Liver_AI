@@ -11,6 +11,11 @@ main_bp = Blueprint("main", __name__)
 
 
 @main_bp.route("/")
+@main_bp.route("/login")
+@main_bp.route("/chat")
+@main_bp.route("/predict")
+@main_bp.route("/settings")
+@main_bp.route("/profile")
 def index():
     firebase_config = {
         "apiKey":            os.environ.get("FIREBASE_API_KEY", "AIzaSyCdbYO2g75yW8JS9FLffJmdhSHjIJM8BYI"),
@@ -45,4 +50,3 @@ def service_worker():
 @main_bp.route("/favicon.svg")
 def favicon():
     return send_from_directory("static", "favicon.svg", mimetype="image/svg+xml")
-
