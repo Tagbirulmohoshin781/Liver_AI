@@ -21,6 +21,8 @@ profile_bp = Blueprint("profile", __name__)
 @profile_bp.route("/api/user/stats", methods=["GET"])
 def api_user_stats():
     user_id = session.get("user_id") or get_guest_user_id()
+    if not user_id:
+        return jsonify({"success": False, "message": "Unauthorized"}), 401
     stats = get_user_stats(user_id)
     return jsonify({"success": True, "stats": stats})
 
@@ -28,6 +30,8 @@ def api_user_stats():
 @profile_bp.route("/api/user/medical-profile", methods=["POST"])
 def api_update_medical_profile():
     user_id = session.get("user_id") or get_guest_user_id()
+    if not user_id:
+        return jsonify({"success": False, "message": "Unauthorized"}), 401
 
     data = request.get_json(silent=True) or request.form or {}
     age = data.get("age")
@@ -44,6 +48,8 @@ def api_update_medical_profile():
 @profile_bp.route("/api/user/settings", methods=["GET", "POST"])
 def api_user_settings_route():
     user_id = session.get("user_id") or get_guest_user_id()
+    if not user_id:
+        return jsonify({"success": False, "message": "Unauthorized"}), 401
 
     if request.method == "POST":
         data = request.get_json(silent=True) or {}

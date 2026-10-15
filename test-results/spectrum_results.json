@@ -1,0 +1,201 @@
+{
+  "e2e_browser": {
+    "total": 4,
+    "passed": 4,
+    "failed": 0,
+    "details": [
+      {
+        "name": "Desktop (1280x800) Homepage Load",
+        "passed": true,
+        "notes": "Status: 200"
+      },
+      {
+        "name": "Auth Flow & Guest Mode Trigger",
+        "passed": true,
+        "notes": "Rendered and captured auth view"
+      },
+      {
+        "name": "Direct /predict Route Verification",
+        "passed": true,
+        "notes": "Status 200"
+      },
+      {
+        "name": "Direct /settings Route Verification",
+        "passed": true,
+        "notes": "Status 200"
+      }
+    ]
+  },
+  "appsec": {
+    "total": 5,
+    "passed": 5,
+    "failed": 0,
+    "details": [
+      {
+        "name": "Defensive Security Headers",
+        "passed": true,
+        "notes": "nosniff=True, frame=True, referrer=True"
+      },
+      {
+        "name": "Reflected XSS Sanitization in Chat API",
+        "passed": true,
+        "notes": "Raw script tags stripped/defended"
+      },
+      {
+        "name": "SQL Injection Probe (Auth Bypassing)",
+        "passed": true,
+        "notes": "Response: 401"
+      },
+      {
+        "name": "Path Traversal Protection on Static Assets",
+        "passed": true,
+        "notes": "Status: 404"
+      },
+      {
+        "name": "Unauthenticated Route Guard Barrier",
+        "passed": true,
+        "notes": "Status: 401"
+      }
+    ]
+  },
+  "api_contracts": {
+    "total": 5,
+    "passed": 5,
+    "failed": 0,
+    "details": [
+      {
+        "name": "GET /healthz Contract (200 OK)",
+        "passed": true,
+        "notes": "Code 200"
+      },
+      {
+        "name": "GET /readyz Contract (200 OK)",
+        "passed": true,
+        "notes": "Code 200"
+      },
+      {
+        "name": "POST /api/v1/predict Validation (400 Bad Request)",
+        "passed": true,
+        "notes": "Code 400"
+      },
+      {
+        "name": "POST /api/v1/predict Clinical Calculation (200 OK)",
+        "passed": true,
+        "notes": "Risk: High"
+      },
+      {
+        "name": "Burst Request Stability (5 rapid calls)",
+        "passed": true,
+        "notes": "Zero daemon crash or dropped sockets"
+      }
+    ]
+  },
+  "database_state": {
+    "total": 4,
+    "passed": 4,
+    "failed": 0,
+    "details": [
+      {
+        "name": "Database CRUD - Create User Record",
+        "passed": true,
+        "notes": "UID: 60"
+      },
+      {
+        "name": "Database CRUD - Read & Authenticate Record",
+        "passed": true,
+        "notes": "Retrieved: qa.patient.c3f1e5@liverai.health"
+      },
+      {
+        "name": "Database CRUD - Mutate Profile Record",
+        "passed": true,
+        "notes": "Medical notes successfully updated"
+      },
+      {
+        "name": "Guest Isolation - Zero Shared Database Identity",
+        "passed": true,
+        "notes": "get_guest_user_id is None"
+      }
+    ]
+  },
+  "accessibility": {
+    "total": 4,
+    "passed": 4,
+    "failed": 0,
+    "details": [
+      {
+        "name": "Responsive Viewport Meta Configured",
+        "passed": true,
+        "notes": "width=device-width verified"
+      },
+      {
+        "name": "HTML Document Root has lang attribute",
+        "passed": true,
+        "notes": "lang='en'"
+      },
+      {
+        "name": "Form Inputs have Descriptive Unique IDs",
+        "passed": true,
+        "notes": "26 inputs audited"
+      },
+      {
+        "name": "Images Have Accessible Alt Descriptions",
+        "passed": true,
+        "notes": "Found 4 images, 0 missing alt"
+      }
+    ]
+  },
+  "performance": {
+    "total": 2,
+    "passed": 2,
+    "failed": 0,
+    "details": [
+      {
+        "name": "Local TTFB Benchmark (< 200ms)",
+        "passed": true,
+        "notes": "Average TTFB: 4.0ms"
+      },
+      {
+        "name": "Service Worker Cache Header (no-cache)",
+        "passed": true,
+        "notes": "Service worker updates cleanly"
+      }
+    ]
+  },
+  "cross_viewport_deploy": {
+    "total": 6,
+    "passed": 6,
+    "failed": 0,
+    "details": [
+      {
+        "name": "Desktop Screenshot Captured",
+        "passed": true,
+        "notes": "F:\\Liver Disease Detectioon system\\test-results\\screenshots\\local\\desktop-1280x800.png"
+      },
+      {
+        "name": "Tablet (768x1024) Viewport Screenshot",
+        "passed": true,
+        "notes": "F:\\Liver Disease Detectioon system\\test-results\\screenshots\\local\\tablet-768x1024.png"
+      },
+      {
+        "name": "Mobile (375x667) Viewport Screenshot",
+        "passed": true,
+        "notes": "F:\\Liver Disease Detectioon system\\test-results\\screenshots\\local\\mobile-375x667.png"
+      },
+      {
+        "name": "Live Render Homepage Load",
+        "passed": true,
+        "notes": "Status: 200"
+      },
+      {
+        "name": "Live Render Mobile (375x667)",
+        "passed": true,
+        "notes": "F:\\Liver Disease Detectioon system\\test-results\\screenshots\\render\\render-mobile-375x667.png"
+      },
+      {
+        "name": "Live Render Direct /predict Route",
+        "passed": true,
+        "notes": "F:\\Liver Disease Detectioon system\\test-results\\screenshots\\render\\render-predict.png"
+      }
+    ]
+  }
+}
