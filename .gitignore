@@ -42,7 +42,7 @@ database.db
 .gemini/
 .env
 
-# Large Model Binaries, Archives & Intermediate Checkpoints (>50MB / Training State)
+# Intermediate checkpoints and test screenshot binaries
 notebooks/*.safetensors
 *.zip
 models/**/checkpoint-*/
@@ -50,3 +50,4 @@ checkpoint-*/
 optimizer.pt
 scheduler.pt
 rng_state.pth
+test-results/screenshots/
