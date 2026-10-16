@@ -120,9 +120,10 @@ class _LiverAIAppState extends State<LiverAIApp> {
       darkTheme: widget.glassTheme.themeData,
       builder: (context, child) {
         final double fontScale = widget.glassTheme.fontScale;
+        final platformScale = MediaQuery.of(context).textScaler.scale(1.0);
         return MediaQuery(
           data: MediaQuery.of(context).copyWith(
-            textScaler: TextScaler.linear(fontScale.clamp(0.85, 1.25)),
+            textScaler: TextScaler.linear((fontScale * platformScale).clamp(0.85, 2.0)),
           ),
           child: child ?? const SizedBox.shrink(),
         );

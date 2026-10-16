@@ -63,12 +63,25 @@ class GlassContainer extends StatelessWidget {
             ],
     );
 
+    // Perceptual Blur Scaling & Safe Physical GPU Clamping:
+    // Physical Skia/Impeller blur is safely clamped to 45.0 to avoid GPU memory leaks and dark edge clipping.
+    // At higher values (50-200), opacity is dynamically scaled to provide deep, high-contrast frosted glass.
+    final double physicalBlur = blurSigma.clamp(0.0, 45.0);
+    final double extraOpacity = blurSigma > 45.0
+        ? (((blurSigma - 45.0) / 155.0) * 0.22).clamp(0.0, 0.25)
+        : 0.0;
+
+    final Color baseFill = fillColor ?? defaultFill;
+    final Color effectiveFill = extraOpacity > 0
+        ? baseFill.withValues(alpha: (baseFill.a + extraOpacity).clamp(0.0, 0.96))
+        : baseFill;
+
     Widget content = Container(
       width: width,
       height: height,
       padding: padding,
       decoration: BoxDecoration(
-        color: fillColor ?? defaultFill,
+        color: effectiveFill,
         borderRadius: BorderRadius.circular(borderRadius),
       ),
       child: child,
@@ -102,6 +115,16 @@ class GlassContainer extends StatelessWidget {
             ),
         ];
 
+    final Widget paintedContent = CustomPaint(
+      painter: _GlassBorderPainter(
+        borderRadius: borderRadius,
+        borderWidth: borderWidth,
+        gradient: borderGradient ?? defaultBorderGrad,
+        solidColor: borderColor,
+      ),
+      child: content,
+    );
+
     return Container(
       margin: margin,
       decoration: BoxDecoration(
@@ -110,18 +133,12 @@ class GlassContainer extends StatelessWidget {
       ),
       child: ClipRRect(
         borderRadius: BorderRadius.circular(borderRadius),
-        child: BackdropFilter(
-          filter: ImageFilter.blur(sigmaX: blurSigma, sigmaY: blurSigma),
-          child: CustomPaint(
-            painter: _GlassBorderPainter(
-              borderRadius: borderRadius,
-              borderWidth: borderWidth,
-              gradient: borderGradient ?? defaultBorderGrad,
-              solidColor: borderColor,
-            ),
-            child: content,
-          ),
-        ),
+        child: physicalBlur > 0
+            ? BackdropFilter(
+                filter: ImageFilter.blur(sigmaX: physicalBlur, sigmaY: physicalBlur),
+                child: paintedContent,
+              )
+            : paintedContent,
       ),
     );
   }

@@ -80,8 +80,8 @@ class GlassTheme extends ChangeNotifier {
       final prefs = await SharedPreferences.getInstance();
       _themePresetId = prefs.getString('liver_theme_mode') ?? 'midnight';
       _accentId = prefs.getString('liver_accent_id') ?? 'blue';
-      _fontScale = (prefs.getDouble('liver_font_scale') ?? 1.0).clamp(0.85, 1.25);
-      _blurSigma = (prefs.getDouble('liver_blur_sigma') ?? 16.0).clamp(0.0, 30.0);
+      _fontScale = (prefs.getDouble('liver_font_scale') ?? 1.0).clamp(0.85, 2.0);
+      _blurSigma = (prefs.getDouble('liver_blur_sigma') ?? 16.0).clamp(0.0, 200.0);
       final customHex = prefs.getInt('liver_custom_accent');
       if (customHex != null) {
         _customAccentColor = Color(customHex);
@@ -127,7 +127,7 @@ class GlassTheme extends ChangeNotifier {
   }
 
   void setFontScale(double scale) async {
-    _fontScale = scale.clamp(0.85, 1.25);
+    _fontScale = scale.clamp(0.85, 2.0);
     notifyListeners();
     try {
       final prefs = await SharedPreferences.getInstance();
@@ -136,7 +136,7 @@ class GlassTheme extends ChangeNotifier {
   }
 
   void setBlurSigma(double sigma) async {
-    _blurSigma = sigma.clamp(0.0, 30.0);
+    _blurSigma = sigma.clamp(0.0, 200.0);
     notifyListeners();
     try {
       final prefs = await SharedPreferences.getInstance();

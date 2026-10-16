@@ -91,7 +91,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
     final accent = theme.accentColor;
 
     return SingleChildScrollView(
-      padding: const EdgeInsets.fromLTRB(16, 12, 16, 100),
+      padding: EdgeInsets.fromLTRB(16, 12, 16, 120 + MediaQuery.of(context).padding.bottom),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -179,14 +179,14 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 ),
                 const SizedBox(height: 12),
 
-                // Grid of 9 theme cards
+                // Grid of 9 theme cards (Responsive childAspectRatio based on font scale)
                 GridView.count(
                   crossAxisCount: 3,
                   shrinkWrap: true,
                   physics: const NeverScrollableScrollPhysics(),
                   crossAxisSpacing: 8,
                   mainAxisSpacing: 8,
-                  childAspectRatio: 1.42,
+                  childAspectRatio: (1.35 / (theme.fontScale > 1.15 ? (theme.fontScale * 0.75) : 1.0)).clamp(0.95, 1.40),
                   children: AppColors.themePresets.values.map((preset) {
                     final isSelected = theme.themePresetId == preset.id;
                     return GestureDetector(
@@ -324,7 +324,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 ),
                 const Divider(height: 22),
 
-                // Glass Blur Slider
+                // Glass Blur Slider (Stress Tested 0 - 200px)
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -339,21 +339,29 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     Text('${theme.blurSigma.toInt()} px', style: TextStyle(fontSize: 11.5, fontWeight: FontWeight.w700, color: accent)),
                   ],
                 ),
-                Slider(
-                  value: theme.blurSigma,
-                  min: 0.0,
-                  max: 30.0,
-                  activeColor: accent,
-                  onChanged: (v) => theme.setBlurSigma(v),
+                SliderTheme(
+                  data: SliderTheme.of(context).copyWith(
+                    trackHeight: 4,
+                    thumbShape: const RoundSliderThumbShape(enabledThumbRadius: 7),
+                    overlayShape: const RoundSliderOverlayShape(overlayRadius: 14),
+                  ),
+                  child: Slider(
+                    value: theme.blurSigma.clamp(0.0, 200.0),
+                    min: 0.0,
+                    max: 200.0,
+                    divisions: 40,
+                    activeColor: accent,
+                    onChanged: (v) => theme.setBlurSigma(v),
+                  ),
                 ),
 
-                // Font Size Scale
+                // Font Size Scale (A11y Extreme Scaling 85% - 200%)
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     const Expanded(
                       child: Text(
-                        'Font Size Scale',
+                        'Font Size Scale (Accessibility)',
                         style: TextStyle(fontSize: 12.5, fontWeight: FontWeight.w600),
                         overflow: TextOverflow.ellipsis,
                       ),
@@ -362,12 +370,20 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     Text('${(theme.fontScale * 100).toInt()}%', style: TextStyle(fontSize: 11.5, fontWeight: FontWeight.w700, color: accent)),
                   ],
                 ),
-                Slider(
-                  value: theme.fontScale,
-                  min: 0.85,
-                  max: 1.25,
-                  activeColor: accent,
-                  onChanged: (v) => theme.setFontScale(v),
+                SliderTheme(
+                  data: SliderTheme.of(context).copyWith(
+                    trackHeight: 4,
+                    thumbShape: const RoundSliderThumbShape(enabledThumbRadius: 7),
+                    overlayShape: const RoundSliderOverlayShape(overlayRadius: 14),
+                  ),
+                  child: Slider(
+                    value: theme.fontScale.clamp(0.85, 2.0),
+                    min: 0.85,
+                    max: 2.0,
+                    divisions: 23,
+                    activeColor: accent,
+                    onChanged: (v) => theme.setFontScale(v),
+                  ),
                 ),
               ],
             ),
@@ -435,7 +451,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    const Text('Diagnostic Temperature', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600)),
+                    const Expanded(
+                      child: Text(
+                        'Diagnostic Temperature',
+                        style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600),
+                      ),
+                    ),
                     const SizedBox(width: 8),
                     Flexible(
                       child: Text(
@@ -447,15 +468,22 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     ),
                   ],
                 ),
-                Slider(
-                  value: _temperature,
-                  min: 0.1,
-                  max: 1.0,
-                  divisions: 9,
-                  activeColor: accent,
-                  onChanged: (v) => setState(() => _temperature = double.parse(v.toStringAsFixed(2))),
+                SliderTheme(
+                  data: SliderTheme.of(context).copyWith(
+                    trackHeight: 4,
+                    thumbShape: const RoundSliderThumbShape(enabledThumbRadius: 7),
+                    overlayShape: const RoundSliderOverlayShape(overlayRadius: 14),
+                  ),
+                  child: Slider(
+                    value: _temperature,
+                    min: 0.1,
+                    max: 1.0,
+                    divisions: 9,
+                    activeColor: accent,
+                    onChanged: (v) => setState(() => _temperature = double.parse(v.toStringAsFixed(2))),
+                  ),
                 ),
-                const SizedBox(height: 4),
+                const SizedBox(height: 6),
 
                 // Max Tokens Slider
                 Row(
@@ -472,118 +500,195 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     Text('$_maxTokens tokens', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w700, color: accent)),
                   ],
                 ),
-                Slider(
-                  value: _maxTokens.toDouble(),
-                  min: 512,
-                  max: 2048,
-                  divisions: 3,
-                  activeColor: accent,
-                  onChanged: (v) => setState(() => _maxTokens = v.toInt()),
+                SliderTheme(
+                  data: SliderTheme.of(context).copyWith(
+                    trackHeight: 4,
+                    thumbShape: const RoundSliderThumbShape(enabledThumbRadius: 7),
+                    overlayShape: const RoundSliderOverlayShape(overlayRadius: 14),
+                  ),
+                  child: Slider(
+                    value: _maxTokens.toDouble(),
+                    min: 512,
+                    max: 2048,
+                    divisions: 3,
+                    activeColor: accent,
+                    onChanged: (v) => setState(() => _maxTokens = v.toInt()),
+                  ),
                 ),
                 const Divider(height: 20),
 
                 // Clinical Protocol RAG Toggles
                 const Text('Clinical Guidelines RAG Integration', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600)),
+                const SizedBox(height: 10),
+                _protocolToggle(
+                  title: 'AASLD Guidelines Protocol',
+                  subtitle: 'American Association for the Study of Liver Diseases',
+                  value: _enableAasld,
+                  accent: accent,
+                  isDark: isDark,
+                  onChanged: (v) => setState(() => _enableAasld = v),
+                ),
                 const SizedBox(height: 8),
-                Material(
-                  type: MaterialType.transparency,
-                  child: Column(
-                    children: [
-                      SwitchListTile(
-                        contentPadding: EdgeInsets.zero,
-                        dense: true,
-                        title: const Text('AASLD Guidelines Protocol', style: TextStyle(fontSize: 12)),
-                        subtitle: const Text('American Association for the Study of Liver Diseases', style: TextStyle(fontSize: 10, color: Colors.grey)),
-                        value: _enableAasld,
-                        activeTrackColor: accent.withValues(alpha: 0.5),
-                        activeThumbColor: accent,
-                        onChanged: (v) => setState(() => _enableAasld = v),
-                      ),
-                      SwitchListTile(
-                        contentPadding: EdgeInsets.zero,
-                        dense: true,
-                        title: const Text('EASL Clinical Guidelines', style: TextStyle(fontSize: 12)),
-                        subtitle: const Text('European Association for the Study of the Liver', style: TextStyle(fontSize: 10, color: Colors.grey)),
-                        value: _enableEasl,
-                        activeTrackColor: accent.withValues(alpha: 0.5),
-                        activeThumbColor: accent,
-                        onChanged: (v) => setState(() => _enableEasl = v),
-                      ),
-                    ],
-                  ),
+                _protocolToggle(
+                  title: 'EASL Clinical Guidelines',
+                  subtitle: 'European Association for the Study of the Liver',
+                  value: _enableEasl,
+                  accent: accent,
+                  isDark: isDark,
+                  onChanged: (v) => setState(() => _enableEasl = v),
                 ),
               ],
             ),
           ),
           const SizedBox(height: 18),
 
-          // Save Configuration Button
-          GlassButton(
-            onPressed: _saveSettings,
-            label: 'Save & Apply All Settings',
-            icon: Icons.save_outlined,
-            isFullWidth: true,
-          ),
-          const SizedBox(height: 14),
-
-          // Clear Local History
-          GlassButton(
-            onPressed: () {
-              showDialog(
-                context: context,
-                builder: (ctx) => AlertDialog(
-                  title: const Text('Clear All Local History?'),
-                  content: const Text('This will clear local cached scans, clinical records, and conversations.'),
-                  actions: [
-                    TextButton(onPressed: () => Navigator.pop(ctx), child: const Text('Cancel')),
-                    TextButton(
-                      onPressed: () {
-                        Navigator.pop(ctx);
-                        widget.onClearAllData();
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('Local diagnostics cleared.')),
-                        );
-                      },
-                      child: const Text('Clear', style: TextStyle(color: Colors.red)),
+          // ── 3. DATA & SYSTEM ACTIONS ────────────────────────
+          GlassContainer(
+            borderRadius: 20,
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Icon(Icons.shield_outlined, size: 20, color: accent),
+                    const SizedBox(width: 8),
+                    const Expanded(
+                      child: Text(
+                        'Data Persistence & Session Actions',
+                        style: TextStyle(fontSize: 14, fontWeight: FontWeight.w700),
+                        overflow: TextOverflow.ellipsis,
+                      ),
                     ),
                   ],
                 ),
-              );
-            },
-            label: 'Clear Local Cache & Chat Logs',
-            icon: Icons.delete_forever_outlined,
-            isPrimary: false,
-            color: const Color(0xFFF87171),
-            isFullWidth: true,
-          ),
-          const SizedBox(height: 12),
+                const SizedBox(height: 14),
 
-          // Sign Out Button
-          GlassButton(
-            onPressed: () {
-              showDialog(
-                context: context,
-                builder: (ctx) => AlertDialog(
-                  title: const Text('Sign Out'),
-                  content: const Text('Are you sure you want to sign out of your LiverAI account?'),
-                  actions: [
-                    TextButton(onPressed: () => Navigator.pop(ctx), child: const Text('Cancel')),
-                    TextButton(
-                      onPressed: () {
-                        Navigator.pop(ctx);
-                        widget.onLogout();
-                      },
-                      child: const Text('Sign Out', style: TextStyle(color: Colors.red)),
-                    ),
-                  ],
+                // Save Configuration Button
+                GlassButton(
+                  onPressed: _saveSettings,
+                  label: 'Save & Apply All Settings',
+                  icon: Icons.save_outlined,
+                  isFullWidth: true,
+                  height: 48,
                 ),
-              );
-            },
-            label: 'Sign Out Account',
-            icon: Icons.logout,
-            isPrimary: false,
-            color: const Color(0xFFF87171),
-            isFullWidth: true,
+                const SizedBox(height: 12),
+
+                // Clear Local History
+                GlassButton(
+                  onPressed: () {
+                    showDialog(
+                      context: context,
+                      builder: (ctx) => AlertDialog(
+                        title: const Text('Clear All Local History?'),
+                        content: const Text('This will clear local cached scans, clinical records, and conversations.'),
+                        actions: [
+                          TextButton(onPressed: () => Navigator.pop(ctx), child: const Text('Cancel')),
+                          TextButton(
+                            onPressed: () {
+                              Navigator.pop(ctx);
+                              widget.onClearAllData();
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(content: Text('Local diagnostics cleared.')),
+                              );
+                            },
+                            child: const Text('Clear', style: TextStyle(color: Colors.red)),
+                          ),
+                        ],
+                      ),
+                    );
+                  },
+                  label: 'Clear Local Cache & Chat Logs',
+                  icon: Icons.delete_forever_outlined,
+                  isPrimary: false,
+                  color: const Color(0xFFF97316),
+                  isFullWidth: true,
+                  height: 48,
+                ),
+                const SizedBox(height: 12),
+
+                // Sign Out Button
+                GlassButton(
+                  onPressed: () {
+                    showDialog(
+                      context: context,
+                      builder: (ctx) => AlertDialog(
+                        title: const Text('Sign Out'),
+                        content: const Text('Are you sure you want to sign out of your LiverAI account?'),
+                        actions: [
+                          TextButton(onPressed: () => Navigator.pop(ctx), child: const Text('Cancel')),
+                          TextButton(
+                            onPressed: () {
+                              Navigator.pop(ctx);
+                              widget.onLogout();
+                            },
+                            child: const Text('Sign Out', style: TextStyle(color: Colors.red)),
+                          ),
+                        ],
+                      ),
+                    );
+                  },
+                  label: 'Sign Out Account',
+                  icon: Icons.logout,
+                  isPrimary: false,
+                  color: const Color(0xFFF87171),
+                  isFullWidth: true,
+                  height: 48,
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _protocolToggle({
+    required String title,
+    required String subtitle,
+    required bool value,
+    required Color accent,
+    required bool isDark,
+    required ValueChanged<bool> onChanged,
+  }) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+      decoration: BoxDecoration(
+        color: isDark ? Colors.white.withValues(alpha: 0.03) : Colors.black.withValues(alpha: 0.02),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: isDark ? Colors.white12 : Colors.black12),
+      ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  title,
+                  style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600),
+                  softWrap: true,
+                ),
+                const SizedBox(height: 2),
+                Text(
+                  subtitle,
+                  style: TextStyle(
+                    fontSize: 10,
+                    color: isDark ? Colors.white60 : Colors.black54,
+                  ),
+                  softWrap: true,
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(width: 10),
+          Switch.adaptive(
+            value: value,
+            activeTrackColor: accent.withValues(alpha: 0.5),
+            activeThumbColor: accent,
+            onChanged: onChanged,
           ),
         ],
       ),

@@ -66,6 +66,7 @@ class _GlassButtonState extends State<GlassButton> {
       buttonContent = Row(
         mainAxisSize: widget.isFullWidth ? MainAxisSize.max : MainAxisSize.min,
         mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           if (widget.icon != null) ...[
             Icon(
@@ -76,15 +77,19 @@ class _GlassButtonState extends State<GlassButton> {
             const SizedBox(width: 8),
           ],
           if (widget.label != null)
-            Text(
-              widget.label!,
-              style: TextStyle(
-                fontSize: 14,
-                fontWeight: FontWeight.w600,
-                color: widget.isPrimary
-                    ? Colors.white
-                    : (isDark ? Colors.white : Colors.black87),
-                letterSpacing: 0.2,
+            Flexible(
+              child: Text(
+                widget.label!,
+                textAlign: TextAlign.center,
+                softWrap: true,
+                style: TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w600,
+                  color: widget.isPrimary
+                      ? Colors.white
+                      : (isDark ? Colors.white : Colors.black87),
+                  letterSpacing: 0.2,
+                ),
               ),
             ),
         ],
@@ -126,7 +131,10 @@ class _GlassButtonState extends State<GlassButton> {
           scale: _isPressed ? 0.96 : (_isHovered ? 1.02 : 1.0),
           duration: const Duration(milliseconds: 150),
           child: Container(
-            height: widget.height,
+            constraints: BoxConstraints(
+              minHeight: widget.height,
+              minWidth: widget.isFullWidth ? double.infinity : 48.0,
+            ),
             width: widget.isFullWidth ? double.infinity : null,
             padding: widget.padding,
             decoration: decoration,

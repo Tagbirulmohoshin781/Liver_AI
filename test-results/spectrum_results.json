@@ -98,12 +98,12 @@
       {
         "name": "Database CRUD - Create User Record",
         "passed": true,
-        "notes": "UID: 60"
+        "notes": "UID: 66"
       },
       {
         "name": "Database CRUD - Read & Authenticate Record",
         "passed": true,
-        "notes": "Retrieved: qa.patient.c3f1e5@liverai.health"
+        "notes": "Retrieved: qa.patient.da62c1@liverai.health"
       },
       {
         "name": "Database CRUD - Mutate Profile Record",
@@ -152,7 +152,7 @@
       {
         "name": "Local TTFB Benchmark (< 200ms)",
         "passed": true,
-        "notes": "Average TTFB: 4.0ms"
+        "notes": "Average TTFB: 5.8ms"
       },
       {
         "name": "Service Worker Cache Header (no-cache)",
